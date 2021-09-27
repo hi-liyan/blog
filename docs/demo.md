@@ -1,4 +1,0 @@
----
-id: demo
-title: demo
----
