@@ -1,10 +1,6 @@
 ---
-title: SpringBoot之-统一异常处理
-date: 2021-2-19
-category:
-- SpringBoot学习
-tags:
-- SpringBoot
+id: springboot-global-exception-handle
+title: SpringBoot 统一异常处理
 ---
 
 ## 统一返回数据接口

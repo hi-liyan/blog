@@ -1,11 +1,6 @@
 ---
-title: Linux下的Vim使用教程
-date: 2020-04-11
-category:
-- 随手记
-tags:
-- Linux
-- Vim
+id: vim
+title: Vim 基本使用
 ---
 
 ### 什么是Vim？

@@ -1,25 +1,24 @@
 ---
-title: SpringBoot之-搭建一个传统的SSM项目
-date: 2021-02-27
-category:
-- SpringBoot学习
-tags:
-- SpringBoot
+id: create-ssm-proj
+title: 搭建SSM项目
 ---
 
-> SpringBoot框架相较于Spring的优点：
->
-> - 快速创建项目
-> - 简化配置
-> - 简化代码
-> - 内嵌Servlet容器
-> - 容易部署
-> - 微服务
-> - ...
 
-相较于SpringBoot的优点，传统SSM开发，项目创建复杂，需要进行大量配置。
+:::tip
+ SpringBoot框架相较于Spring的优点：
 
-**传统SSM项目搭建流程：**
+ - 快速创建项目
+ - 简化配置
+ - 简化代码
+ - 内嵌Servlet容器
+ - 容易部署
+ - 微服务
+ - ...
+:::
+
+相较于SpringBoot的优点，传统SSM开发，项目创建复杂，需要进行大量配置，项目维护难度大。
+
+**SSM项目搭建流程：**
 
 1. 建项目
 2. 引依赖

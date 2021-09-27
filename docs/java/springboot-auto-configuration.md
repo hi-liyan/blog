@@ -1,27 +1,23 @@
 ---
-title: Spring Boot之-浅度解析自动配置运作原理
-date: 2021-4-19
-category:
-- SpringBoot学习
-tags:
-- SpringBoot
+id: springboot-auto-configuration
+title: SpringBoot 自动配置实现原理
 ---
 
 
 
 >自动配置是Spring Boot的核心功能，我们可以直接引入所需的Starters，Spring Boot就会在项目启动时自动加载相关依赖，配置相应的初始化参数，为我们提供了更加便捷的集成第三方应用的方式。
 >
-><br>
+>
 >
 >本文基于Spring Boot 2.4.5撰写，随着版本更新，部分源码可能会有修改。
 >
-><br>
+>
 >
 >解读源码是一个比较大的工程，在理解方面难免会有错误和不到位的地方，恳请读者在页面底部评论区留言指正，谢谢。
 
 
 
-<br>
+
 
 # 自动配置原理概述
 
@@ -29,11 +25,11 @@ tags:
 
 图中描述了Spring Boot自动配置实现涉及的几个核心的功能及其相互之间的关系，包括`@EnableAutoConfiguration`注解、`spring.factories`文件、该文件中描述的`XxxAutoConfiguration`类、`@Conditional`注解以及`Starters`。
 
-<br>
+
 
 一句话概括就是：Spring Boot通过`@EnableAutoConfiguration`注解开启自动配置功能，项目启动时扫描所有jar包中META-INF目录下的`spring.factories`配置文件，并加载该文件中注册的`XxxAutoConfigutation`类，当某个`XxxAutoConfiguration`类满足其注解`@Conditional`指定的生效条件时，实例化该`XxxAutoConfiguration`类中定义的Bean，并注入到Spring容器中，实现了自动配置流程。
 
-<br>
+
 
 - `@EnableAutoConfiguration`注解：该注解由组合注解`@SpringBootApplication`引入，完成自动配置功能开启，扫描各个jar包下的spring.factories文件，并加载文件中注册的AutoConfiguration类等。
 - `spring.factories`配置文件：该文件位于jar包的`META-INF`目录下，按照指定格式注册了AutoConfiguration类。`spring.factories`也可以包含其他类型待注册的类。该配置文件不仅存在于Spring Boot项目中，也可以存在于自定义的自动配置（或Starters）项目中。
@@ -41,13 +37,13 @@ tags:
 - `@Conditional`注解：条件注解及其衍生注解，定义在`AutoConfiguration`类，当满足该注解的生效条件时，才会实例化AutoConfiguration类。
 - `Starters`：第三方组件的依赖及配置，Spring Boot已经预置的组件。Spring Boot默认的Starters项目往往只包含了一个pom依赖的项目。如果是自定义的Starter，该项目还需要包含`spring.factories`文件，`AutoConfiguration`类和其他配置类。
 
-<br>
+
 
 # @EnableAutoConfiguration解析
 
 > 该注解用于开启Spring Boot自动配置功能，它是通过@SpringBootApplication注解完成引入的。
 
-<br>
+
 
 ## 入口类和@SpringBootApplication注解
 
@@ -64,7 +60,7 @@ public class SpringLearnApplication {
 }
 ```
 
-<br>
+
 
 这里的`main`方法是一个普通的Java应用的main方法，用于启动Spring Boot项目的入口。
 
@@ -106,7 +102,7 @@ public @interface SpringBootApplication {
 }
 ```
 
-<br>
+
 
 从源码中可以看出，`@SpringBootApplication`注解中提供了以下几个成员属性（注解中的成员属性以方法的形式体现）。
 
@@ -116,11 +112,11 @@ public @interface SpringBootApplication {
 - `scanBasePackageClasses`：扫描指定的类，用于组件的初始化。
 - `proxyBeanMethods`：指定是否代理`@Bean`方法以强制执行Bean的生命周期行为。默认值为true。
 
-<br>
+
 
 通过源代码可以看到，`@SpringBootApplication`注解中的成员属性被`@AliasFor`注解，该注解用于将属性桥接到其他注解上，`@AliasFor(annotation=XXX.class)`指定了要桥接的类。
 
-<br>
+
 
 `@SpringBootApplication`注解组合了`@SpringBootConfiguration`、`@EnableAutoConfiguration`、`@ComponentScan`三个注解。因此在入口类中可以使用这三个注解代替`@SpringBootApplicaiton`，代码如下。
 
@@ -137,7 +133,7 @@ public class SpringLearnApplication {
 }
 ```
 
-<br>
+
 
 在Spring Boot早期版本中并没有`@SpringBootConfiguration`注解，版本升级后新增了`@SpringBootConfiguration`注解并在其内组合了`@Configuration`。`@EnableAutoConfiguration`注解组合了`@AutoConfigurationPackage`。
 
@@ -149,7 +145,7 @@ public class SpringLearnApplication {
 - 激活`@Component`类扫描的`@ComponentScan`
 - 激活配置类的`@Configuration`
 
-<br>
+
 
 ## @EnableAutoConfiguration功能解析
 
@@ -159,7 +155,7 @@ public class SpringLearnApplication {
 
 `@EnableAutoConfiguration`的主要功能是在启动Spring应用程序上下文时根据约定自动配置可能需要的Bean。
 
-<br>
+
 
 ```java
 @Target(ElementType.TYPE)
@@ -188,7 +184,7 @@ public @interface EnableAutoConfiguration {
 - `exclude`：根据类(Class)排除指定的自动配置
 - `excludeName`：根据类名排除指定的自动配置
 
-<br>
+
 
 `@EnableAutoConfiguration`会根据初始配置自动注册可能使用的Bean，但如果你并不需要它预置的初始化Bean，可以通过注解的`exclude`或`excludeName`属性进行排除。例如，当不需要数据库的自动配置时，可以通过以下两种方式让其失效。
 
@@ -209,13 +205,13 @@ public class DemoConfiguration {
 }
 ```
 
-<br>
+
 
 `@EnableAutoConfiguration`注解由两个注解组合而成，分别是`@AutoConfigurationPackage`和`@Import(AutoConfigurationImportSelector.class)`。前者和自动配置包有关，后者则是与Spring Boot自动配置选择性导入有关（Spring中的`ImportSelector`是用来导入配置类的，通常是基于某些条件注解`@ConditionalOnXxx`来决定是否导入某个配置类）。
 
 下面重点分析`AutoConfigurationImportSelector`类。
 
-<br>
+
 
 ## AutoConfigurationImportSelector类解析
 
@@ -223,7 +219,7 @@ public class DemoConfiguration {
 
 `@Import(AutoConfigurationImportSelector.class)`又可以分为两部分：`@Import`和对应的`ImportSelector`接口。这里主要解析`@Import`注解的基本使用方法和`ImportSelector`的实现类`AutoConfigurationImportSelector`。
 
-<br>
+
 
 ### @Import注解
 
@@ -242,7 +238,7 @@ public @interface Import {
 }
 ```
 
-<br>
+
 
 `@Import`的作用和xml配置中的`<import/>`标签的作用一样，我们可以通过该注解引入`@Configuration`注解的类，也可以导入实现了`ImportSelector`接口或`ImportBeanDefinitionRegistrar`的类，还可以通过`@Import`导入普通的POJO（将其注册成Spring Bean，导入POJO需要Spring 4.2以上版本）。
 
@@ -281,7 +277,7 @@ public interface ImportSelector {
 - BeanClassLoaderAware
 - ResourceLoaderAware
 
-<br>
+
 
 ![image-20210426224039223](https://images.shiguangping.com/imgs/20210426224039.png)
 
@@ -307,7 +303,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 
 `DeferredImportSelector`的加载顺序可以通过`@Order`注解或实现`Ordered`接口来指定。同时，`DeferredImportSelector`提供了`getImportGroup()`方法来跨`DeferredImportSelector`实现自定义Configuration的加载顺序。
 
-<br>
+
 
 ### AutoConfigurationImportSelector功能概述
 
@@ -355,15 +351,15 @@ protected AutoConfigurationEntry getAutoConfigurationEntry(AnnotationMetadata an
 }
 ```
 
-<br>
+
 
 首先，是谁调用了`selectImports()`方法呢？
 
-<br>
+
 
 接下来详细解析`selectImports()`方法每一步都做了什么。
 
-<br>
+
 
 ### @EnableAutoConfiguration自动配置开关
 
@@ -396,7 +392,7 @@ String ENABLED_OVERRIDE_PROPERTY = "spring.boot.enableautoconfiguration";
 
 如果在环境中获取不到该Key的值，默认值返回true，也就是默认开始自动配置功能。如果当前类为其他类，直接返回true。
 
-<br>
+
 
 如果要关闭自动配置，则可以在`application.properties`或`application.yaml`配置文件中重写该属性。以`application.yaml`配置为例。
 
@@ -404,7 +400,7 @@ String ENABLED_OVERRIDE_PROPERTY = "spring.boot.enableautoconfiguration";
 spring.boot.enableautoconfiguration: false
 ```
 
-<br>
+
 
 ### @EnableAutoConfiguration加载元数据配置
 
@@ -426,7 +422,7 @@ private static class ConfigurationClassFilter {
 }
 ```
 
-<br>
+
 
 加载元数据配置用到了`AutoConfigurationMetadataLoader`类提供的`loadMetadata()`方法，该方法会默认加载类路径下的`META-INF/spring-autoconfigure-metadata.properties`内的配置。源代码如下。
 
@@ -492,13 +488,13 @@ final class AutoConfigurationMetadataLoader {
 
 随后，遍历Enumeration中的url，获取对应`spring-autoconfigure-metadata.properties`配置文件中的配置并存储于Properties内，最终调用在该类内部实现的`AutoConfigurationMetadata`的子类的构造方法，返回该实例。
 
-<br>
+
 
 `spring-autoconfiguration-metadata.properties`文件内的配置格式如下：
 
 **自动配置类的全限定名.注解名称 = 值**
 
-<br>
+
 
 如果一个Key有多个值，则多个值之间用逗号分隔。
 
@@ -506,13 +502,13 @@ final class AutoConfigurationMetadataLoader {
 org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration.AutoConfigureAfter=org.springframework.boot.autoconfigure.data.couchbase.CouchbaseDataAutoConfiguration,org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration,org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
 ```
 
-<br>
+
 
 可以打开`spring-boot-autoconfigure-2.4.5.jar`中的`META-INF/spring-autoconfigure-metadata.properties`配置文件来查看Spring Boot官方的配置。
 
 ![image-20210421201108410](https://images.shiguangping.com/imgs/20210421201108.png)
 
-<br>
+
 
 加载元数据主要的目的是为了后续过滤自动配置使用。Spring Boot使用一个Annotation的处理器来手机自动加载的条件，这些条件可以在元数据文件中进行配置。Spring Boot会将手机号的`@Configuration`进行一次过滤，进而剔除不满足条件的配置类。
 
@@ -520,7 +516,7 @@ org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration.AutoConfigur
 
 后续会看到过滤自动配置的具体方法实现。
 
-<br>
+
 
 ### @EnableAutoConfiguration加载自动配置组件
 
@@ -563,7 +559,7 @@ protected List<String> getCandidateConfigurations(AnnotationMetadata metadata, A
 
 - getBeanClassLoader() 用来加载外部文件
 
-<br>
+
 
 ```java
 public static final String FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories";
@@ -629,13 +625,13 @@ private static Map<String, List<String>> loadSpringFactories(ClassLoader classLo
 
 *（spring-boot-autoconfigure-2.4.5.jar中的spring.factories文件的部分内容）*
 
-<br>
+
 
 其实，在程序启动初始化阶段，Spring Boot就已经多次调用`SpringFactoriesLoader.loadFactoryNames()`方法，加载`META-INF/spring.factories`中的配置。因为，`spring.factories`文件中不仅仅包含`EnableAutoConfiguration`相关配置，还包含Spring Boot在其他周期需要加载的组件。
 
 `loadSpringFactories()`方法将读取到的`spring.factories`中的配置都存到了cache全局缓存中，在后面执行到加载自动配置类时，一般直接通过`classLoader`到cache中获取数据，而无需再重新读取每一个`spring.factories`，节省了系统的启动时间。
 
-<br>
+
 
 因为程序默认加载的是`ClassLoader`下面所有的`META-INF/spring.factories`文件中的配置，所以难免在不同的jar包中出现重复的配置。我们可以在源代码中使用Set集合数据不可重复的特性进行去重操作。
 
@@ -645,7 +641,7 @@ protected final <T> List<T> removeDuplicates(List<T> list) {
 }
 ```
 
-<br>
+
 
 ### @EnableAutoConfiguration排除指定组件
 
@@ -679,7 +675,7 @@ protected List<String> getExcludeAutoConfigurationsProperty() {
 
 `AutoConfigurationImportSelector`中调用了`getExclusions()`方法来获取被排除类的集合。它会收集`@EnableAutoConfiguration`注解中配置的`exclude`属性值、`excludeName`属性值，并通过`getExcludeAutoConfigurationsProperty()`方法获取在配置文件中key为`spring.autoconfigure.exclude`的配置值。
 
-<br>
+
 
 获取到被排除组件的集合之后，首先是对待排除的类进行检查操作，源代码如下。
 
@@ -714,11 +710,11 @@ protected void handleInvalidExcludes(List<String> invalidExcludes) {
 
 以上代码中，`checkExcludedClasses()`方法用来确保被排除的类存在于当前的ClassLoader中，并且含在`spring.factories`注册的集合中。如果不满足条件，调用`handleInvalidExcludes()`方法抛出异常。
 
-<br>
+
 
 如果被排除的类都符合条件，调用`configurations.removeAll(exclusions)`方法从自动配置集合中移除被排除集合的类，至此完成初步的自动配置组件排除。
 
-<br>
+
 
 ### @EnableAutoConfiguration过滤自动配置组件
 

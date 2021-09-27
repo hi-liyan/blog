@@ -1,11 +1,6 @@
 ---
+id: harbor-install
 title: 搭建Docker镜像仓库Harbor
-date: 2020-11-01
-tags: [Docker,Harbor]
-published: true
-hideInList: false
-feature: 
-isTop: false
 ---
 
 在本地环境下（或者公司局域网），将Docker镜像推送到Docker Hub速度比较慢，推荐的做法是安装一个第三方的Docker镜像仓库，这里推荐使用Harbor。Harbor是一款开源的Docker镜像存储仓库，其扩展了Docker Distribution，在此基础上添加了我们常用的功能，比如安全认证，RBAC用户权限管理，可视化页面操作等功能。
@@ -42,11 +37,11 @@ vim harbor.yml
 
 将`hostname`修改为宿主机IP：
 
-<img src="https://images.shiguangping.com//imgs/20201130224414.png" alt="image-20201130224414488" style="zoom:50%;" />
+![image-20201130224414488](https://images.shiguangping.com//imgs/20201130224414.png)
 
 如果当前docker容器中已经存在Redis容器，则需要在harbor.yml中配置Redis，否则安装时会出错，提示已经存在Redis容器。*
 
-<img src="https://images.shiguangping.com//imgs/20201101151003.png" alt="image-20201101151002963" style="zoom:50%;" />
+![image-20201101151002963](https://images.shiguangping.com//imgs/20201101151003.png)
 
 *（Redis主机地址不要使用localhost，如果访问不了可能会导致`harbor-jobservice`等服务无法启动。）*
 

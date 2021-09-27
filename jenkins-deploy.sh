@@ -20,7 +20,7 @@ r_path="/www/wwwroot/www.shiguangping.com"
 b_path=$(pwd)
 
 # Opt Path
-opt_path="$b_path/public"
+opt_path="$b_path/build"
 
 # package 签名
 package_lock="${b_path}/package-lock.json"
@@ -66,7 +66,7 @@ check_version
   pwd
 
 
-npm run clean
+npm run clear
 npm run build
 
 echo "==========2. 开始删除空间旧文件=========="

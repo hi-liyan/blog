@@ -1,13 +1,16 @@
 ---
+id: springboot-jenkins-cicd
 title: Jenkins构建部署微服务项目
-date: 2020-11-23
-category:
-- 随手记
-tags:
-- Jenkins
 ---
 
-通过Gitlab、Jenkins、Harbor、Docker部署Spring Cloud微服务项目，本文使用Mrbird的开源框架[FEBS微服务权限系统](https://gitee.com/mrbirdd/)演示。（项目启动需要Nacos、Mysql）
+:::tip
+通过Gitlab、Jenkins、Harbor、Docker部署Spring Cloud微服务项目，本文使用Mrbird的开源项目[FEBS微服务权限系统](https://gitee.com/mrbirdd/)进行演示演示。（项目启动需要Nacos、Mysql）
+
+- Gitlab :开源的Git仓库
+- Jenkins :使用Java开发的CI/CD工具
+- Harbor :Docker镜像仓库
+- Docker :容器化
+:::
 
 ## 准备工作
 
@@ -38,11 +41,11 @@ Jenkins搭建：[https://www.shiguangping.com/posts/docker-install-jenkins.html]
 
 打开后端项目，在`febs-cloud`根目录下编写以下脚本：
 
-<img src="https://images.shiguangping.com//imgs/20201123232417.png" alt="image-20201123232417184" style="zoom:50%;" />
+![image-20201123232417184](https://images.shiguangping.com//imgs/20201123232417.png)
 
 pipline脚本：
 
-::: details Jenkinsfile
+:::tip Jenkinsfile
 
 ```groovy
 #!groovy
@@ -89,7 +92,7 @@ pipeline {
 
 Jenkins构建脚本：
 
-::: details jenkins-deploy.sh
+:::tip jenkins-deploy.sh
 
 ```bash
 #!/bin/bash
@@ -366,7 +369,7 @@ run
 
 Dockerfile：
 
-::: details Dockerfile
+:::tip Dockerfile
 
 ```dockerfile
 FROM openjdk:8-jre-alpine as builder
@@ -453,11 +456,11 @@ ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urand
 
 打开febs-cloud-web项目，编写脚本文件：
 
-<img src="https://images.shiguangping.com//imgs/20201124000634.png" alt="image-20201124000634274" style="zoom:50%;" />
+![image-20201124000634274](https://images.shiguangping.com//imgs/20201124000634.png)
 
 Jenkins脚本：
 
-::: details Jenkinsfile
+:::tip Jenkinsfile
 
 ```groovy
 #!groovy
@@ -504,7 +507,7 @@ pipeline {
 
 jenkins-deploy.sh脚本：
 
-::: details jenkins-deploy.sh
+:::tip jenkins-deploy.sh
 
 ```bash
 #!/bin/bash
@@ -677,7 +680,7 @@ deploy
 
 Dockerfile：
 
-::: details Dockerfile
+:::tip Dockerfile
 
 ```dockerfile
 FROM nginx:alpine
@@ -696,7 +699,7 @@ EXPOSE 80
 
 我在第一次构建时遇到了`npm: command not found`错误，这是因为Docker部署的Jenkins容器内没有node环境。
 
-::: details
+:::tip
 
 终端输入以下命令进入Jenkins容器：
 
@@ -779,7 +782,7 @@ docker swarm init
 
 docker-compose-backend.yml
 
-::: details docker-compose-backend.yml
+:::tip docker-compose-backend.yml
 
 ```yaml
 version: "3"
@@ -1039,7 +1042,7 @@ networks:
 
 docker-compose-frontend.yml
 
-::: details docker-compose-frontend.yml
+:::tip docker-compose-frontend.yml
 
 ```yaml
 version: "3"
@@ -1076,7 +1079,7 @@ services:
 
 env:
 
-::: details env
+:::tip env
 
 ```
 # JVM

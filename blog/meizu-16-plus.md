@@ -1,8 +1,6 @@
 ---
 title: 卖掉了！·魅族16th Plus
 date: 2019-06-11
-category:
-- 记录生活
 tags:
 - Meizu
 ---

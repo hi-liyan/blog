@@ -1,10 +1,6 @@
 ---
-title: SpringBoot之-手写一个Starter
-date: 2021-01-13
-category:
-- SpringBoot学习
-tags:
-- SpringBoot
+id: springboot-custom-starter
+title: SpringBoot 自定义Starter
 ---
 
 

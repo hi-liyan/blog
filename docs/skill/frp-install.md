@@ -1,23 +1,22 @@
 ---
-title: 内网穿透工具-Frp
-date: 2020-10-06 09:27
-category:
-- 随手记
-tags:
-- 内网穿透
+id: frp-install
+title: 内网穿透工具 -Frp
 ---
 
-# 准备工作：
+:::tip
+Frp 是一款内网穿透软件，它由客户端和服务端两部分组成，客户端部署在要穿透的内网主机中，服务端一般部署在具有固定公网IP的服务器中，具体配置方式如下。
+:::
+
+## 准备工作
 
 - 具有固定公网IP的主机（如阿里云、腾讯云主机）
-- 主角：**Frp**工具，[下载页面](https://github.com/fatedier/frp/releases)
-- 内网主机（最终需要在外网访问的内网主机）
-
+- 主角：**Frp**工具，[下载地址](https://github.com/fatedier/frp/releases)
+- 内网主机（要穿透的内网主机）
 
 
 ---
 
-# 配置服务端（VPS）
+## 配置服务端（VPS）
 
 ### 下载Frp
 
@@ -110,17 +109,19 @@ dashboard_pwd = admin
 screen -S frps ./frps -c frps.ini
 ```
 
->安装screen：
->
->```bash
->yum install screen
->```
+:::tip
+安装screen：
+
+```bash
+yum install screen
+```
+:::
 
 使用快捷键Ctrl+A D(即按住Ctrl，依次再按A,D)，使程序在后台运行。
 
 ---
 
-# 配置客户端（内网主机）
+## 配置客户端（内网主机）
 
 ### 下载Frp
 
@@ -160,7 +161,7 @@ use_compression = true
 
 例如在外网通过ssh连接到内网主机，`ssh -p 6000 121.197.190.123`来SSH连接到内网主机，*22端口是ssh的默认端口号*。
 
-### 访问内网主机中的其他服务
+### 配置内网主机中要穿透的应用端口
 
 对于内网主机上部署了如mysql数据库、redis缓存等服务也可以通过这种方式配置：
 
@@ -188,7 +189,7 @@ use_compression = true
 
 *远程主机使用的是阿里云或者腾讯云等虚拟主机，要在安全组规则中放行端口*
 
-### 访问内网主机的web服务
+### 配置内网主机中要穿透的web服务
 
 ```ini
 [web]
@@ -212,7 +213,7 @@ screen -S frpc ./frpc -c frpc.ini
 
 
 
-# 测试
+## 测试
 
 ```bash
 ssh -p 6000 121.197.190.123

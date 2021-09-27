@@ -1,13 +1,7 @@
 ---
-title: Java学习之-Java SE 8的流库
-date: 2021-6-9
-category:
-- Java学习
-tags:
-- Java
+id: java-stream
+title: Java8 Stream流
 ---
-
-# Java SE 8 的流库
 
 ## 1. 从迭代到流操作
 
@@ -50,7 +44,7 @@ public class CountLongWords {
 2. 将初始流转换为其他流的中间操作，可能包含多个步骤；
 3. 应用的终止操作，产生结果。这一操作会强制执行之前的惰性操作，之后这个流将不能再被使用。
 
-<br>
+
 
 通过上面的代码，我们来认识流的接口：
 
@@ -67,7 +61,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
 }
 ```
 
-<br>
+
 
 > package java.util;
 
@@ -86,7 +80,7 @@ public interface Collection<E> extends Iterable<E> {
 }
 ```
 
-<br>
+
 
 ## 2. 流的创建
 

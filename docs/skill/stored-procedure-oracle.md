@@ -1,13 +1,7 @@
 ---
-title: '基于Oracle数据库存储过程的创建及调用'
-date: 2021-03-15 20:57:00
-category:
-- 数据库
-tags:
-- Oracle
+id: stored-procedure-oracle
+title: 基于Oracle数据库存储过程的创建及调用
 ---
-
-# PLSQL编程
 
 ## 概念和目的
 

@@ -1,10 +1,6 @@
 ---
-title: 静态页面托管服务-Netlify
-date: 2020-10-07 16:38
-category:
-- 随手记
-tags:
-- Netlify
+id: netlify
+title: 静态页面托管服务 -Netlify
 ---
 
 Github Pages已经凉凉了😓

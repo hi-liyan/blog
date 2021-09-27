@@ -1,10 +1,6 @@
 ---
+id: java-lambda
 title: Java Lambda表达式
-date: 2021-2-18
-category:
-- Java学习
-tags:
-- Java
 ---
 
 ## 了解函数式编程

@@ -1,10 +1,6 @@
 ---
-title: Mybatis Plus多租户数据隔离
-date: 2021-1-27
-category:
-- 随手记
-tags:
-- Mybatis Plus
+id: mybatis-plus-multi-tenant
+title: Mybatis-Plus 多租户数据隔离
 ---
 
 

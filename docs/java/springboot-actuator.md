@@ -1,5 +1,5 @@
 ---
-id: spring-boot-actuator
+id: springboot-actuator
 title: SpringBoot监控工具 -Actuator
 ---
 

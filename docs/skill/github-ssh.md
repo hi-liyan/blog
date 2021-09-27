@@ -1,10 +1,6 @@
 ---
+id: github-ssh
 title: GitHub配置SSH
-date: 2018-06-12 16:16:26
-category:
-- 随手记
-tags:
-- Github
 ---
 
 ## 生成SSH Key
@@ -59,3 +55,7 @@ ssh -T git@github.com
 
 
 拉取仓库要选择ssh仓库地址。
+
+:::tip
+Gitee 等其它git仓库的配置方式大同小异。
+:::

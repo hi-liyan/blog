@@ -18,7 +18,7 @@ module.exports = {
   tutorialSidebar: [
     {
       type: 'doc',
-      id: 'intro',
+      id: 'about',
       label: '关于'
     },
 
@@ -33,7 +33,10 @@ module.exports = {
         'java/java-reflect',
         'java/java-multi-thread',
         'java/java-io',
+        'java/java-stream',
+        'java/java-lambda',
         'java/springboot-application-context-initializer',
+        'java/springboot-auto-configuration',
         'java/spring-xml-ioc',
         'java/jsr303',
         'java/redis-note',
@@ -41,9 +44,15 @@ module.exports = {
         'java/dubbo-quick-start',
         'java/elasticsearch-quick-start',
         'java/spring-cloud-alibaba',
+        'java/springboot-actuator',
         'java/services-register-and-discovery',
         'java/ribbon',
-        'java/sentinel'
+        'java/sentinel',
+        'java/create-ssm-proj',
+        'java/java-learning-method',
+        'java/mybatis-plus-multi-tenant',
+        'java/springboot-global-exception-handle',
+        'java/springboot-custom-starter'
       ]
     },
     {
@@ -60,7 +69,9 @@ module.exports = {
       label: '前端开发',
       items: [
         'frontend/css-note',
-        'frontend/react-note'
+        'frontend/react-note',
+        'frontend/vue-components-communication',
+        'frontend/vue-responsive'
       ]
     },
 
@@ -73,6 +84,27 @@ module.exports = {
         'flutter/flutter-note'
       ]
     },
+
+    {
+      type: 'category',
+      label: '小技巧',
+      items: [
+        'skill/centos-install-docker',
+        'skill/frp-install',
+        'skill/github-ssh',
+        'skill/springboot-jenkins-cicd',
+        'skill/group-concat-max-length',
+        'skill/harbor-install',
+        'skill/netlify',
+        'skill/spring-cross',
+        'skill/stored-procedure-oracle',
+        'skill/tcpip-birth-talk-talk',
+        'skill/redis-story',
+        'skill/redis-story-persistence',
+        'skill/session-cookie-jwt',
+        'skill/vim'
+      ]
+    }
   ],
 
 };

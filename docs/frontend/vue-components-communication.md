@@ -1,10 +1,6 @@
 ---
+id: vue-components-communication
 title: Vue组件间通信
-date: 2020-09-19 21:34
-category:
-- 随手记
-tags:
-- Vue
 ---
 
 Vue组件间通信的两种常见情况：
@@ -14,7 +10,6 @@ Vue组件间通信的两种常见情况：
   - 子传父
 - 非父子组件间通信
 
-<!--more-->
 
 ### 父子组件间通信：
 

@@ -1,10 +1,6 @@
 ---
+id: group-concat-max-length
 title: Mysql修改GROUP_CONCAT函数最大长度
-date: 2020-12-14
-category:
-- 随手记
-tags:
-- Mysql
 ---
 
 ## 问题描述

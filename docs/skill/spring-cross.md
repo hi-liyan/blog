@@ -1,10 +1,6 @@
 ---
-title: Spring跨域请求问题
-date: 2021-01-14
-category:
-- 随手记
-tags:
-- Spring MVC
+id: spring-cross
+title: Spring 跨域请求问题
 ---
 
 ![image-20210114155026514](https://images.shiguangping.com//imgs/20210114155033.png)
