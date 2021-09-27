@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'chmod 777'
+                sh 'chmod -cR 777 *'
                 sh './jenkins-deploy.sh'
             }
         }
