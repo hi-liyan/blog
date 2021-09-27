@@ -82,6 +82,10 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             title: 'Community',
             items: [
               {
+                label: 'Gitee',
+                href: 'https://gitee.com/ennriaaa',
+              },
+              {
                 label: '知乎',
                 href: 'https://www.zhihu.com/people/shiguangping',
               },
@@ -110,7 +114,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['dart'],
+        additionalLanguages: ['dart', 'java'],
       },
     }),
 

@@ -17,9 +17,61 @@ module.exports = {
 
   tutorialSidebar: [
     {
+      type: 'doc',
+      id: 'intro',
+      label: '关于'
+    },
+
+    // 后端
+    {
       type: 'category',
-      label: 'Text',
-      items: ['demo1', 'demo2'],
+      label: '后端开发 -Java开发',
+      items: [
+        'java/java-learning-path',
+        'java/jdk-install',
+        'java/javase-note',
+        'java/java-reflect',
+        'java/java-multi-thread',
+        'java/java-io',
+        'java/springboot-application-context-initializer',
+        'java/spring-xml-ioc',
+        'java/jsr303',
+        'java/redis-note',
+        'java/rocketmq-quick-start',
+        'java/dubbo-quick-start',
+        'java/elasticsearch-quick-start',
+        'java/spring-cloud-alibaba',
+        'java/services-register-and-discovery',
+        'java/ribbon',
+        'java/sentinel'
+      ]
+    },
+    {
+      type: 'category',
+      label: '后端开发',
+      items: [
+        'backend/golang-note'
+      ]
+    },
+
+    // 前端
+    {
+      type: 'category',
+      label: '前端开发',
+      items: [
+        'frontend/css-note',
+        'frontend/react-note'
+      ]
+    },
+
+    // Flutter
+    {
+      type: 'category',
+      label: 'Flutter 开发',
+      items: [
+        'flutter/dart-lang-note',
+        'flutter/flutter-note'
+      ]
     },
   ],
 
