@@ -118,6 +118,21 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         darkTheme: darkCodeTheme,
         additionalLanguages: ['dart', 'java', 'groovy'],
       },
+      algolia: {
+        apiKey: '708f8c49031ab61d026cfcf06a9a5557',
+        indexName: 'shiguangping',
+
+        // Optional: see doc section below
+        contextualSearch: true,
+
+        // Optional: see doc section below
+        appId: '77LA21PZM1',
+
+        // Optional: Algolia search parameters
+        searchParameters: {},
+
+        //... other Algolia params
+      },
     }),
 
 });
