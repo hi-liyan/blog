@@ -6,12 +6,11 @@ import {init} from 'ityped'
  */
 class StringPrinter extends Component {
 
-  componentDidMount(props) {
+  componentDidMount() {
     // 自动打印文案
     const content = [
       'System.out.println(\"Hi, I am Liyan\");'
     ]
-
     const myElement = document.querySelector('#myElement')
     init(myElement, {showCursor: false, strings: content})
   }
