@@ -7,8 +7,14 @@ import {init} from 'ityped'
 class StringPrinter extends Component {
 
   componentDidMount(props) {
+    // 自动打印文案
+    const content = [
+      'System.out.println(\"Hi, I am Liyan\");',
+      '请把我流放到最美的时光里。'
+    ]
+
     const myElement = document.querySelector('#myElement')
-    init(myElement, {showCursor: false, strings: ['System.out.println(\"Hi, I am Liyan\");']})
+    init(myElement, {showCursor: false, strings: content})
   }
 
   render() {
