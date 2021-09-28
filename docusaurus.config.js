@@ -71,7 +71,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             items: [
               {
                 label: '文档',
-                to: '/docs/intro',
+                to: '/docs/about',
               },
               {
                 label: '博客',
