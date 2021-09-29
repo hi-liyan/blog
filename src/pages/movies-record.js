@@ -176,7 +176,7 @@ class MoviesRecord extends Component {
         {
           this.state.movieList.map(item => (
             <ol key={item.id} className='movieItemOl'>
-              <li><Image src={item.img} sx={{width: ['120px'], height: ['auto'], borderRadius: 8}}/></li>
+              <li><Image src={item.img} sx={{width: ['120px'], borderRadius: 8}}/></li>
               <li>{item.name}</li>
               <li>{item.stars}</li>
               <li>{item.years}</li>
