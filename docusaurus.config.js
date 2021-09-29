@@ -14,6 +14,18 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   organizationName: 'liyan', // Usually your GitHub org/user name.
   projectName: 'shiguangping-blog', // Usually your repo name.
 
+  plugins: [
+    'docusaurus-plugin-sass',
+    [
+      '@docusaurus/plugin-sitemap',
+      {
+        changefreq: 'weekly',
+        priority: 0.5,
+        trailingSlash: false,
+      },
+    ],
+  ],
+
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -119,19 +131,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         additionalLanguages: ['dart', 'java', 'groovy'],
       },
       algolia: {
-        apiKey: '708f8c49031ab61d026cfcf06a9a5557',
-        indexName: 'shiguangping',
-
-        // Optional: see doc section below
-        contextualSearch: true,
-
-        // Optional: see doc section below
         appId: '77LA21PZM1',
-
-        // Optional: Algolia search parameters
+        apiKey: '708f8c49031ab61d026cfcf06a9a5557',
+        indexName: 'docsearch_query_suggestions',
+        contextualSearch: true,
         searchParameters: {},
-
-        //... other Algolia params
       },
     }),
 

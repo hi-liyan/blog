@@ -13,13 +13,13 @@
 }
 
 :root {
-  --ifm-color-primary: #CA228D;
-  --ifm-color-primary-dark: #b63bf3;
-  --ifm-color-primary-darker: #b771ce;
-  --ifm-color-primary-darkest: #c048ba;
-  --ifm-color-primary-light: #f13fae;
-  --ifm-color-primary-lighter: #eaa1f5;
-  --ifm-color-primary-lightest: #fcf2ff;
+  --ifm-color-primary: #ca228d;
+  --ifm-color-primary-dark: #b61f7f;
+  --ifm-color-primary-darker: #ac1d78;
+  --ifm-color-primary-darkest: #8d1863;
+  --ifm-color-primary-light: #db299a;
+  --ifm-color-primary-lighter: #dd339f;
+  --ifm-color-primary-lightest: #e251ad;
   --ifm-code-font-size: 95%;
   --ifm-font-family-base: "Raleway", "PingFang SC", "Microsoft Yahei",
   sans-serif;

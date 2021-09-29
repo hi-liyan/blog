@@ -1,0 +1,84 @@
+.underline {
+  border-bottom: 1px solid #000;
+}
+
+.containerBox {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+
+  .tableBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+
+    .movieBox {
+      width: 100%;
+      align-items: center;
+      display: contents;
+    }
+
+    // 标题
+    .movieTitleOl {
+      display: flex;
+      width: 80%;
+      text-align: center;
+      list-style: none;
+      line-height: 50px;
+      font-weight: bolder;
+      text-shadow: 5px 5px 7px #7f7f7f;
+
+      :nth-child(1) {
+        width: 30%;
+        border-bottom: 1px solid #7f7f7f;
+      }
+      :nth-child(2) {
+        width: 30%;
+        border-bottom: 1px solid #7f7f7f;
+      }
+      :nth-child(3) {
+        width: 30%;
+        border-bottom: 1px solid #7f7f7f;
+      }
+      :nth-child(4) {
+        width: 10%;
+        border-bottom: 1px solid #7f7f7f;
+      }
+      :nth-child(5) {
+        width: 20%;
+        border-bottom: 1px solid #7f7f7f;
+      }
+    }
+
+    .movieItemOl {
+      display: flex;
+      width: 80%;
+      text-align: center;
+      list-style: none;
+      line-height: 50px;
+
+      :nth-child(1) {
+        width: 30%;
+        height: 200px;
+        border-bottom: 1px solid #7f7f7f;
+      }
+      :nth-child(2) {
+        width: 30%;
+        border-bottom: 1px solid #7f7f7f;
+      }
+      :nth-child(3) {
+        width: 30%;
+        border-bottom: 1px solid #7f7f7f;
+      }
+      :nth-child(4) {
+        width: 10%;
+        border-bottom: 1px solid #7f7f7f;
+      }
+      :nth-child(5) {
+        width: 20%;
+        border-bottom: 1px solid #7f7f7f;
+      }
+    }
+  }
+}
