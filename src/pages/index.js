@@ -12,7 +12,7 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <Link to='/docs/about'><h1 className="hero__title">{siteConfig.title}</h1></Link>
+        <Link to='/docs/hello'><h1 className="hero__title">{siteConfig.title}</h1></Link>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
       </div>
       <StringPrinter/>

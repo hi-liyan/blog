@@ -5,8 +5,11 @@ title: Dubbo 快速开始
 
 ## 简介
 
-本文介绍Spring Boot项目整合Dubbo完成跨服务调用，使用Nacos作为服务注册中心。  
-博客原文：[Dubbo 快速开始](https://www.shiguangping.com/spring-boot-dubbo.html)
+:::tip
+Apache Dubbo 是一款高性能的面向接口代理的RPC框架。
+本文介绍Spring Boot项目整合Apache Dubbo完成跨服务调用，Dubbo可以使用Zookeeper、Nacos等服务发现组件作为服务注册中心。本文使用Nacos作为服务注册中心。
+:::
+
 
 
 

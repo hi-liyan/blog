@@ -27,7 +27,6 @@ module.exports = {
       type: 'category',
       label: '后端开发 -Java开发',
       items: [
-        'java/java-learning-path',
         'java/jdk-install',
         'java/javase-note',
         'java/java-reflect',
@@ -49,12 +48,13 @@ module.exports = {
         'java/ribbon',
         'java/sentinel',
         'java/create-ssm-proj',
-        'java/java-learning-method',
         'java/mybatis-plus-multi-tenant',
         'java/springboot-global-exception-handle',
         'java/springboot-custom-starter'
       ]
     },
+
+    // 其它后端开发
     {
       type: 'category',
       label: '后端开发',
@@ -85,10 +85,13 @@ module.exports = {
       ]
     },
 
+    // 其它
     {
       type: 'category',
       label: '其它',
       items: [
+        'skill/java-learning-path',
+        'skill/java-learning-method',
         'skill/centos-install-docker',
         'skill/frp-install',
         'skill/github-ssh',

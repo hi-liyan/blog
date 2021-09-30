@@ -9,7 +9,7 @@ class StringPrinter extends Component {
   componentDidMount() {
     // 自动打印文案
     const content = [
-      'System.out.println(\"Hi, I am Liyan\");'
+      'System.out.println(\"Hi, Welcome to Shiguangping.\");'
     ]
     const myElement = document.querySelector('#myElement')
     init(myElement, {showCursor: false, strings: content})

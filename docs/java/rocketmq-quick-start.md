@@ -5,10 +5,9 @@ title: RockerMQ 快速开始
 
 ## 简介
 
-本文将介绍Spring Boot整合RocketMQ，完成消息生产与消费。  
-博客原文：[RocketMQ 快速开始](https://www.shiguangping.com/spring-boot-rocketmq.html)
-
-
+:::tip
+本文将介绍Spring Boot整合RocketMQ，完成消息生产与消费。
+:::
 
 ## 仓库
 
