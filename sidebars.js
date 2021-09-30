@@ -18,8 +18,8 @@ module.exports = {
   tutorialSidebar: [
     {
       type: 'doc',
-      id: 'about',
-      label: '关于'
+      id: 'hello',
+      label: '你好'
     },
 
     // 后端
@@ -87,7 +87,7 @@ module.exports = {
 
     {
       type: 'category',
-      label: '小技巧',
+      label: '其它',
       items: [
         'skill/centos-install-docker',
         'skill/frp-install',

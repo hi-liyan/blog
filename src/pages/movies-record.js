@@ -90,7 +90,6 @@ class MoviesRecord extends Component {
   }
 
   pageOnChange = (pageNum) => {
-    console.log(`pageNum=${pageNum}`)
     this.setState(()=>{
       return {
         pageNum: pageNum

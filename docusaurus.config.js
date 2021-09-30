@@ -54,7 +54,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         items: [
           {
             type: 'doc',
-            docId: 'about',
+            docId: 'hello',
             position: 'right',
             label: '文档',
           },
@@ -75,7 +75,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             items: [
               {
                 label: '文档',
-                to: '/docs/about',
+                to: '/docs/hello',
               },
               {
                 label: '博客',
@@ -103,6 +103,10 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
           {
             title: 'More',
             items: [
+              {
+                label: '关于我',
+                href: '/about'
+              },
               {
                 label: 'rebassjs',
                 href: 'https://rebassjs.org',
