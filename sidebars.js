@@ -107,6 +107,15 @@ module.exports = {
         'skill/session-cookie-jwt',
         'skill/vim'
       ]
+    },
+
+    // 读书笔记
+    {
+      type: 'category',
+      label: '读书笔记',
+      items: [
+        'reading/编程的原则：改善代码质量的101个方法'
+      ]
     }
   ],
 

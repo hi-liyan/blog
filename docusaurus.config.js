@@ -108,6 +108,10 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
                 href: '/about'
               },
               {
+                label: 'docusaurus',
+                href: 'https://www.docusaurus.cn/'
+              },
+              {
                 label: 'rebassjs',
                 href: 'https://rebassjs.org',
               },
