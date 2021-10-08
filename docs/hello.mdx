@@ -2,6 +2,8 @@
 title: Welcome
 ---
 
+import CardBox from "../src/components/CardBox";
+
 ## Tags
 
 <span className="badge badge--success margin-right--md shadow--tl">Java</span>
@@ -19,20 +21,13 @@ title: Welcome
 - [观影记录](/movies-record)
 
 ## Plan
-<div className="card-demo shadow--tl">
-  <div className="card">
-    <div className="card__header">
-      <h3>2021年学习计划</h3>
-    </div>
-    <div className="card__body">
-      <ul>
-        <li>Flutter</li>
-        <li>React</li>
-      </ul>
-      <div>Target: 通过 Flutter 技术开发打卡小程序。</div>
-    </div>
-  </div>
-</div>
+<CardBox title='2021年学习计划'>
+  <ul>
+    <li>Flutter</li>
+    <li>React</li>
+  </ul>
+  <div>Target: 通过 Flutter 技术开发打卡小程序。</div>
+</CardBox>
 
 
 
