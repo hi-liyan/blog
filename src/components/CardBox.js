@@ -5,12 +5,10 @@ import React, {Component} from "react";
  *  卡片
  *
  *  属性：
- *  display：展示方式
- *  color：马克杯颜色
- *  fontWeight：字体粗细
+ *  title：标题
  *
  *  示例：
- *  <CardBox>Hello World</CardBox>
+ *  <CardBox title='标题'>Hello World</CardBox>
  * </pre>
  */
 class CardBox extends Component {
@@ -22,9 +20,11 @@ class CardBox extends Component {
   render() {
     const {title, children} = this.props
     return (
-      <div className="card-demo shadow--tl">
+      <div className="card-demo shadow--tl" style={{marginBottom: '20px'}}>
         <div className="card">
-          <div className="card__header">
+          <div className="card__header" style={{
+            display: title ? 'block' : 'none'
+          }}>
             <h3>{title}</h3>
           </div>
           <div className="card__body">
