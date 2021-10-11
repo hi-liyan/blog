@@ -114,7 +114,8 @@ module.exports = {
       type: 'category',
       label: '读书笔记',
       items: [
-        'reading/编程的原则：改善代码质量的101个方法'
+        'reading/编程的原则：改善代码质量的101个方法',
+        'reading/一切都是最好的安排'
       ]
     }
   ],
