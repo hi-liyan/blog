@@ -21,9 +21,12 @@ class ShadowBox extends Component {
   }
 
   render() {
-    const {children, img} = this.props
+    const {children, img, title} = this.props
     return (
       <div className='containerBox'>
+        <div className='titleBox' style={{display: title ? 'block' : 'none'}}>
+          <h3>{title}</h3>
+        </div>
         <div>{img ? <img src={img} alt=""/> : null}</div>
         {children}
       </div>
@@ -32,7 +35,8 @@ class ShadowBox extends Component {
 }
 
 ShadowBox.propTypes = {
-  img: PropTypes.string
+  img: PropTypes.string,
+  title: PropTypes.string
 }
 
 export default ShadowBox
