@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import styles from './HomepageFeatures.module.css';
+import styles from './index.css';
 
 const FeatureList = [
   {
@@ -49,6 +49,11 @@ function Feature({Svg, title, description}) {
   );
 }
 
+/**
+ * 已弃用
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function HomepageFeatures() {
   return (
     <section className={styles.features}>

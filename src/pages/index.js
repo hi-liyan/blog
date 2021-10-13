@@ -10,8 +10,10 @@ import styles from './index.module.css';
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
+  // 首页自动打字效果文案
   const contents = [
-    "Hi, Welcome to Shiguangping."
+    "Hi, Welcome to Shiguangping.",
+    "请 把 我 流 放 到 最 美 的 时 光 里 。"
   ]
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
