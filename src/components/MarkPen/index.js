@@ -24,8 +24,10 @@ class MarkPen extends Component {
     return (
       <div style={{
         display: display ? display : 'inline-block',
+        borderRadius: '5px',
         padding: '0 3px',
         backgroundColor: color ? color : '#ffedc9',
+        color: '#000',
         fontWeight: fontWeight
       }}>
         {this.props.children}

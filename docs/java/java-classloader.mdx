@@ -2,7 +2,137 @@
 id: java-classloader
 title: Java 类加载器
 ---
-
 import ShadowBox from "../../src/components/ShadowBox";
+import MarkPen from "../../src/components/MarkPen";
+import SvgBox from "../../src/components/SvgBox";
 
-<ShadowBox img='https://images.shiguangping.com/imgs/20211013095137.png' />
+
+## 一、 三种类加载器
+### 1.1 类的加载
+
+当程序要使用某个类的时候，如果该类还未被加载进Jvm的内存，则系统会通过<MarkPen>加载、连接、初始化</MarkPen>三个步骤来实现对类的初始化。
+
+- 加载
+  - 是指将class文件以二进制流读进Jvm内存的方法区，并在内存的堆区创建一个Class对象，指向方法区的class数据；
+  - 任何类被使用时，系统都会为其创建Class对象，且一个类只有一个Class对象。
+- 连接
+  - 验证，是否有正确的内部结构，并和其他类协调一致（这也是确保Jvm的运行安全）；
+  - 准备，负责为类的**静态成员**分配内存，并设置默认的初始化值；
+  - 解析，将类的二进制数据中的符号引用替换为直接引用。
+- 初始化
+
+### 1.2 类加载流程图示
+
+<SvgBox src='https://images.shiguangping.com/imgs/java-classloader.svg' />
+
+
+
+### 1.3 类的加载时机
+
+- 创建类的实例时；
+- 创建子类实例时，会先加载父类；
+- 访问类的静态成员时（静态属性、静态方法）；
+- 使用反射机制创建类或接口对应的`java.lang.Class`对象；
+- 使用`java.exe`命令运行某个主类。
+
+
+
+### 1.4 类加载器
+
+类加载器的作用：
+- 负责将class文件加载进内存，并为其生产Class对象
+
+三种类加载器：
+- Bootstrap ClassLoader 根类加载器
+- Extension ClassLoader 扩展类加载器
+- System ClassLoader 系统类加载器
+
+**· Bootstrap ClassLoader**
+
+根类加载器，也被称为“引导类加载器”，负责Java核心类库的加载，这些类库在Jdk中的`jre/lib`目录下的`rt.jar`中。如`System`、`String`等。
+
+**· Extension ClassLoader**
+
+扩展类加载器，用来加载JDK中的`jre/lib/ext`目录下的全部jar包。
+
+**· System ClassLoader**
+
+系统类加载器，有的文档也称它为"Application ClassLoader"应用类加载器。
+
+负责在JVM启动时加载来自java命令的class文件，以及classpath环境变量所指定的jar包和类路径，自定义的类均有系统类加载器加载。
+
+## 二、 双亲委派机制
+
+
+## 三、 自定义类加载器
+
+可以通过继承 `ClassLoader`这个抽象类来自定义类加载器。
+
+
+### 3.2 示例：自定义文件类加载器
+
+```java
+import java.io.*;
+
+/**
+ * 自定义的文件类加载器，加载磁盘中的class文件
+ *
+ * @author liyan
+ * @since 2021-10-13 17:46
+ */
+public class MyFileClassLoader extends ClassLoader {
+
+    private String dir;
+
+    public MyFileClassLoader(String dir) {
+        this.dir = dir;
+    }
+
+    public MyFileClassLoader(String dir, ClassLoader parent) {
+        super(parent);
+        this.dir = dir;
+    }
+
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        InputStream is = null;
+        ByteArrayOutputStream baos = null;
+        try {
+            // 全限定类型转成文件的全路径
+            String file = dir + File.separator + name.replace(".", File.separator) + ".class";
+            // 文件输入流，将class文件写入内存
+            is = new FileInputStream(file);
+            // 字节数组输出流
+            baos = new ByteArrayOutputStream();
+            // 1KB字节缓冲区
+            byte[] buf = new byte[1024];
+            int len = -1;
+            // 读取文件以字节的形式写入缓冲区
+            while ((len = is.read(buf)) != -1) {
+                // 将缓冲区的字节数据写到字节输出流中
+                baos.write(buf, 0, len);
+            }
+            // 输出流转成字节数据
+            byte[] data = baos.toByteArray();
+            // 生成Class实例
+            return defineClass(name, data, 0, data.length);
+        } catch (FileNotFoundException e) {
+            throw new ClassNotFoundException(name);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            try {
+                // 关闭流资源
+                if (is != null) {
+                    is.close();
+                }
+                if (baos != null) {
+                    baos.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+```

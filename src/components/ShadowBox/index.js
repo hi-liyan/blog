@@ -4,14 +4,15 @@ import './index.scss'
 
 /**
  * <pre>
- *   ShadowBox 带有阴影的容器
+ *   ShadowBox 带有阴影的盒子
  *
  *   属性：
- *    img: 图片地址（如果容器只显示图片，可以使用闭合标签）
+ *    title: 标题
+ *    img: 图片地址（如果只显示一张图片，可以使用自闭合标签）
  *
  *   示例：
  *    <ShadowBox img='https://images.shiguangping.com/imgs/20211013095137.png'/>
- *    <ShadowBox>Hello World</ShadowBox>
+ *    <ShadowBox title='标题'>Hello World</ShadowBox>
  * </pre>
  */
 class ShadowBox extends Component {
@@ -24,10 +25,13 @@ class ShadowBox extends Component {
     const {children, img, title} = this.props
     return (
       <div className='containerBox'>
+        {/*标题*/}
         <div className='titleBox' style={{display: title ? 'block' : 'none'}}>
           <h3>{title}</h3>
         </div>
+        {/*图片元素*/}
         <div>{img ? <img src={img} alt=""/> : null}</div>
+        {/*子元素*/}
         {children}
       </div>
     );
