@@ -29,6 +29,7 @@ module.exports = {
       items: [
         'java/jdk-install',
         'java/javase-note',
+        'java/java-classloader',
         'java/java-reflect',
         'java/java-multi-thread',
         'java/java-io',

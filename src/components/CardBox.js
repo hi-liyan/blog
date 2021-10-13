@@ -1,8 +1,8 @@
 import React, {Component} from "react";
-
+import PropTypes from 'prop-types'
 /**
  * <pre>
- *  卡片
+ *  CardBox 卡片盒子（带有阴影的盒子，和ShadowBox类似, 使用infima样式框架）
  *
  *  属性：
  *  title：标题
@@ -37,6 +37,11 @@ class CardBox extends Component {
     );
   }
 
+}
+
+CardBox.propTypes = {
+  title: PropTypes.string,
+  img: PropTypes.string,
 }
 
 export default CardBox

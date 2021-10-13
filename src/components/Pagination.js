@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 
 /**
- * <p>分页组件</p>
+ * <p>Pagination 分页组件</p>
  * <pre>
  *   api：
  *    currentPage：第几页

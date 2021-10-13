@@ -2,7 +2,7 @@ import React, {Component} from "react";
 
 /**
  * <pre>
- *  马克笔
+ *  MarkPen 马克笔
  *
  *  属性：
  *  display：展示方式

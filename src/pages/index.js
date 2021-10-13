@@ -2,20 +2,24 @@ import React from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import styles from './index.module.css';
 import StringPrinter from "../components/StringPrinter";
 import Link from '@docusaurus/Link';
+
+import styles from './index.module.css';
 
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
+  const contents = [
+    "Hi, Welcome to Shiguangping."
+  ]
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <Link to='/docs/hello'><h1 className="hero__title">{siteConfig.title}</h1></Link>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
       </div>
-      <StringPrinter/>
+      <StringPrinter contents={contents}/>
     </header>
   );
 }

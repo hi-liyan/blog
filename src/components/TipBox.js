@@ -1,19 +1,19 @@
 import React, {Component} from "react";
+import PropTypes from 'prop-types'
 
 /**
  * <pre>
- *  告示框
- *  与 :::tip ::: 类似。
+ *  TipBox 小贴士盒子（与 :::tip ::: 语法样式类似）
  *
  *  属性：
  *  type：告示框类型
  *    - tip 绿色（默认值）
  *
  *  示例：
- *  <ColorBox type='tip'>Hello World</ColorBox>
+ *  <TipBox type='tip'>Hello World</TipBox>
  * </pre>
  */
-class ColorBox extends Component {
+class TipBox extends Component {
 
   constructor(props, context) {
     super(props, context);
@@ -45,4 +45,8 @@ class ColorBox extends Component {
 
 }
 
-export default ColorBox
+TipBox.propTypes = {
+  type: PropTypes.oneOf(['tip'])
+}
+
+export default TipBox

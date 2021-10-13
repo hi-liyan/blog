@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import PropTypes from 'prop-types'
 import './index.scss'
 
 /**
@@ -28,6 +29,10 @@ class ShadowBox extends Component {
       </div>
     );
   }
+}
+
+ShadowBox.propTypes = {
+  img: PropTypes.string
 }
 
 export default ShadowBox
