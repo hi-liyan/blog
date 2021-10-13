@@ -30,6 +30,7 @@ class TipBox extends Component {
   }
 
   render() {
+    const {children} = this.props
     return (
       <div style={{
         backgroundColor: this.getColor(),
@@ -38,7 +39,7 @@ class TipBox extends Component {
         borderRadius: '7px',
         padding: '20px 15px',
       }}>
-        {this.props.children}
+        {children}
       </div>
     );
   }

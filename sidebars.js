@@ -91,6 +91,7 @@ module.exports = {
       type: 'category',
       label: '其它',
       items: [
+        'skill/idea-view-openjdk-source-code',
         'skill/java-learning-path',
         'skill/java-learning-method',
         'skill/centos-install-docker',
