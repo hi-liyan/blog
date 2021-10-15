@@ -9,6 +9,7 @@ import './index.scss'
  *   属性：
  *    title: 标题
  *    img: 图片地址（如果只显示一张图片，可以使用自闭合标签）
+ *    width: 宽度
  *
  *   示例：
  *    <ShadowBox img='https://images.shiguangping.com/imgs/20211013095137.png'/>
@@ -22,9 +23,9 @@ class ShadowBox extends Component {
   }
 
   render() {
-    const {children, img, title} = this.props
+    const {children, img, title, width} = this.props
     return (
-      <div className='containerBox'>
+      <div className='containerBox' style={{width: width}}>
         {/*标题*/}
         <div className='titleBox' style={{display: title ? 'block' : 'none'}}>
           <h3>{title}</h3>
@@ -40,7 +41,8 @@ class ShadowBox extends Component {
 
 ShadowBox.propTypes = {
   img: PropTypes.string,
-  title: PropTypes.string
+  title: PropTypes.string,
+  width: PropTypes.string
 }
 
 export default ShadowBox

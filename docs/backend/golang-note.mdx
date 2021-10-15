@@ -2,10 +2,14 @@
 id: golang-note
 title: Go 语法
 ---
+import TipBox from "../../src/components/TipBox";
+import ShadowBox from "../../src/components/ShadowBox";
+import MarkPen from "../../src/components/MarkPen";
 
 今天是圣诞节，开始学习Go语言，我认为它非常有潜力。
 
-## 什么是Go语言？
+## 1. 介绍
+### 1.1 什么是Go语言？
 
 - Google开源的语言
 - 编译型语言
@@ -13,7 +17,7 @@ title: Go 语法
 
 
 
-## Go语言特点
+### 1.2 Go语言特点
 
 - 语法简介
 - 开发效率高
@@ -21,7 +25,7 @@ title: Go 语法
 
 
 
-## Go开发环境安装
+## 2. Go开发环境安装
 
 官方下载地址：[https://golang.org/](https://golang.org/)
 
@@ -37,7 +41,11 @@ go version
 
 
 
-## 第一个Go程序
+## 3. 认识Go程序
+
+### 3.1 main函数
+
+和其它后端语言一样，main函数是程序执行的入口。
 
 ```go
 package main
@@ -53,17 +61,19 @@ func main() {
 
 
 
-### 编译
+### 3.2 编译
 
-终端使用`go build`命令将.go文件编译可执行文件。
+<TipBox>go build</TipBox>
 
-例如Mac平台，终端进入.go文件所在目录，执行`go build`命令，随后会在当前目录下生成名为`helloworld`的可执行文件。`./helloworld`运行文件，控制台打印`Hello World`：
+在终端使用`go build`命令将.go文件编译成当前平台的可执行文件。
 
-![image-20201226010522776](https://images.shiguangping.com/imgs/20201226010523.png)
+例如在 MacOS 中，终端进入.go文件所在目录，执行`go build`命令，编译器会将 .go 源文件编译成 MacOS 上的可执行文件。`./filename`执行可执行文件，控制台打印`Hello World`：
+
+<ShadowBox img='https://images.shiguangping.com/imgs/20201226010523.png' width='80%'/>
 
 `go build -o 文件名`：自定义编译的文件名：
 
-![image-20201226011221822](https://images.shiguangping.com/imgs/20201226011221.png)
+<ShadowBox img='https://images.shiguangping.com/imgs/20201226011221.png' width='80%' />
 
 
 
@@ -71,7 +81,7 @@ func main() {
 
 默认`go build`编译的是当前操作系统的可执行文件，如果要编译其他平台的可执行文件需要指定目标操作系统的平台和处理器架构：
 
-*Windows下编译Linux平台的64位可执行程序：*
+**Windows下编译Linux平台的64位可执行程序：**
 
 ```bash
 SET CGO_ENABLED=0 //禁用CGO
@@ -84,7 +94,7 @@ go build
 
 
 
-*Mac下编译Linux和Windows平台的64位可执行程序：*
+**Mac下编译Linux和Windows平台的64位可执行程序：**
 
 ```bash
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
@@ -93,7 +103,7 @@ CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build
 
 
 
-*Linux下编译Mac和Windows平台64位可执行程序：*
+**Linux下编译Mac和Windows平台64位可执行程序：**
 
 ```bash
 CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build
@@ -102,7 +112,7 @@ CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build
 
 
 
-*Windows下编译Mac平台64位可执行程序：*
+**Windows下编译Mac平台64位可执行程序：**
 
 ```bash
 SET CGO_ENABLED=0 
@@ -113,15 +123,17 @@ go build
 
 
 
-## 标识符和关键字
+## 4. 标识符和关键字
 
-### 标识符
+### 4.1 标识符
 
-在编程语言中，标识符就是程序员定义的具有特殊意义的词，如变量名，常量名，函数名等等。Go语言中的标识符由**字母、数字、下划线(_)**组成，并且只能以字母或下划线开头。如：`abc`、`_abc`、`_123`等。
+在编程语言中，标识符就是程序员可以定义的具有特殊意义的词，如变量名，常量名，函数名等等。
+
+Go语言中的标识符由<MarkPen>字母、数字、下划线(_)</MarkPen>组成，并且只能以<MarkPen color='null' underline>字母或下划线</MarkPen>开头。如：`abc`、`_abc`、`_123`等。
 
 
 
-### 关键字
+### 4.2 关键字
 
 关键字是指编程语言中预先定义好的具有特殊含义的词，不能把关键字和保留字用作标识符。
 
@@ -139,7 +151,7 @@ Go语言中共有25个关键字，按作用划分3类：包管理、程序实体
 	for		go		goto		if		range	return	select		switch
 ```
 
-Go语言中还有37个保留字。
+Go语言中还有37个保留字。（保留字是在语言中还未使用的，但是不能作为标识符使用）
 
 ```go
 Constants:
@@ -158,11 +170,11 @@ Functions:
 
 
 
-## 变量
+## 5. 变量
 
-### 变量的来历
+### 5.1 变量的来历
 
-程序在运行时，数据都是存储在内存当中。我们想要在代码中操作某个数据时需要到内存中找到这个数据，但是如果我们直接在代码中通过内存地址去操作数据是非常糟糕的，这使得代码的可读性变得非常差并且容易出错。所以我们就利用变量将数据的内存地址保存起来，以后我们直接通过这个变量就能找到内存上对应的数据了。
+程序在运行时，数据都是存储在内存中的。我们想要在代码中操作某个数据时需要到内存中找到这个数据，但是如果我们直接在代码中通过内存地址去操作数据是非常糟糕的，这使得代码的可读性变得非常差并且容易出错。所以我们就利用变量将数据的内存地址保存起来，以后我们直接通过这个变量就能找到内存上对应的数据了。
 
 
 

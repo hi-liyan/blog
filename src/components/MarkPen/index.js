@@ -8,6 +8,7 @@ import React, {Component} from "react";
  *  display：展示方式
  *  color：马克杯颜色
  *  fontWeight：字体粗细
+ *  underline: 文字下划线（red）
  *
  *  示例：
  *  <MarkPen color='#000' fontWeight='bold'>Hello World</MarkPen>
@@ -20,7 +21,7 @@ class MarkPen extends Component {
   }
 
   render() {
-    const {display, color, fontWeight} = this.props
+    const {display, color, fontWeight, underline} = this.props
     return (
       <div style={{
         display: display ? display : 'inline-block',
@@ -30,7 +31,9 @@ class MarkPen extends Component {
         color: '#000',
         fontWeight: fontWeight
       }}>
-        {this.props.children}
+        <span style={{
+          borderBottom: underline ? '1px solid #f00' : null
+        }}>{this.props.children}</span>
       </div>
     );
   }
