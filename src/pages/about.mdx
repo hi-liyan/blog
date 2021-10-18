@@ -2,8 +2,18 @@
 id: about
 title: 关于
 ---
-
 import {Image} from "rebass";
+import {calThePastToToday, calThePastToToday_1} from "../utils/DateUtil";
+
+export const CodeDays = () => {
+  // 从事开发天数显示
+  return (
+    <span style={{
+      color: '#ca228d',
+      fontWeight: 'bolder'
+    }}>{calThePastToToday_1("2020-08-17")}</span>
+  )
+}
 
 :::tip
 欢迎来到我的小站，很高兴遇见你！🤝
@@ -26,6 +36,8 @@ import {Image} from "rebass";
 大学读的移动通信技术专业，在大连从事了多年移动网络优化工作。
 
 后转行Java开发，在程序员的道路上持续耕耘。
+
+从事开发距今约 <CodeDays /> 。
 
 ## ⛹ 标签
 
