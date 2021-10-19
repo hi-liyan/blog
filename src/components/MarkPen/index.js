@@ -27,7 +27,7 @@ class MarkPen extends Component {
         display: display ? display : 'inline-block',
         borderRadius: '5px',
         padding: '0 3px',
-        backgroundColor: color ? color : '#ffedc9',
+        backgroundColor: color ? color : (underline ? 'null' : '#ffedc9'),
         color: '#000',
         fontWeight: fontWeight
       }}>
