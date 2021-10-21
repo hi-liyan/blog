@@ -56,7 +56,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             type: 'doc',
             docId: 'hello',
             position: 'right',
-            label: '文档',
+            label: '手记',
           },
           {to: '/blog', label: '博客', position: 'right'},
           {to: '/movies-record', label: '观影记录', position: 'right'},
@@ -74,7 +74,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             title: 'Docs',
             items: [
               {
-                label: '文档',
+                label: '手记',
                 to: '/docs/hello',
               },
               {

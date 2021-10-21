@@ -37,6 +37,7 @@ module.exports = {
         'java/java-lambda',
         'java/design-pattern',
         'java/springboot-application-context-initializer',
+        'java/springboot-application-event-listener',
         'java/springboot-auto-configuration',
         'java/spring-xml-ioc',
         'java/jsr303',
