@@ -24,7 +24,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         // For Docs using Chinese, The `language` is recommended to set to:
         // When applying `zh` in language, please install `nodejieba` in your project.
         language: ["en", "zh"],
-        indexPages: true
+        indexPages: false
       },
     ],
   ],

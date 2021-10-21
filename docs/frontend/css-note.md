@@ -1,7 +1,6 @@
 ---
 id: css-note
 title: CSS 层叠样式表
-sidebarDepth: 3
 ---
 
 ## CSS 思维导图
