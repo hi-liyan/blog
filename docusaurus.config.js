@@ -16,6 +16,16 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
   plugins: [
     'docusaurus-plugin-sass',
+    [
+      require.resolve("@easyops-cn/docusaurus-search-local"),
+      {
+        // `hashed` is recommended as long-term-cache of index file is possible.
+        hashed: true,
+        // For Docs using Chinese, The `language` is recommended to set to:
+        // When applying `zh` in language, please install `nodejieba` in your project.
+        language: ["en", "zh"],
+      },
+    ],
   ],
 
   presets: [
@@ -132,13 +142,6 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
         additionalLanguages: ['dart', 'java', 'groovy'],
-      },
-      algolia: {
-        appId: '77LA21PZM1',
-        apiKey: '708f8c49031ab61d026cfcf06a9a5557',
-        indexName: 'docsearch_query_suggestions',
-        contextualSearch: true,
-        searchParameters: {},
       },
     }),
 
