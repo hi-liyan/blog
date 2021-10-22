@@ -60,7 +60,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         title: '时光瓶',
         logo: {
           alt: 'My Site Logo',
-          src: 'https://notes.shiguangping.com/images/%E6%A0%91%E5%8F%B6_leaves.png',
+          src: 'https://images.shiguangping.com/imgs/20211022190757.png',
         },
         items: [
           {
