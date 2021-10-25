@@ -1,0 +1,71 @@
+---
+id: uml
+title: 认识 UML
+---
+import SvgBox from "../../src/components/SvgBox";
+
+## 1. 认识 UML
+
+UML 类图中常见的几种关系：
+
+## 1.1 泛化 (Generalization)
+
+泛化 (Generalization) 是一种继承关系。
+
+箭头：带三角箭头的实线，箭头指向父类。
+
+<SvgBox src='https://images.shiguangping.com//imgs/Generalization.svg' />
+
+## 1.2 实现 (Realization)
+
+实现 (Realization) 是类与接口的关系，表示类是接口所有属性和行为的实现。
+
+箭头：带三角箭头的虚线，箭头指向接口。
+
+<SvgBox src='https://images.shiguangping.com//imgs/Realization.svg' />
+
+## 1.3 关联 (Association)
+
+关联 (Association) 表示拥有关系，它使一个类可以知道另一个类的属性和方法。这种拥有关系可以是单向的，也可以是双向的。
+
+体现：成员变量。
+
+箭头：带普通箭头的实线，箭头指向被拥有者。
+
+<SvgBox src='https://images.shiguangping.com//imgs/Association.svg' />
+
+## 1.4 聚合 (Aggregation)
+
+聚合 (Aggregation) 是整体与部分的关系，且部分离开了整体仍可以单独存在。聚合是关联关系的一种，是一种强的关联关系。
+
+体现：成员变量
+
+箭头：一头是空心菱形一头是普通箭头的实线，菱形指向整体，箭头指向部分。
+
+<SvgBox src='https://images.shiguangping.com//imgs/Aggregation.svg' />
+
+## 1.5 组合 (Composition)
+
+组合 (Composition) 是整体与部分的关系，但部分不能离开整体单独存在，整体控制的部分的生命周期。组合是关联关系的一种，是比聚合更强的关联关系。
+
+体现：成员变量
+
+箭头：一头是实心菱形一头是普通箭头的实线，菱形指向整体，箭头指向部分。
+
+<SvgBox src='https://images.shiguangping.com//imgs/Composition.svg' />
+
+## 1.6 依赖 (Dependency)
+
+依赖 (Dependency) 是一种使用的关系，即一个类的实现需要另一个类的协助，对于两个相对独立的对象，当一个对象负责构造另一个对象的实例，或者依赖另一个对象的服务时，这两个对象之间主要体现为依赖关系。
+
+体现：方法形参依赖另一个类、局部变量中依赖另一个类、引用了另一个类中的静态变量
+
+箭头：带普通箭头的虚线，箭头指向被依赖的类。
+
+<SvgBox src='https://images.shiguangping.com//imgs/Dependency.svg' />
+
+:::tip
+各种关系的强弱顺序：
+
+泛化 = 实现 > 组合 > 聚合 > 关联 > 依赖
+:::

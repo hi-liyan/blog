@@ -35,6 +35,7 @@ module.exports = {
         'java/java-io',
         'java/java-stream',
         'java/java-lambda',
+        'java/uml',
         'java/design-pattern',
         'java/springboot-application-context-initializer',
         'java/springboot-application-event-listener',

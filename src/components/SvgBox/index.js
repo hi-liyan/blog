@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types'
+import './index.scss'
 
 /**
  * <pre>
@@ -24,7 +25,9 @@ export default class SvgBox extends Component{
     return (
       <React.Fragment>
         {/*svg元素*/}
-        <div>{src ? <embed src={src} type="image/svg+xml" pluginspage="http://www.adobe.com/svg/viewer/install/" /> : null}</div>
+        <div>
+          {src ? <embed src={src} type="image/svg+xml" pluginspage="http://www.adobe.com/svg/viewer/install/" /> : null}
+        </div>
       </React.Fragment>
     );
   }
