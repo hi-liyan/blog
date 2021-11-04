@@ -38,13 +38,13 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
           sidebarCollapsible: true, //默认折叠
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/facebook/docusaurus/edit/main/website/',
+          editUrl: 'https://git.shiguangping.com/git_admin/shiguangping-blog/src/branch/master',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/main/website/blog/',
+            'https://git.shiguangping.com/git_admin/shiguangping-blog/src/branch/master',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

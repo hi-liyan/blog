@@ -17,7 +17,7 @@ export default class ImgBox extends Component {
   }
 
   render() {
-    const {src, width='50%'} = this.props
+    const {src, width='70%'} = this.props
     return (
       <div style={{marginBottom: 20}}>
         <Image src={src} sx={{
