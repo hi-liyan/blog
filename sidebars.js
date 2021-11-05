@@ -110,6 +110,8 @@ module.exports = {
         'skill/redis-story',
         'skill/redis-story-persistence',
         'skill/session-cookie-jwt',
+        'skill/ssh-login',
+        'skill/portainer-standalone',
         'skill/vim'
       ]
     },
