@@ -8,7 +8,8 @@ import PropTypes from 'prop-types'
  *
  *   api：
  *     src: 照片源
- *     width: 照片宽度，默认值 50%
+ *     width: 照片宽度，默认值 70%
+ *     inline: 行内标签
  * </pre>
  */
 export default class ImgBox extends Component {
@@ -17,13 +18,13 @@ export default class ImgBox extends Component {
   }
 
   render() {
-    const {src, width='70%'} = this.props
+    const {src, width='70%', inline=false} = this.props
     return (
-      <div style={{marginBottom: 20}}>
+      <div style={{display: inline ? 'inline' : 'block'}}>
         <Image src={src} sx={{
           width: width,
           borderRadius: 8,
-        }}/>
+        }} style={{marginRight: 20, marginBottom: 20}}/>
       </div>
     );
   }
@@ -31,5 +32,6 @@ export default class ImgBox extends Component {
 
 ImgBox.proptypes = {
   src: PropTypes.string,
-  width: PropTypes.string
+  width: PropTypes.string,
+  inline: PropTypes.bool
 }
