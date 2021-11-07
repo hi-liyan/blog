@@ -1,0 +1,189 @@
+---
+id: java-nio
+title: Java nio 手记
+---
+import TipBox from "../../src/components/TipBox";
+import ImgBox from "../../src/components/ImgBox";
+
+<TipBox>
+  NIO 即 non-blocking io ，非阻塞IO。
+</TipBox>
+
+## 1. nio 的三大组件
+
+nio 的三大核心组件：
+
+- Channel 管道
+- Buffer 缓冲区
+- Selector 选择器
+
+<br/>
+
+### 1.1 Channel
+
+`Channel` 是数据传输的双向通道，既可以从外部将数据读入（read）到内存中，也可以从内存写出（write）数据到外部。
+
+常见的 Channel 有：
+
+- FileChannel
+- DatagramChannel
+- SocketChannel
+- ServerSocketChannel
+
+<br/>
+
+### 1.2 Buffer
+
+`Buffer` 内存缓冲区，用来暂存从 Channel 中读入的数据，或者是将要写出到外部的数据。
+
+常见的 Buffer 有：
+
+- ByteBuffer 字节缓冲区（抽象类），实现：
+
+  - MappedByteBuffer
+  - DirectByteBuffer `通过 ByteBuffer 的静态方法 allocateDirect() 获取，使用直接内存`
+  - HeapByteBuffer `通过 ByteBuffer 的静态方法 allocate() 获取，使用Jvm的堆内存`
+
+- ShortBuffer
+- IntBuffer
+- LongBuffer
+- FloatBuffer
+- DoubleBuffer
+- CharBuffer
+
+<br/>
+
+### 1.3 Selector
+
+用来管理多个 Channel，获取 Channel 上发生的事件。Channel 工作在非阻塞模式下，不会让线程吊死在一个 Channel 上。适合连接数多，但流量低的场景(low traffic)。
+
+<br/>
+
+## 2. ByteBuffer 字节缓冲区
+
+### 2.1 基本使用
+
+缓冲区手绘：
+
+<ImgBox src='https://images.shiguangping.com//imgs/ByteBuffer.jpg' />
+
+Buffer 有三个重要的属性：
+
+- capacity 缓冲区容量（大小）
+- limit
+- position 当前指针
+
+如图所示，在初始化一个缓冲区后，指针（position）默认指向起始位置 0，limit = capacity = 缓冲区的大小。
+
+当像缓冲区读入数据时，读入一次，指针 +1。
+
+看下面一段代码，是从 text.txt 文本文件中读取数据到缓冲区。
+
+```java
+public static void main(String[] args) {
+    // 通过文件输入流获取 FileChannel 对象，读取 text.txt 中的内容。
+    // 这里使用了 try-with-resource 的形式，用来自动关闭 channel 释放资源。
+    try (FileChannel channel = new FileInputStream("text.txt").getChannel()) {
+        // 创建一个5个字节大小的缓冲区
+        ByteBuffer buffer = ByteBuffer.allocate(5);
+        // 通过 Channel 的 read() 方法将数据读入到缓冲区中
+        while (channel.read(buffer) != -1){
+            // 切换读模式
+            buffer.flip();
+            // 遍历打印每个字节
+            while (buffer.hasRemaining()){
+                char c = (char) buffer.get();
+                System.out.println(c);
+            }
+            // 切换写模式
+            buffer.clear();
+        }
+    }
+}
+```
+这里面包含两个需要知道的方法，切换读模式和切换写模式。
+
+```java
+// 切换读模式
+buffer.flip();
+```
+
+切换读模式从方法名上可以看出，是翻转的意思，翻转了什么呢？是改变了缓冲区的指针和limit，看下方法的源代码：
+
+```java
+public final Buffer flip() {
+    limit = position;
+    position = 0;
+    mark = -1;
+    return this;
+}
+```
+
+上手绘图：
+
+<ImgBox src='https://images.shiguangping.com//imgs/buffer-flip.jpg' />
+
+切换读模式后，指针重新指向起始位置，我们可以从缓冲区的起始位置开始读取，每读取一次指针加1。如果没有切换读模式，指针指向的是缓冲区最后一个数据的下一个索引，所以是无法读取数据的。
+
+切换到写模式：
+```java
+buffer.clear();
+```
+
+源代码：
+
+```java
+public final Buffer clear() {
+    position = 0;
+    limit = capacity;
+    mark = -1;
+    return this;
+}
+```
+
+切换到写模式之后，指针重新指向缓冲区的起始位置，limit = capacity，写入时开始从缓冲区的起始位置写入，缓冲区内的数据将被覆盖掉。
+
+假设缓冲区中存在上次未读完的数据，即切换到写模式之前，position < limit，说明有数据未读，此时通过 `clear()` 切换写模式后再次写入数据，可能会把上一次未读的数据覆盖掉。如果不想覆盖掉上一次未读的数据，可以使用 `compact()` 方法切换写模式。
+
+`compact()` 方法是将上次未读的数据拷贝到缓冲区起始，指针指向到拷贝后的最后一个数据的下一个索引，再次写入数据时不会覆盖掉之前未读完的数据。
+
+<br/>
+
+### 2.2 与 String 的互相转换
+
+#### String to ByteBuffer
+
+方式一，将 String 转为字节数组，再调用 ByteBuffer 的 `put(byte[] bytes)` 方法，传入字节数组。
+
+```java
+ByteBuffer buffer1 = ByteBuffer.allocate(10);
+buffer1.put("Hello".getBytes());
+```
+
+<br/>
+
+方式二：`StandardCharsets.UTF_8.encode()`，注意：获取到 buffer 处于读模式。
+```java
+ByteBuffer buffer2 = StandardCharsets.UTF_8.encode("Hello");
+```
+
+<br/>
+
+方式三：`ByteBuffer.wrap(byte[] array)` 方法，注意：获取到 buffer 处于读模式。
+```java
+ByteBuffer buffer3 = ByteBuffer.wrap("Hello".getBytes());
+```
+
+<br/>
+
+#### ByteBuffer to String
+
+传入的 buffer 需要处于读模式。
+
+```java
+String s  = StandardCharsets.UTF_8.decode(buffer).toString();
+```
+
+<br/>
+
+### 2.3 分散读和集中写
