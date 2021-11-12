@@ -33,6 +33,7 @@ module.exports = {
         'java/java-reflect',
         'java/java-multi-thread',
         'java/java-io',
+        'java/java-nio',
         'java/java-stream',
         'java/java-lambda',
         'java/uml',
