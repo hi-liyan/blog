@@ -15,7 +15,7 @@ nio 的三大核心组件：
 
 - Channel 管道
 - Buffer 缓冲区
-- Selector 选择器
+- Selector 多路复用器
 
 <br/>
 
@@ -29,6 +29,8 @@ nio 的三大核心组件：
 - DatagramChannel
 - SocketChannel
 - ServerSocketChannel
+
+`SocketChannel` 和 `ServerSocketChannel` 应用于网络编程中。
 
 <br/>
 
@@ -55,7 +57,7 @@ nio 的三大核心组件：
 
 ### 1.3 Selector
 
-用来管理多个 Channel，获取 Channel 上发生的事件。Channel 工作在非阻塞模式下，不会让线程吊死在一个 Channel 上。适合连接数多，但流量低的场景(low traffic)。
+多路复用器，用来管理多个 Channel，监听 Channel 上发生的事件。Channel 工作在非阻塞模式下，不会让线程吊死在一个 Channel 上。适合连接数多，但流量低的场景(low traffic)。
 
 <br/>
 
@@ -187,3 +189,393 @@ String s  = StandardCharsets.UTF_8.decode(buffer).toString();
 <br/>
 
 ### 2.3 分散读和集中写
+
+Java nio 支持 Scatter Reads（分散读） 和 Gather Writers（集中写），即可以将数据读入到不同的 buffer 中，或者将多个 buffer 中的数据集中写出。
+
+`ScatteringByteChannel` 接口里的 read() 方法支持将数据读入到多个 buffer 中；
+
+`GatheringByteChannel` 接口里的 write() 方法支持将多个 buffer 中的数据写出到外部。
+
+**重点是 要理解分散读和集中写的思想。**
+
+
+分散读：
+```java
+/**
+ * Scattering Reads 分散读
+ * @author liyan
+ * @since 2021-11-02 15:45
+ */
+public class ScatteringReadsDemo {
+    public static void main(String[] args) {
+        // try-with-resource 写法，创建一个 FileChannel 对象，读取 text.txt，文本：HelloWorld
+        try (FileChannel channel = new RandomAccessFile("text.txt", "r").getChannel()) {
+            ByteBuffer bbf1 = ByteBuffer.allocate(3);
+            ByteBuffer bbf2 = ByteBuffer.allocate(3);
+            ByteBuffer bbf3 = ByteBuffer.allocate(5);
+            channel.read(new ByteBuffer[]{bbf1, bbf2, bbf3}); // read()方法，支持将数据读入到多个 buffer 中
+            bbf1.flip(); // 切换读模式
+            bbf2.flip();
+            bbf3.flip();
+            System.out.println(StandardCharsets.UTF_8.decode(bbf1)); // Hel
+            System.out.println(StandardCharsets.UTF_8.decode(bbf2)); // loW
+            System.out.println(StandardCharsets.UTF_8.decode(bbf3)); // orld
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+集中写：
+```java
+/**
+ * Gathering Writes 集中写
+ * @author liyan
+ * @since 2021-11-02 16:39
+ */
+public class GatheringWritesDemo {
+
+    public static void main(String[] args) {
+        ByteBuffer bbf1 = StandardCharsets.UTF_8.encode("Hello ");
+        ByteBuffer bbf2 = StandardCharsets.UTF_8.encode("Netty ");
+        ByteBuffer bbf3 = StandardCharsets.UTF_8.encode("~");
+
+        try (FileChannel channel = new RandomAccessFile("text1.txt", "rw").getChannel()) {
+            channel.write(new ByteBuffer[]{bbf1, bbf2, bbf3}); // write() 方法，可以将多个buffer中的数据集中写出到文件中
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### 2.4 黏包和半包
+
+所谓黏包，是在网络传输过程中为了提高网络传输的效率，将多个数据包黏在一起一次传输，导致接收时多个数据黏在一起。
+
+半包一般是由于服务器缓冲区大小不足导致的数据被截断。
+
+<br/>
+
+## 3. 文件编程
+
+### 3.1 FileChannel
+
+`FileChannel` 是用来操作文件的 channel，它工作在阻塞模式下。
+
+FileChannel 的创建方式：
+
+1. 通过 FileInputStream 创建，这种方式创建的 FileChannel 只能读入数据。
+```java
+FileChannel channel = new FileInputStream("text.txt").getChannel();
+```
+
+<br/>
+
+2. 通过 FileOutputStream 创建，这种方式创建的 FileChannel 只能写出数据。
+```java
+FileChannel channel = new FileOutputStream("text.txt").getChannel();
+```
+
+<br/>
+
+3. 通过 RandomAccessFile 创建，这种方式创建的 FileChannel 根据构建 RandomAccessFile 时指定的读写模式决定可读可写。
+```java
+FileChannel channel = new RandomAccessFile("text1.txt", "rw").getChannel();
+```
+
+<br/>
+
+Channel 之间传输数据：
+
+使用 FileChannel 的 transferTo() 方法将一个通道中的数据传输到另一个通道中。
+
+transferTo() 方法的三个参数：
+- position 源文件传输的起始位置，从哪开始传
+- count 传输数据的字节数，从起始位置开始要传多少数据
+- target 目标 channel
+
+方法返回值是本次传输的字节数。
+
+```java
+public abstract long transferTo(long position, long count, WritableByteChannel target) throws IOException;
+```
+
+<br/>
+
+如果需要拷贝文件，可以使用 transferTo() 方法，它的底层使用了操作系统的零拷贝进行优化，效率比较高。但一次只能传输 2GB 大小的数据，传输大文件时要做处理。
+
+示例代码：
+
+```java
+/**
+ * @author liyan
+ * @since 2021-11-02 17:37
+ */
+public class FileChannelTransferToDemo {
+
+    public static void main(String[] args) {
+        try (
+                FileChannel from = new FileInputStream("from.txt").getChannel();
+                FileChannel to = new FileOutputStream("to.txt").getChannel()
+        ) {
+            // transferTo() 一次只能传输2G数据，如果传输的文件大于2G，需要多次传输
+            long size = from.size(); // 源文件大小
+            for (long left = size; left > 0; ) { // left 定义源文件的剩余待传大小，初始值等于源文件的初始大小
+                System.out.printf("当前文件大小：%s, 剩余待传：%s\n", size, left);
+                // left = left - 本次传输的数据量
+                // size - left 表示传输的起始指针，为了多次传输时，接着上次的位置
+                left -= from.transferTo((size - left), left, to); // transferTo() 的传输效率高，底层使用了操作系统的零拷贝进行优化，transferTo传输上限：一次传2g
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+<br/>
+
+### 3.2 Path 和 Paths
+
+`Path` 和 `Paths` 是在 Java 1.7 时引入的，可用于在文件系统中定位文件的对象，它通常表示依赖于系统的文件路径。
+
+Path 用来表示**文件**或者**目录**的路径，Paths 是一个工具类，用来创建 Path 对象。
+
+<br/>
+
+Paths 中只包含两个 get 方法用来创建 Path 对象：
+
+字符串路径：
+```java
+public static Path get(String first, String... more) {
+        return FileSystems.getDefault().getPath(first, more);
+    }
+```
+
+<br/>
+
+URI对象：
+```java
+public static Path get(URI uri) {
+  // ...
+}
+```
+
+<br/>
+
+### 3.3 Files
+
+Files 是用来操作文件和目录的类库，常用的 Api：
+
+1. 判断文件、目录是否存在。
+```java
+static boolean exists(Path path, LinkOption... options)
+```
+
+<br/>
+
+2. 创建目录，只能创建一级目录。
+```java
+static Path createDirectory(Path dir, FileAttribute<?>... attrs)
+```
+
+<br/>
+
+3. 创建多级目录。
+```java
+static Path createDirectories(Path dir, FileAttribute<?>... attrs)
+```
+
+<br/>
+
+4. 拷贝文件，效率和 FileChannel 的 transferTo() 方法效率差不多，但底层实现不同。如果目标文件已经存在，则会抛出 `FileAlreadyExistsException` 异常。如果希望覆盖掉目标，可以在方法第三个参数传入 `StandardCopyOption.REPLACE_EXISTING`。
+```java
+static Path copy(Path source, Path target, CopyOption... options)
+```
+
+<br/>
+
+5. 移动文件。
+```java
+static Path move(Path source, Path target, CopyOption... options)
+```
+
+<br/>
+
+6. 删除文件和空目录（文件或目录不存在会抛异常，删除非空目录时会抛异常）。
+```java
+static void delete(Path path)
+```
+
+<br/>
+
+7. 如果存在要删除的文件或者目录则执行删除操作。
+```java
+static boolean deleteIfExists(Path path)
+```
+
+<br/>
+
+8. 遍历目录和文件。
+```java
+static Path walkFileTree(Path start, FileVisitor<? super Path> visitor)
+```
+
+<br/>
+
+代码：（利用 walkFileTree() 遍历目录并复制）
+
+```java
+/**
+ * 利用 walkFileTree 遍历目录并复制
+ * @author liyan
+ * @since 2021-11-18 16:40
+ */
+public class WalkFileTreeDemo1 {
+
+    public static void main(String[] args) throws IOException {
+        String source = "C:\\Users\\liyan\\Downloads\\";
+        String target = "D:\\";
+        Path sourcePath = Paths.get(source, "redis-6.2.6");
+
+        Files.walkFileTree(sourcePath, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                Path to = Paths.get(dir.toString().replace(source, target));
+                Files.copy(dir, to);
+                return super.preVisitDirectory(dir, attrs);
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Path to = Paths.get(file.toString().replace(source, target));
+                Files.copy(file, to);
+                return super.visitFile(file, attrs);
+            }
+        });
+    }
+}
+```
+
+<br/>
+
+## 4. 网络编程
+
+### 4.1 ServerSocketChannel
+
+ServerSocketChannel 是面向流的侦听套接字的可选通道，用来监听 Socket。
+
+常用Api：
+
+1. 创建 ServerSocketChannel 对象。
+```java
+public static ServerSocketChannel open() throws IOException {
+    return SelectorProvider.provider().openServerSocketChannel();
+}
+```
+
+<br/>
+
+2. 将通道的 Socket 绑定到本地地址，并将 Socket 配置为侦听连接。
+```java
+public final ServerSocketChannel bind(SocketAddress local)
+        throws IOException
+{
+    return bind(local, 0);
+}
+```
+
+<br/>
+
+3. 接受 Socket 连接，并返回一个 SocketChannel 对象。（在阻塞模式下，在没有连接时会阻塞当前线程）
+```java
+public abstract SocketChannel accept() throws IOException;
+```
+
+<br/>
+
+4. 设置 channel 是否工作在阻塞模式。（通道默认是工作在阻塞模式下的，通过该方法传入 false 可以设置通道为非阻塞模式）
+```java
+public final SelectableChannel configureBlocking(boolean block)
+        throws IOException
+{
+    // ...
+}
+```
+
+<br/>
+
+### 4.2 SocketChannel
+
+SocketChannel 是面向流连接套接字的可选通道。
+
+常用Api：
+
+1. 将通道内的数据读入到 buffer 中。（在没有可读数据时）
+```java
+public abstract int read(ByteBuffer dst) throws IOException;
+```
+
+<br/>
+
+2. 设置 channel 是否工作在阻塞模式。（通道默认是工作在阻塞模式下的，通过该方法传入 false 可以设置通道为非阻塞模式）
+```java
+public final SelectableChannel configureBlocking(boolean block)
+        throws IOException
+{
+    // ...
+}
+```
+
+<br/>
+
+### 4.3 阻塞IO
+
+阻塞模式下，`accept()` 和 `read()` 这些阻塞方法都会导致当前线程被阻塞，虽然阻塞的线程不会占用 CPU，但单线程情况下，阻塞方法之间相互影响，几乎没办法同时工作，尤其是有多个连接时，一般都需要多线程的支持。
+
+测试代码：（服务端）
+
+```java
+/**
+ * 阻塞IO 服务端
+ * @author liyan
+ * @since 2021-11-18 17:48
+ */
+public class Server {
+
+    public static void main(String[] args) throws IOException {
+        // 通过 open() 方法，创建一个 ServerSocketChannel
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        // 将 Socket 绑定到本地 8080 端口并监听
+        ssc.bind(new InetSocketAddress(8080));
+
+        // 存放 SocketChannel 的集合，处理多个连接
+        List<SocketChannel> channels = new ArrayList<>();
+        while (true) {
+            System.out.println("等待连接...");
+            SocketChannel sc = ssc.accept(); // accept() 是阻塞方法，会阻塞线程，当有连接请求时线程会继续执行
+            System.out.printf("建立连接：%s\n", sc);
+            channels.add(sc);
+            System.out.printf("当前集合 size: %s，元素：%s\n", channels.size(), channels);
+
+            ByteBuffer buffer = ByteBuffer.allocate(16);
+            for (SocketChannel channel : channels) { // 遍历集合中的所有 SocketChannel，当有可读数据时读入到 buffer
+                System.out.printf("当前遍历的channel：%s\n", channel);
+                channel.read(buffer); // read() 也是阻塞方法，当当前 channel 有可读数据时才会唤醒线程继续执行
+                buffer.flip();
+                System.out.println(StandardCharsets.UTF_8.decode(buffer));
+                buffer.clear();
+            }
+        }
+    }
+}
+```
+
+<br/>
+
+### 4.4 非阻塞IO
+
+
+

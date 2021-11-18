@@ -1,6 +1,6 @@
 ---
 id: java-io
-title: Java I/O流
+title: Java io 手记
 ---
 
 # 认识“流”
