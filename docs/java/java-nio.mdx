@@ -805,3 +805,160 @@ public class Server {
 
 <br/>
 
+
+### 4.6 配合多线程
+
+单线程模式引入多路复用器 Selector 可以同时管理多个 Channel，处理多个事件，但如果其中某一个事件处理时间较长，还是会影响其它事件的处理。并且对于多核 CPU 来说，也是白白浪费资源。
+
+为了有效利用起 CPU 的资源，可以使用多个 Selector 分工处理不同事件（设计思路）：
+
+1. Boss 线程，配置一个 Selector，专门用来处理 OP_ACCEPT 事件；
+2. Worker 线程，配置一个 Selector，用来处理 OP_READ 事件；（根据 CPU 的核心数适当配置 Worker 的个数）
+
+<br/>
+
+<SvgBox src="https://images.shiguangping.com/imgs/multi-thread-selector.svg" />
+
+<br/>
+
+示例代码（服务端）：
+
+```java
+/**
+ * 多线程服务端
+ * @author liyan
+ * @since 2021-11-19 13:10
+ */
+@Slf4j
+public class MultiThreadServer {
+
+    public static void main(String[] args) throws IOException {
+        Thread.currentThread().setName("boss"); // 设置线程名称
+        ServerSocketChannel ssc = ServerSocketChannel.open(); // 创建 ServerSocketChannel
+        ssc.configureBlocking(false); // 设置非阻塞模式
+        ssc.bind(new InetSocketAddress(8080)); // 绑定并监听本地端口
+
+        Selector boss = Selector.open(); // 创建多路复用器 Selector
+        ssc.register(boss, SelectionKey.OP_ACCEPT); // 将 ServerSocketChannel 注册到 Selector，并关注 OP_ACCEPT 事件
+        Worker[] workers = new Worker[Runtime.getRuntime().availableProcessors()]; // 使用多个 Worker，数组长度是物理机的可用线程数
+        for (int i = 0; i < workers.length; i++) {
+            workers[i] = new Worker("worker-" + i);
+        }
+        AtomicInteger counter = new AtomicInteger(); // 计数器，用来轮询 Worker
+        while (true) {
+            log.debug("等待连接...");
+            boss.select(); // 阻塞线程，监听连接事件
+            Iterator<SelectionKey> iterator = boss.selectedKeys().iterator(); // 获取发生事件的 SelectedKeys 集合的迭代器对象
+            while (iterator.hasNext()) {
+                SelectionKey key = iterator.next();
+                iterator.remove(); // 从集合中移除当前处理的 key
+                if (key.isAcceptable()) {
+                    SocketChannel sc = ssc.accept(); // 建立连接，并获取 SocketChannel 对象
+                    log.debug("已建立连接：{}", sc.getRemoteAddress());
+                    sc.configureBlocking(false); // 设置 SocketChannel 为非阻塞模式
+                    workers[counter.getAndIncrement() % workers.length].register(sc); // 轮询注册 SocketChannel
+                }
+            }
+        }
+    }
+
+    static class Worker implements Runnable {
+        private String name;
+        private Selector selector; // 多路复用器
+        private Thread thread;
+        private ConcurrentLinkedQueue<Runnable> queue; // 用于线程间通信
+        private boolean first = true; // Worker register 是否是首次调用
+
+        public Worker(String name) {
+            this.name = name;
+        }
+
+        public void register(SocketChannel sc) throws IOException {
+            if (first) { // 首次调用时初始化对象，启动线程
+                selector = Selector.open();
+                thread = new Thread(this, name);
+                queue = new ConcurrentLinkedQueue<>();
+                thread.start();
+                first = false;
+            }
+            Runnable task = () -> { // 创建任务，将 SocketChannel 注册到 Worker 的 Selector
+                try {
+                    sc.register(selector, SelectionKey.OP_READ);
+                } catch (ClosedChannelException e) {
+                    e.printStackTrace();
+                }
+            };
+            queue.add(task); // 添加任务到队列
+            selector.wakeup(); // 唤醒线程，让 worker 线程执行 SocketChannel 注册任务
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    selector.select(); // 阻塞线程，等待事件发生
+                    Runnable task = queue.poll(); // 弹出第一个元素（并移除）
+                    if (task != null) {
+                        task.run(); // 执行注册任务
+                    }
+                    Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+                    while (iterator.hasNext()) {
+                        SelectionKey key = iterator.next();
+                        iterator.remove();
+                        if (key.isReadable()) {
+                            SocketChannel sc = (SocketChannel) key.channel();
+                            ByteBuffer buffer = ByteBuffer.allocate(64);
+                            try {
+                                int read = sc.read(buffer);// 读入数据
+                                if (read == -1) {
+                                    log.debug("客户端断开连接：{}", sc.getRemoteAddress());
+                                    key.cancel(); // 从 Selector 移除注册
+                                }
+                                buffer.flip(); // 可读模式
+                                log.debug("{}：{}", sc.getRemoteAddress().toString().split(":")[1], Charset.defaultCharset().decode(buffer));
+                            } catch (IOException e) {
+                                log.debug("客户端异常关闭：{}", sc.getRemoteAddress());
+                                key.cancel();
+                            }
+                        }
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+```
+
+<br/>
+
+客户端：
+
+```java
+/**
+ * 客户端
+ * @author liyan
+ * @since 2021-11-19 19:56
+ */
+public class Client {
+
+    public static void main(String[] args) throws IOException {
+        SocketChannel sc = SocketChannel.open();
+        sc.connect(new InetSocketAddress("localhost", 8080));
+        sc.write(Charset.defaultCharset().encode("测试连接 -- " + sc.getLocalAddress()));
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (true) {
+                System.out.print("输入：");
+                String input = scanner.next();
+                sc.write(Charset.defaultCharset().encode(input));
+            }
+        }
+    }
+}
+```
+
+<br/>
+
+
