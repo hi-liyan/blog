@@ -425,6 +425,15 @@ static Path walkFileTree(Path start, FileVisitor<? super Path> visitor)
 
 <br/>
 
+9. 遍历目录和文件。
+```java
+public static Stream<Path> walk(Path start, FileVisitOption... options) throws IOException {
+    return walk(start, Integer.MAX_VALUE, options);
+}
+```
+
+<br/>
+
 代码：（利用 walkFileTree() 遍历目录并复制）
 
 ```java

@@ -1,19 +1,19 @@
 [
   {
-    "id": 23,
-<<<<<<< HEAD
+    "id": 24,
     "img": "https://images.shiguangping.com/imgs/p1757301336.webp",
     "name": "火柴人 Matchstick Men",
     "stars": "尼古拉斯·凯奇 / 山姆·洛克威尔 / 艾莉森·洛曼",
     "years": "2003",
     "date": "2021年11月18日"
-=======
+  },
+  {
+    "id": 23,
     "img": "https://images.shiguangping.com//imgs/p2535533478.webp",
     "name": "真命天子 Mr. Right",
     "stars": " 山姆·洛克威尔 / 安娜·肯德里克",
     "years": "2015",
     "date": "2021年11月14日"
->>>>>>> a271f32afff5ab94438100f2773e9f3cc237e9f5
   },
   {
     "id": 22,
