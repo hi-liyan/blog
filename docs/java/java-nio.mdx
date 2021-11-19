@@ -4,6 +4,7 @@ title: Java nio 手记
 ---
 import TipBox from "../../src/components/TipBox";
 import ImgBox from "../../src/components/ImgBox";
+import SvgBox from "../../src/components/SvgBox";
 
 <TipBox>
   NIO 即 non-blocking io ，非阻塞IO。
@@ -544,6 +545,11 @@ public final SelectableChannel configureBlocking(boolean block)
 
 阻塞模式下，`accept()` 和 `read()` 这些阻塞方法都会导致当前线程被阻塞，虽然阻塞的线程不会占用 CPU，但单线程情况下，阻塞方法之间相互影响，几乎没办法同时工作，需要多线程的支持。
 
+在多线程下，又会有新的问题：
+
+1. 32位的 JVM 一个线程占用 320K 内存，64位 JVM 一个线程占用 1024K 内存，如果连接数过多，必定会引发内存溢出，并且线程数过多，频繁的上下文切换也会导致系统性能降低；
+2. 可以使用线程池技术减少线程数和线程间的上下文切换，但如果建立很多连接，长时间的连接会阻塞线程池中的所有线程，因此这种方式只适合短连接，不适合长连接。
+
 测试代码：（服务端）
 
 ```java
@@ -555,13 +561,9 @@ public final SelectableChannel configureBlocking(boolean block)
 public class Server {
 
     public static void main(String[] args) throws IOException {
-        // 通过 open() 方法，创建一个 ServerSocketChannel
-        ServerSocketChannel ssc = ServerSocketChannel.open();
-        // 将 Socket 绑定到本地 8080 端口并监听
-        ssc.bind(new InetSocketAddress(8080));
-
-        // 存放 SocketChannel 的集合，处理多个连接
-        List<SocketChannel> channels = new ArrayList<>();
+        ServerSocketChannel ssc = ServerSocketChannel.open();  // 通过 open() 方法，创建一个 ServerSocketChannel
+        ssc.bind(new InetSocketAddress(8080)); // 将 Socket 绑定到本地 8080 端口并监听
+        List<SocketChannel> channels = new ArrayList<>(); // 存放 SocketChannel 的集合，处理多个连接
         while (true) {
             System.out.println("等待连接...");
             SocketChannel sc = ssc.accept(); // accept() 是阻塞方法，会阻塞线程，当有连接请求时线程会继续执行
@@ -572,7 +574,7 @@ public class Server {
             ByteBuffer buffer = ByteBuffer.allocate(16);
             for (SocketChannel channel : channels) { // 遍历集合中的所有 SocketChannel，当有可读数据时读入到 buffer
                 System.out.printf("当前遍历的channel：%s\n", channel);
-                channel.read(buffer); // read() 也是阻塞方法，当当前 channel 有可读数据时才会唤醒线程继续执行
+                channel.read(buffer); // read() 也是阻塞方法，当有可读数据时才会执行
                 buffer.flip();
                 System.out.println(StandardCharsets.UTF_8.decode(buffer));
                 buffer.clear();
@@ -586,5 +588,220 @@ public class Server {
 
 ### 4.4 非阻塞IO
 
+非阻塞模式下，`accept()` 和 `read()` 方法在没有连接或者可读数据时也不会阻塞线程，通过修改上面的示例代码，非阻塞模式下可以处理多个连接和读取数据，方法之间不会相互影响。但是这种情况程序在一直遍历，线程需要一直工作。
 
+非阻塞模式下：
+
+1. ServerSocketChannel 在没有连接时，accept() 方法返回 null；
+2. SocketChannel 在没有可读数据时，read() 方法返回 0；
+3. 在写出数据时，线程只需等待数据写出到 channel 即可，无需等待 channel 通过网络把数据发出去。
+4. 在没有连接和可读数据时，现在仍在不断运行，占用 CPU 资源；
+5. 数据复制过程中，线程实际还是阻塞的（AIO 改进的地方）
+
+测试代码：（服务端）
+
+```java
+/**
+ * 非阻塞IO 服务端
+ * @author liyan
+ * @since 2021-11-19 09:40
+ */
+public class Server {
+
+    public static void main(String[] args) throws IOException {
+        ServerSocketChannel ssc = ServerSocketChannel.open(); // 通过 open() 方法，创建一个 ServerSocketChannel
+        ssc.configureBlocking(false); // 设置 ServerSocketChannel 工作在非阻塞模式下
+        ssc.bind(new InetSocketAddress(8080)); // 将 Socket 绑定到本地 8080 端口并监听
+        List<SocketChannel> channels = new ArrayList<>(); // 存放 SocketChannel 的集合，处理多个连接
+        while (true) {
+            SocketChannel sc = ssc.accept(); // accept() 是阻塞方法，会阻塞线程，当有连接请求时线程会继续执行
+            if (sc != null) {
+                sc.configureBlocking(false); // 设置 SocketChannel 工作在非阻塞模式下
+                System.out.printf("建立连接：%s\n", sc);
+                channels.add(sc);
+                System.out.printf("当前集合 size: %s，元素：%s\n", channels.size(), channels);
+            }
+            ByteBuffer buffer = ByteBuffer.allocate(16);
+            for (SocketChannel channel : channels) { // 遍历集合中的所有 SocketChannel，当有可读数据时读入到 buffer
+                int read = channel.read(buffer);// read() 也是阻塞方法，当有可读数据时才会执行
+                if (read > 0) {
+                    System.out.printf("当前读取的channel：%s\n", channel);
+                    buffer.flip();
+                    System.out.println(StandardCharsets.UTF_8.decode(buffer));
+                    buffer.clear();
+                }
+            }
+        }
+    }
+}
+```
+
+<br/>
+
+### 4.5 多路复用器
+
+Selector（多路复用器）解决了在非阻塞模式下，在无可用连接和数据时线程仍不断运行，占用 CPU 资源的问题。单线程情况下，配合多路复用器 Selector 可以完成对 Channel 不同事件（accept/connect/read/write）的监听，在有事件触发时线程执行，在没有事件触发时，线程可以一直阻塞，避免资源浪费。
+
+多路复用器 Selector 只适用于网络 IO（如ServerSocketChannel，SocketChannel），不适用于文件 IO（FileChannel）。
+
+
+<SvgBox src="https://images.shiguangping.com/imgs/Selector.svg" />
+
+<br/>
+
+多路复用器的基本使用：
+
+1. 通过 Selector 的 `open()` 方法创建 Selector 对象。
+
+    ```java
+    public static Selector open() throws IOException {
+        return SelectorProvider.provider().openSelector();
+    }
+    ```
+
+<br/>
+
+2. 将 Channel 注册到 Selector 中，调用的 Channel 中的 register() 方法，该方法会返回一个 `SelectionKey` 对象，这个对象与注册的 Channel 一一对应，可以通过该对象获取 Channel，获取关注的事件类型，或者附件对象等。
+
+    ```java
+    // 两个参数：（多路复用器对象，关注的事件）
+    public final SelectionKey register(Selector sel, int ops) throws ClosedChannelException
+    {
+        return register(sel, ops, null);
+    }
+    ```
+
+    ```java
+    // 三个参数：（多路复用器对象，关注的事件，附件对象）
+    public final SelectionKey register(Selector sel, int ops, Object att) throws ClosedChannelException 
+    {
+        // ...
+    }
+    ```
+
+    注册到 Selector 的 Channel 必须设置为**非阻塞模式**，否则会抛出异常。
+
+    四种事件：（SelectionKey 类中定义的四个数值常量）
+
+    1. `OP_ACCEPT` 有连接请求
+    2. `OP_CONNECT` 客户端连接建立后（客户端侧）
+    3. `OP_READ` 可读
+    4. `OP_WRITE` 可写
+
+    ServerSocketChannel 只能关注 `OP_ACCEPT` 事件，SocketChannel 只能关注 `OP_READ` 、`OP_WRITE`、`OP_CONNECT` 事件。
+
+<br/>
+
+3. 关注事件，可以在注册时关注事件，也可以通过 `SelectionKey` 调用 `interestOps()` 方法关注事件。
+
+    ```java
+    public abstract SelectionKey interestOps(int ops);
+    ```
+
+    这个方法在使用时要注意，假设 Channel 关注了一个 `OP_READ` 事件，下面该 Channel 还想同时关注 `OP_WRITE` 事件，在通过 interestOps() 关注事件时要两个事件相加，如果只单独写一个只会替换原来关注的事件。
+    
+    ```java
+    selectionKey.interestOps(SelectionKey.OP_READ + SelectionKey.OP_WRITE);
+    ```
+
+<br/>
+
+4. 监听 Channel 事件。
+    
+    可以通过下面三种方法来监听是否有事件发生，方法返回值代表有多少 Channel 发生了事件。
+
+    1. 一直阻塞线程，直到有事件被触发。(常用)
+    
+    ```java
+    int count = selector.select();
+    ```
+
+    <br/>
+
+    2. 阻塞线程，直到有事件被触发，或者到超时时间。
+
+    ```java
+    int count = selector.select(long time);
+    ```
+
+    <br/>
+
+    3. 不阻塞线程，该方法会返回发生事件的 Channel 数量，根据返回值判断是否有事件发生。
+    
+    ```java
+    int count = selector.selectNow();
+    ```
+
+    <br/>
+
+    select() 方法何时不阻塞线程：
+    
+    1. 事件发生时。
+        - 客户端发起连接，会出发 OP_ACCEPT;
+        - 客户端发送数据过来，客户端正常、异常关闭都会出发 OP_READ,如果发送的时间大于缓冲区大小，会出发多次 OP_READ，直到把数据读完；
+        - channel 可写时会出发多次 OP_WRITE，例如发送较大数据，一次没传完会再次出发 OP_WRITE；
+        - 在 Linux 系统中，发生 nio bug时。
+    2. 调用 selector.weakup();
+    3. 调用 selector.close();
+    4. selector 所在线程 interrupt。
+
+<br/>
+
+代码：
+
+```java
+/**
+ * 非阻塞IO 多路复用器 服务端
+ *
+ * @author liyan
+ * @since 2021-11-19 11:19
+ */
+public class Server {
+
+    public static void main(String[] args) throws IOException {
+        ServerSocketChannel ssc = ServerSocketChannel.open(); // 通过 open() 方法，创建一个 ServerSocketChannel
+        ssc.configureBlocking(false); // 设置 ServerSocketChannel 工作在非阻塞模式下
+        ssc.bind(new InetSocketAddress(8080)); // 将 Socket 绑定到本地 8080 端口并监听
+
+        Selector selector = Selector.open(); // 创建多路复用器
+        SelectionKey sscKey = ssc.register(selector, 0, null); // 注册 ServerSocketChannel 到 Selector
+        sscKey.interestOps(SelectionKey.OP_ACCEPT); // 关注 accept 事件
+
+        while (true) {
+            selector.select(); // 阻塞线程，等到 Channel 有事件触发
+            Set<SelectionKey> selectionKeys = selector.selectedKeys(); // 触发事件的 selectionKey 集合
+            Iterator<SelectionKey> iterator = selectionKeys.iterator(); // 获取迭代器，通过迭代器遍历，后续会通过迭代器在遍历过程中移除处理过的 selectionKey
+            while (iterator.hasNext()) {
+                SelectionKey key = iterator.next();
+                iterator.remove(); // selector 会把发生事件的 selectionKey 添加到集合中，但不会主动移除，需要我们手动移除处理过的 key
+
+                if (key.isAcceptable()) { // 如果是 accept 事件
+                    ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel(); // 拿到 ServerSocketChannel 对象
+                    SocketChannel sc = serverSocketChannel.accept(); // 建立连接，获取 SocketChannel 对象
+                    sc.configureBlocking(false); // 设置非阻塞模式
+                    sc.register(selector, SelectionKey.OP_READ); // 将 SocketChannel 注册到 Selector，并关注 read 事件
+                }
+
+                if (key.isReadable()) { // 如果是 read 事件
+                    SocketChannel sc = (SocketChannel) key.channel();
+                    ByteBuffer buffer = ByteBuffer.allocate(16);
+                    try {
+                        int read = sc.read(buffer); // 客户端关闭时会触发 read 事件，正常关闭时 read() 返回-1，异常关闭时 read() 会抛出 IO异常
+                        if (read == -1) { // 客户端正常关闭，read 返回 -1
+                            key.cancel(); // Selector 取消注册该 Channel
+                        }
+                        buffer.flip(); // buffer 切换读模式
+                        System.out.println(StandardCharsets.UTF_8.decode(buffer));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        key.cancel();
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+<br/>
 
