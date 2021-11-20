@@ -1164,27 +1164,3 @@ public class Client {
 }
 ```
 
-<br/>
-
-## 5. nio 概念剖析
-
-### 5.1 stream vs channel
-
-1. stream 不会自动使用缓冲区，而 channel 会利用系统提供的发送缓冲区、接收缓冲区（更加底层）；
-2. stream 仅支持阻塞 API，channel 既支持阻塞又支持非阻塞，网络 channel 还可以搭配 Selector 实现多路复用；
-3. 二者皆为全双工，读入和写出可同时进行。
-
-<br/>
-
-### 5.2 io 模型
-
-当调用一次 channel.read() 或 stream.read() 后，会切换至操作系统内核态来完成真正的数据读取，而读取又分为两个阶段，分别为：
-1. 等待数据阶段
-2. 复制数据阶段
-
-<br/>
-
-<SvgBox src="https://images.shiguangping.com/imgs/read-model.svg" />
-
-
-
