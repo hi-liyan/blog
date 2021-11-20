@@ -22,6 +22,9 @@ b_path=$(pwd)
 # Opt Path
 opt_path="$b_path/build"
 
+# isSuccess
+isSuccess=0
+
 # 发布
 deploy() {
 	cd $b_path
@@ -48,11 +51,19 @@ echo "==========3. 开始上传空间新文件=========="
 # 复制本地文件到远程空间
 scp -P22 -r $opt_path/* $username@$host:$r_path
  
-echo "==========4. 发布完成=========="
+# echo "==========4. 发布完成=========="
+
+isSuccess=1
 }
 
 
 deploy
+
+if [ $isSuccess -eq 0 ]; then
+    echo "failed"
+else
+    echo "succeed"
+fi
 
 
 
