@@ -961,4 +961,206 @@ public class Client {
 
 <br/>
 
+根据上面的代码写了一个简单的聊天室：
+
+
+```java
+/**
+ * 服务端（多线程版本）
+ * @author liyan
+ * @since 2021-11-19 13:10
+ */
+@Slf4j
+public class MultiThreadServer {
+
+    public static void main(String[] args) throws IOException {
+        Thread.currentThread().setName("boss"); // 设置 main 线程的名称
+        ServerSocketChannel ssc = ServerSocketChannel.open(); // 打开 ServerSocketChannel
+        ssc.configureBlocking(false); // 设置阻塞模式
+        ssc.bind(new InetSocketAddress(8080)); // 绑定本地地址并监听 8080 端口
+
+        Selector boss = Selector.open(); // 打开多路复用器 Selector
+        ssc.register(boss, SelectionKey.OP_ACCEPT); // 将 ServerSocketChannel 注册到 Selector
+        Worker[] workers = new Worker[Runtime.getRuntime().availableProcessors()]; // 使用多个 Worker，数组长度是物理机的可用线程数
+        for (int i = 0; i < workers.length; i++) {
+            workers[i] = new Worker("worker-" + i);
+        }
+        Set<SocketChannel> clients = Collections.synchronizedSet(new HashSet<>()); // 当前已连接的客户端集合
+        AtomicInteger counter = new AtomicInteger(); // 计数器
+        while (true) {
+            log.debug("等待连接...");
+            boss.select(); // 监听事件
+            Iterator<SelectionKey> iterator = boss.selectedKeys().iterator();
+            while (iterator.hasNext()) {
+                SelectionKey key = iterator.next();
+                iterator.remove();
+                if (key.isAcceptable()) { // 连接请求
+                    SocketChannel sc = ssc.accept();
+                    log.debug("已建立连接：{}", sc.getRemoteAddress());
+                    clients.add(sc);
+                    sc.configureBlocking(false);
+                    workers[counter.getAndIncrement() % workers.length].register(sc, clients); // 将客户端平均分配到 workers 中（轮询）
+                }
+            }
+        }
+    }
+
+    static class Worker implements Runnable {
+        private String name;
+        private Selector selector;
+        private Thread thread;
+        private ConcurrentLinkedQueue<Runnable> queue; // 用于线程间通信，向线程中添加要执行的任务
+        private boolean first = true; // Worker register 是否是首次调用
+        private Set<SocketChannel> clients;
+
+        public Worker(String name) {
+            this.name = name;
+        }
+
+        public void register(SocketChannel sc, Set<SocketChannel> clients) throws IOException {
+            if (first) {
+                selector = Selector.open(); // 创建 Selector
+                thread = new Thread(this, name); // 创建线程
+                queue = new ConcurrentLinkedQueue<>(); // 初始化队列
+                this.clients = clients;
+                thread.start(); // 启动线程
+                first = false;
+            }
+            clients.add(sc); // 将当前连接添加进集合
+            Runnable runnable = () -> { // 创建任务，将 SocketChannel 注册到 Worker 的 Selector
+                try {
+                    sc.register(selector, SelectionKey.OP_READ);
+                    sendInGroup(sc, "【" + sc.getRemoteAddress().toString().split(":")[1] + "】：上线了");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            };
+            queue.add(runnable); // 添加任务
+            selector.wakeup(); // 唤醒线程，worker 线程中执行 SocketChannel 注册任务
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    selector.select(); // 阻塞线程，等待事件发生
+                    Runnable runnable = queue.poll(); // 弹出第一个元素（并移除）
+                    if (runnable != null) {
+                        runnable.run(); // 执行注册任务
+                    }
+                    Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+                    while (iterator.hasNext()) {
+
+                        SelectionKey key = iterator.next();
+                        iterator.remove();
+                        if (key.isReadable()) { // 可读事件
+                            SocketChannel sc = (SocketChannel) key.channel();
+                            ByteBuffer buffer = ByteBuffer.allocate(64);
+                            try {
+                                int read = sc.read(buffer);// 读入数据
+                                if (read == -1) {
+                                    log.debug("客户端断开连接：{}", sc.getRemoteAddress());
+                                    key.cancel(); // 从 Selector 移除注册
+                                    sendInGroup(sc, "【" + sc.getRemoteAddress().toString().split(":")[1] + "】：下线了");
+                                    clients.remove(sc); // 从客户端集合中移除
+                                    continue;
+                                }
+                                buffer.flip(); // 可读模式
+                                String received = "【" + sc.getRemoteAddress().toString().split(":")[1] + "】：" + Charset.defaultCharset().decode(buffer);
+                                log.debug(received);
+                                sendInGroup(sc, received); // 群发消息
+                            } catch (IOException e) {
+                                log.debug("客户端异常关闭：{}", sc.getRemoteAddress());
+                                key.cancel();
+                                sendInGroup(sc, "【" + sc.getRemoteAddress().toString().split(":")[1] + "】：下线了");
+                                clients.remove(sc);
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        private void sendInGroup(SocketChannel sc, String message) {
+            clients.stream()
+                    .filter(socketChannel -> socketChannel != sc) // 过滤掉当前的 SocketChannel
+                    .forEach(socketChannel -> { // 将消息发送给在线的其它客户端
+                        try {
+                            socketChannel.write(Charset.defaultCharset().encode(message));
+                        } catch (IOException e) {
+                            log.error("写出数据时发生异常", e);
+                        }
+                    });
+        }
+    }
+}
+```
+
+<br/>
+
+```java
+**
+ * 客户端
+ * @author liyan
+ * @since 2021-11-19 19:56
+ */
+public class Client {
+
+    public static void main(String[] args) throws IOException {
+        SocketChannel sc = SocketChannel.open();
+        sc.connect(new InetSocketAddress("localhost", 8080));
+
+        Selector selector = Selector.open(); // 创建 Selector
+        sc.configureBlocking(false);
+        SelectionKey selectionKey = sc.register(selector, SelectionKey.OP_READ);
+
+        new Thread(() -> { // 控制台输入单独起一个线程
+            try {
+                System.out.printf("服务器已连接，本机端口号：%s\n", sc.getLocalAddress());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (Scanner scanner = new Scanner(System.in)) {
+                while (true) {
+                    String input = scanner.nextLine();
+                    SocketChannel channel = (SocketChannel) selectionKey.channel();
+                    channel.write(Charset.defaultCharset().encode(input));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        while (true) {
+            try {
+                selector.select(); // 阻塞线程，等待可读事件
+                Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+                while (iterator.hasNext()) {
+                    SelectionKey key = iterator.next();
+                    iterator.remove();
+                    if (key.isReadable()) {
+                        ByteBuffer buffer = ByteBuffer.allocate(64);
+                        try {
+                            int read = sc.read(buffer);
+                            if (read == -1) {
+                                key.cancel();
+                                log.debug("服务器已关闭");
+                            }
+                            buffer.flip();
+                            System.out.println(Charset.defaultCharset().decode(buffer).toString());
+                        } catch (IOException e) {
+                            key.cancel();
+                            log.debug("服务器已关闭");
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
 
