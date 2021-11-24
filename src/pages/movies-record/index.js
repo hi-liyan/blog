@@ -35,19 +35,16 @@ class MoviesRecord extends Component {
   async getList() {
     const {pageNum, pageSize, total} = this.state
     const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjcyMTc0ODg4OUBxcS5jb20iLCJmaXJzdG5hbWUiOm51bGwsImxhc3RuYW1lIjpudWxsLCJpZCI6Miwicm9sZXMiOiJ1c2VyIiwiaWF0IjoxNjM3NzY1Mjg0fQ.eEX-nok9kYubG4bsMtuKcGuAUPen3GTl1cn5D8L3hkM'
+    const url = 'https://noco.surcode.cn/nc/shiguangping_blog_08v8/api/v1/movies'
     // res1：分页获取影片列表 res2：影片总数
     try {
-      const res1 = await fetch(`https://naco.surcode.cn/nc/shiguangping_blog_08v8/api/v1/movies?limit=${pageSize}&offset=${(pageNum - 1) * pageSize}&sort=-created_at`, {
+      const res1 = await fetch(`${url}/movies?limit=${pageSize}&offset=${(pageNum - 1) * pageSize}&sort=-created_at`, {
         method: 'GET',
-        headers: {
-          'xc-auth': token
-        }
+        headers: {'xc-auth': token}
       })
-      const res2 = await fetch('https://naco.surcode.cn/nc/shiguangping_blog_08v8/api/v1/movies/count', {
+      const res2 = await fetch(`${url}/count`, {
         method: 'GET',
-        headers: {
-          'xc-auth': token
-        }
+        headers: {'xc-auth': token}
       })
       if (res1.status !== 200 || res2.status !== 200) {
         throw new Error('请求发生错误')
