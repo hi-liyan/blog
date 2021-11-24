@@ -25,7 +25,7 @@ class ShadowBox extends Component {
   render() {
     const {children, img, title, width} = this.props
     return (
-      <div className='containerBox' style={{width: width}}>
+      <div className='ShadowBox' style={{width: width}}>
         {/*标题*/}
         <div className='titleBox' style={{display: title ? 'block' : 'none'}}>
           <h3>{title}</h3>

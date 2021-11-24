@@ -152,7 +152,7 @@ class MoviesRecord extends Component {
     return (
       <Layout title='观影记录'>
         <div className='underline'></div>
-        <div className='containerBox1'>
+        <div className='MoviesRecordBox'>
           {/*大字标题*/}
           <Heading
             fontSize={[5, 6, 7]}
