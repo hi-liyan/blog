@@ -98,6 +98,7 @@ module.exports = {
         'skill/idea-view-openjdk-source-code',
         'skill/java-learning-path',
         'skill/java-learning-method',
+        'skill/git-memo',
         'skill/centos-install-docker',
         'skill/frp-install',
         'skill/github-ssh',
