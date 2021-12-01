@@ -50,10 +50,9 @@ deploy() {
 
   # 登陆远程服务器，先删除旧的 build/ 目录，再解压
   echo "==========4. 删除空间旧文件并解压=========="
-  ssh -P22 $username@$host "cd $r_path;rm -rf build/;tar zxvf build1.tar;exit;"
+  ssh -P22 $username@$host "cd $r_path;rm -rf build/;tar zxvf build1.tar;rm-rf build1.tar;exit;"
 
   echo "==========5. 执行完毕=========="
-
 }
 
 deploy
