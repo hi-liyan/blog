@@ -22,6 +22,9 @@ b_path=$(pwd)
 # Opt Path
 opt_path="$b_path/build"
 
+# timestamp
+timestamp = date +%Y%m%d%H%M%S
+
 # isSuccess
 isSuccess=0
 
@@ -29,40 +32,38 @@ isSuccess=0
 deploy() {
 	cd $b_path
 
-  echo "==========0. 安装依赖=========="
-
   # 安装依赖
+  echo "==========0. 安装依赖=========="
   npm install --registry=https://registry.npm.taobao.org --unsafe-perm=true --allow-root
 
   echo "==========1. 开始构建=========="
   pwd
+  # 构建
+  npm run clear
+  npm run build
 
+  # 将构建好的文件打包，文件名 20211201183839.tar
+  echo "==========2. 静态资源打包=========="
+  tar czvf $timestamp.tar $opt_path
 
-npm run clear
-npm run build
+  # 复制本地文件到远程空间
+  echo "==========3. 上传压缩包=========="
+  echo "目标主机：${host} 用户名：${username}"
+  scp -P22 -r $b_path/%timestamp.tar $username@$host:$r_path
 
-echo "==========2. 开始删除空间旧文件=========="
-echo "目标主机：${host} 用户名：${username}"
+  # 登陆远程服务器，先删除旧的 build/ 目录，再解压
+  echo "==========2. 开始删除空间旧文件=========="
+  ssh -P22 $username@$host "cd $r_path;rm -rf build/;tar zxvf $timestamp.tar;exit;"
 
-# 登陆远程服务器 删除远程空间文件
-ssh -P22 $username@$host "cd /;cd $r_path;rm -rf *;exit;"
-
-echo "==========3. 开始上传空间新文件=========="
-# 复制本地文件到远程空间
-scp -P22 -r $opt_path/* $username@$host:$r_path
- 
-# echo "==========4. 发布完成=========="
-
-isSuccess=1
+  isSuccess=1
 }
-
 
 deploy
 
 if [ $isSuccess -eq 0 ]; then
-    echo "failed"
+    echo "==========0. 发布完成=========="
 else
-    echo "succeed"
+    echo "==========4. 发布完成=========="
 fi
 
 
