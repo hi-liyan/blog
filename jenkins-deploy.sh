@@ -23,7 +23,7 @@ b_path=$(pwd)
 opt_path="$b_path/build"
 
 # timestamp
-timestamp = date +%Y%m%d%H%M%S
+timestamp =$(date +%Y%m%d%H%M%S)
 
 # isSuccess
 isSuccess=0
