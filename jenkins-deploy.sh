@@ -41,7 +41,7 @@ deploy() {
 
   # 打包
   echo "==========2. 静态资源打包=========="
-  tar czvf build1.tar build/
+  tar czf build1.tar build/
 
   # 复制本地文件到远程空间
   echo "==========3. 上传压缩包=========="
@@ -50,7 +50,7 @@ deploy() {
 
   # 登陆远程服务器，先删除旧的 build/ 目录，再解压
   echo "==========4. 删除空间旧文件并解压=========="
-  ssh -P22 $username@$host "cd $r_path;rm -rf build/;tar zxvf build1.tar;rm-rf build1.tar;exit;"
+  ssh -P22 $username@$host "cd $r_path;rm -rf build/;tar zxf build1.tar;rm -rf build1.tar;exit;"
 
   echo "==========5. 执行完毕=========="
 }
