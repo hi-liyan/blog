@@ -41,7 +41,7 @@ deploy() {
 
   # 打包
   echo "==========2. 静态资源打包=========="
-  tar czvf build1.tar $opt_path
+  tar czvf build1.tar .build/
 
   # 复制本地文件到远程空间
   echo "==========3. 上传压缩包=========="
