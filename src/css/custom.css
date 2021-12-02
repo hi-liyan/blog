@@ -15,7 +15,7 @@
 /* 外部字体 */
 @font-face {
   font-family: TengXiang;
-  src: url(../../static/fonts/TengXiangMingSongJian-W4-2.ttf);
+  src: url(https://images.shiguangping.com/fonts/TengXiangMingSongJian-W4-2.woff);
 }
 
 :root {
