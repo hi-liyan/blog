@@ -19,8 +19,10 @@ public interface UserService {
 
 ```java
 public class UserServiceImpl implements UserService{
+    @SneakyThrows
     @Override
     public void getUser(String name) {
+        Thread.sleep(300); // 为了效果增加了300ms
         System.out.printf("我是%s\n", name);
     }
 }
@@ -43,7 +45,7 @@ public class MainTest {
 
 <br/>
 
-假设有这么一个需求，要统计每个方法的执行时间。可以通过修改代码在方法体前后加上时间，然后计算，但这种方式总归不太好，如果有很多方法，难道要把每个方法都修改一遍？如果不是这么简单的需求，而是要加入一个复杂的逻辑，加入后的逻辑会不会影响到现有程序，这些都不得而知。所以，代理派上了用场，我可以创建一个代理类，同样这个代理类也实现相同的接口，然后在代理类中扩展我想要的功能，并调用原有的方法，这样既不会破坏原有代码的实现，也完成了功能的扩展。具体怎么操作呢？往下看。
+假设有这么一个需求，要统计每个方法的执行时间。我可以通过修改代码在方法体前后加上时间，然后计算，但这种方式总归不太好，如果有很多方法，难道要把每个方法都修改一遍？如果不是这么简单的需求，而是要加入一个复杂的逻辑，加入后的逻辑会不会影响到现有程序，这些都不得而知。所以，代理派上了用场，我可以创建一个代理类，同样这个代理类也实现相同的接口，然后在代理类中扩展我想要的功能，并调用原有的方法，这样既不会破坏原有代码的实现，也完成了功能的扩展。具体怎么操作呢？往下看。
 
 ```java
 public class UserServiceProxy implements UserService {
@@ -54,11 +56,9 @@ public class UserServiceProxy implements UserService {
         target = new UserServiceImpl();
     }
 
-    @SneakyThrows
     @Override
     public void getUser(String name) {
         long start = System.currentTimeMillis();
-        Thread.sleep(300); // 为了效果增加方法300ms
         target.getUser(name);
         long end = System.currentTimeMillis();
         System.out.printf("执行时间：%ss\n", (end - start) / 1000F);
@@ -86,9 +86,9 @@ public class MainTest {
 ## 动态代理
 ### 基于接口
 
-现在，我了解了扩展方法可以使用代理，但上面的这种代理属于静态代理，什么是静态代理呢？顾名思义，与动态相对，它无法动态修改，如果我有多个接口要用到代理呢，那就需要创建多个代理类，这种方式固然可以，但 JDK 的大佬们早早就想到了这个问题，为我们提供了解决的办法。
+现在，我了解了扩展方法可以使用代理，但上面的这种代理属于静态代理，什么是静态代理呢？顾名思义，它无法动态地创建我想要代理的对象，假设我要为多个接口的实现添加方法执行时间统计呢？那就需要创建多个代理类，这种方式固然可以，但 JDK 的大佬们早早就想到了这个问题，为我们提供了解决的办法。
 
-创建动态代理类，并实现 `java.lang.reflect.InvocationHandler` 接口。
+通过实现 `java.lang.reflect.InvocationHandler` 接口来创建动态代理类。
 
 ```java
 public class DynamicProxy implements InvocationHandler {
@@ -102,7 +102,6 @@ public class DynamicProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         long start = System.currentTimeMillis();
-        Thread.sleep(300);
         Object invoke = method.invoke(target, args);
         long end = System.currentTimeMillis();
         System.out.printf("执行时间：%s\n", (end - start) / 1000F);
@@ -160,7 +159,6 @@ public class DynamicProxy<T> implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         long start = System.currentTimeMillis();
-        Thread.sleep(300);
         Object invoke = method.invoke(target.newInstance(), args);
         long end = System.currentTimeMillis();
         System.out.printf("执行时间：%s\n", (end - start) / 1000F);
@@ -225,7 +223,6 @@ ublic class CGLibProxy implements MethodInterceptor {
     @Override
     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
         long start = System.currentTimeMillis();
-        Thread.sleep(300);
         Object invokeSuper = methodProxy.invokeSuper(o, objects); // 方法代理去调用父类（也就是被代理的类）的方法
         long end = System.currentTimeMillis();
         System.out.printf("执行时间：%s\n", (end - start) / 1000F);
