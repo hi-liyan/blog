@@ -1,0 +1,257 @@
+---
+id: java-proxy
+title: Java 代理
+---
+
+## 静态代理
+
+一提到代理（Proxy）就会让我联想到 AOP （面向切面编程），记得去年开始学习 Java 时，也学过代理，什么静态代理，动态代理...，然而学完还是一脸懵逼。过了一年现在再看代理，又有了一些理解，下面我来说一说。
+
+首先，代理诠释了合开闭原则，对扩展开放，对修改封闭，通过代理，可以更容易扩展（方法）功能。
+
+例如，
+
+```java
+public interface UserService {
+    void getUser(String name);
+}
+```
+
+```java
+public class UserServiceImpl implements UserService{
+    @Override
+    public void getUser(String name) {
+        System.out.printf("我是%s\n", name);
+    }
+}
+```
+
+执行一下：
+
+```java
+public class MainTest {
+    public static void main(String[] args) {
+        UserService userService = new UserServiceImpl();
+        userService.getUser("李达康");
+    }
+}
+```
+
+```
+我是李达康
+```
+
+<br/>
+
+假设有这么一个需求，要统计每个方法的执行时间。可以通过修改代码在方法体前后加上时间，然后计算，但这种方式总归不太好，如果有很多方法，难道要把每个方法都修改一遍？如果不是这么简单的需求，而是要加入一个复杂的逻辑，加入后的逻辑会不会影响到现有程序，这些都不得而知。所以，代理派上了用场，我可以创建一个代理类，同样这个代理类也实现相同的接口，然后在代理类中扩展我想要的功能，并调用原有的方法，这样既不会破坏原有代码的实现，也完成了功能的扩展。具体怎么操作呢？往下看。
+
+```java
+public class UserServiceProxy implements UserService {
+
+    private UserService target;
+
+    public UserServiceProxy() {
+        target = new UserServiceImpl();
+    }
+
+    @SneakyThrows
+    @Override
+    public void getUser(String name) {
+        long start = System.currentTimeMillis();
+        Thread.sleep(300); // 为了效果增加方法300ms
+        target.getUser(name);
+        long end = System.currentTimeMillis();
+        System.out.printf("执行时间：%ss\n", (end - start) / 1000F);
+    }
+}
+```
+
+我在这个代理类中拿到要代理的对象，然后在重写的方法中增加统计时间的功能，并在方法中去调用要代理对象的方法，这样不就是实现了扩展方法吗。测试一下。
+
+```java
+public class MainTest {
+    public static void main(String[] args) {
+        UserServiceProxy proxy = new UserServiceProxy();
+        proxy.getUser("李达康");
+    }
+}
+```
+
+```
+我是李达康
+执行时间：0.327s
+```
+<br/>
+
+## 动态代理
+### 基于接口
+
+现在，我了解了扩展方法可以使用代理，但上面的这种代理属于静态代理，什么是静态代理呢？顾名思义，与动态相对，它无法动态修改，如果我有多个接口要用到代理呢，那就需要创建多个代理类，这种方式固然可以，但 JDK 的大佬们早早就想到了这个问题，为我们提供了解决的办法。
+
+创建动态代理类，并实现 `java.lang.reflect.InvocationHandler` 接口。
+
+```java
+public class DynamicProxy implements InvocationHandler {
+
+    private Object target; // 要代理的对象
+
+    public DynamicProxy(Object target) {
+        this.target = target;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        long start = System.currentTimeMillis();
+        Thread.sleep(300);
+        Object invoke = method.invoke(target, args);
+        long end = System.currentTimeMillis();
+        System.out.printf("执行时间：%s\n", (end - start) / 1000F);
+        return invoke;
+    }
+}
+```
+
+通过 `Proxy.newProxyInstance()` 方法创建要代理对象的具体代理。
+
+```java
+public class MainTest {
+
+    public static void main(String[] args) {
+        DynamicProxy dynamicProxy = new DynamicProxy(new UserServiceImpl()); // 创建动态代理类的对象，传入具体要代理的对象
+        UserService userServiceProxy = (UserService) Proxy.newProxyInstance( // 通过 Proxy.newProxyInstance() 创建具体的代理对象
+                UserServiceImpl.class.getClassLoader(),
+                UserServiceImpl.class.getInterfaces(),
+                dynamicProxy
+        );
+        userServiceProxy.getUser("李达康"); // 通过创建的代理对象调用方法，这个方法实际是动态代理类中重写的 invoke() 方法
+    }
+}
+```
+
+执行一下：
+
+```
+我是李达康
+执行时间：0.313
+```
+
+整理下上面的代码，把创建具体代理对象的代码都放到动态代理类中。
+
+```java
+public class DynamicProxy<T> implements InvocationHandler {
+
+    private Class<? extends T> target; // 要代理的对象
+
+    public DynamicProxy(Class<? extends T> target) {
+        this.target = target;
+    }
+
+    public T getProxy() {
+        return (T) Proxy.newProxyInstance(target.getClassLoader(), target.getInterfaces(), this);
+    }
+
+    /**
+     * @param proxy 该类（动态代理类）对象
+     * @param method
+     * @param args
+     * @return
+     * @throws Throwable
+     */
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        long start = System.currentTimeMillis();
+        Thread.sleep(300);
+        Object invoke = method.invoke(target.newInstance(), args);
+        long end = System.currentTimeMillis();
+        System.out.printf("执行时间：%s\n", (end - start) / 1000F);
+        return invoke;
+    }
+}
+```
+
+这样看着更简洁一些。
+
+```java
+public class MainTest {
+
+    public static void main(String[] args) {
+        DynamicProxy<UserService> dynamicProxy = new DynamicProxy(UserServiceImpl.class); // 创建动态代理类的对象，传入具体要代理的Class对象
+        UserService userServiceProxy = dynamicProxy.getProxy(); // 获取具体代理对象
+        userServiceProxy.getUser("李达康"); // 通过创建的代理对象调用方法，这个方法实际是动态代理类中重写的 invoke() 方法
+    }
+}
+```
+
+```
+我是李达康
+执行时间：0.322
+```
+
+有了动态代理，我可以为任意接口实现增加统计方法执行时间的功能，而不需要像静态代理一样，为不同的接口创建不同的代理类。
+
+但这种动态代理也有其局限性，假如要代理的类没有实现接口，那么这种动态代理就无能为力了，所以上面的这种动态代理是**基于接口**的动态代理。难道没有实现接口的类就无法创建动态代理了吗？当然不是，前人早就替我们想到了，要不怎么说是大佬们呢。下面来认识下基于子类的动态代理，CGLib。
+
+<br/>
+
+### 基于子类 CGLib
+
+CGLib 可以在运行时动态创建要代理的类的子类 Class ，通过这个子类扩展功能。看一下具体操作。
+
+```java
+ublic class CGLibProxy implements MethodInterceptor {
+
+    private static final CGLibProxy instance = new CGLibProxy(); // 单例
+
+    private CGLibProxy() {
+    }
+
+    public static CGLibProxy getInstance() {
+        return instance;
+    }
+
+    public <T> T getProxy(Class<T> target) {
+        return (T) Enhancer.create(target, this); // 创建具体的代理对象
+    }
+
+    /**
+     *
+     * @param o 被代理的对象
+     * @param method
+     * @param objects
+     * @param methodProxy 方法代理
+     * @return
+     * @throws Throwable
+     */
+    @Override
+    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+        long start = System.currentTimeMillis();
+        Thread.sleep(300);
+        Object invokeSuper = methodProxy.invokeSuper(o, objects); // 方法代理去调用父类（也就是被代理的类）的方法
+        long end = System.currentTimeMillis();
+        System.out.printf("执行时间：%s\n", (end - start) / 1000F);
+        return invokeSuper;
+    }
+}
+```
+
+使用CGLib的动态代理类执行以下：
+
+```java
+public class MainTest {
+
+    public static void main(String[] args) {
+        CGLibProxy cgLibProxy = CGLibProxy.getInstance(); // 获取动态代理类对象
+        UserServiceImpl proxy = cgLibProxy.getProxy(UserServiceImpl.class); // 获取具体的代理对象
+        proxy.getUser("李达康");
+    }
+}
+```
+
+```
+我是李达康
+执行时间：0.336
+```
+
+相比 JDK 提供的动态代理（基于接口的），CGLib 的动态代理可以代理任何类，无论它是否实现了接口。在 Spring 框架中的 AOP 默认使用的是 JDK 提供的动态代理，也可以显式配置使用 CGLib 代理。
+
+以上是我对这次学习代理模式的一次总结，当然，代理的强大远不止于此。
