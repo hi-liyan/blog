@@ -25,12 +25,13 @@ module.exports = {
     // 后端
     {
       type: 'category',
-      label: '后端开发 -Java开发',
+      label: '后端开发(Java)',
       items: [
         'java/jdk-install',
         'java/javase-note',
         'java/java-classloader',
         'java/java-reflect',
+        'java/java-proxy',
         'java/java-multi-thread',
         'java/java-io',
         'java/java-nio',

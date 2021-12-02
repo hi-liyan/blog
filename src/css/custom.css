@@ -12,6 +12,12 @@
   word-break: break-all;
 }
 
+/* 外部字体 */
+@font-face {
+  font-family: TengXiang;
+  src: url(../../static/fonts/TengXiangMingSongJian-W4-2.ttf);
+}
+
 :root {
   --ifm-color-primary: #ca228d;
   --ifm-color-primary-dark: #b61f7f;
@@ -21,11 +27,11 @@
   --ifm-color-primary-lighter: #dd339f;
   --ifm-color-primary-lightest: #e251ad;
   --ifm-code-font-size: 95%;
-  --ifm-font-family-base: "Raleway", "PingFang SC", "Microsoft Yahei",
+  --ifm-font-family-base: "TengXiang", "Raleway", "PingFang SC", "Microsoft Yahei",
   sans-serif;
   /* --ifm-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", monospace; */
-  --ifm-heading-font-family: "Raleway", "PingFang SC", "Microsoft Yahei",
+  --ifm-heading-font-family: "TengXiang", "Raleway", "PingFang SC", "Microsoft Yahei",
   sans-serif;
   /* --content-font-family: "Raleway", "Kai", "楷体", "Kaiti", serif; */
 
