@@ -5,9 +5,13 @@ title: Java 中的锁
 import TipBox from "../../src/components/TipBox";
 import ImgBox from "../../src/components/ImgBox";
 import SvgBox from "../../src/components/SvgBox";
+import ArticleCreation from "../../src/components/ArticleCreation";
+
+<ArticleCreation createDate="2021-12-7" />
 
 <TipBox>
-  看了一天关于 Java 锁的内容，越看越迷糊，写篇手记梳理一下。
+  通过一篇手记认识下 Java 中的锁。<br/><br/>
+  看了很多篇网上关于锁的文章，发现这里面的水非常地深，一般人把持不住，其中涉及到很多 JVM 、操作系统相关的知识，每一个点都能拿来深究，所以这篇手记只是为了初识和梳理，了解即可。
 </TipBox>
 
 ## 0. 为什么引入锁
@@ -111,9 +115,9 @@ public class Demo {
 
 ### 2.1 synchronized
 
-#### 2.1.1 synchronized
+`synchronized` 是 Java 的一个关键字，直译过来就是“同步”的意思，顾名思义，让代码同步执行（串行）。它属于悲观锁的一种，也叫对象锁（为什么叫对象锁后面再说），是用来锁住操作共享资源的代码（临界区代码）的，只有持有对象锁的线程才能执行临界区代码，其它线程访问到临界区时会被阻塞，当锁的持有者执行完临界区代码释放锁后，被阻塞的线程才会被唤醒重新竞争锁。
 
-`synchronized` 是 Java 提供的关键字，它属于悲观锁，也叫对象锁（为什么叫对象锁后面再说），用来锁住操作共享资源的代码，只有持有对象锁的线程才能执行临界区的代码，其它线程访问到临界区时会被阻塞，当锁的持有者执行完临界区代码后，锁会被释放，被阻塞的线程再重新竞争锁。使用具体代码举例：
+举例：
 
 ```java
 public class Demo {
@@ -124,7 +128,7 @@ public class Demo {
     public static void main(String[] args) throws InterruptedException {
         Thread t1 = new Thread(() -> {
             for (int i = 0; i < 10000; i++) {
-                synchronized (lock) { // 临界区代码块，内部的代码块是原子操作
+                synchronized (lock) { // 临界区代码
                     counter++;
                 }
             }
@@ -150,7 +154,7 @@ public class Demo {
 
 使用 `synchronized` 关键字来锁住 counter++，并发环境下，即使当前线程时间片到期，一次自增没有执行完，其它线程拿到时间片，由于没有对象锁，也会被阻塞，直到当前线程执行完一次自增，锁才会被释放。这其实是保证了临界区代码的原子性。
 
-知道 synchronized 的用处之后，再来说它为什么叫对象锁？从上面的示例代码中可以看到，在类成员中声明了一个 `Object lock = new Object();`，synchronized 需要一个对象来加锁，这个对象的对象头中记录了这个锁被哪个线程持有，具体是怎么记录的后面会详细地说。
+知道 synchronized 的用处之后，再来说它为什么叫对象锁？从上面的示例代码中可以看到，在类成员中声明了一个 `Object lock = new Object();`，synchronized 需要一个对象来加锁，这个对象的对象头中记录了这个锁的相关信息，具体是怎么记录的后面会详细地说。
 
 synchronized 除了可以锁代码块，还可以直接加到方法上：
 
@@ -188,44 +192,78 @@ public void increment() {
 1. 重入性；
 2. 排他性；
 
-重入性：获取该对象锁的线程，可以在访问被该对象锁保护的其它代码块时再次获取该对象锁。这里面有一个获取锁的计数器，获取锁时计数器+1，执行完一个被保护的代码块后计数器-1，知道计数器为0时该线程释放锁。重入锁是为了防止发生死锁。
+重入性：获取对象锁的线程，可以访问被相同锁保护的其它同步代码块（同步方法），并且会再一次获取该对象锁，这里面有一个获取锁的计数器，每获取一次计数器+1，执行完一个同步方法计数器-1，直到计数器为0时该线程释放掉锁。重入锁是为了防止发生线程死锁。
 
 排他性：多个线程不会共享同一个锁，当一个线程获得锁，其它线程访问临界区只能被阻塞；
 
 <br/>
 
-#### 2.1.2 Java 对象头
+### 2.2 Java 对象头
 
-synchronized 在 jdk 1.6 之前使用重量级锁，使用的是操作系统提供的管程（Monitor）实现的，所以会发生用户态与内核态（操作系统执行的代码在内核态）的频繁切换，造成大量的性能损耗；在 jdk 1.6 时对 synchronized 做了优化。因为不是在任何情况下都会发生线程竞争的情况，所以，引入了偏向锁、轻量级锁。
+synchronized 在 jdk 1.6 之前使用重量级锁，使用的是操作系统提供的管程（Monitor）实现的，所以即便在没有线程竞争的情况下也可能会发生用户态与内核态（操作系统执行的代码在内核态）的频繁切换，造成不必要的性能损耗；
 
-对象锁有四种锁标志：无锁、偏向锁、轻量级锁和重量级锁。
+在 jdk 1.6 时对 synchronized 做了优化，引入了偏向锁、轻量级锁，在没有线程竞争的情况下，使用偏向锁，出现线程竞争时升级轻量级锁，超过一定自旋次数时升级重量级锁的策略。
 
-这四种状态记录在哪呢？就记录在锁对象的对象头中，任何对象都有一个对象头信息，下面来认识一下对象头。以 Hotspot 虚拟机为例，Hopspot 对象头主要包括两部分数据：Mark Word（标记字段） 和 class Pointer（类型指针）。
+对象锁有四种锁标志：正常状态（无锁）、偏向锁、轻量级锁和重量级锁。
+
+这四种状态记录在哪呢？就记录在锁对象的对象头中，任何对象都有一个对象头信息，下面来认识一下对象头。
+
+以 Hotspot 虚拟机为例，Hopspot 对象头主要包括两部分数据：Mark Word（标记字段） 和 class Pointer（类型指针）。
 
 - Mark Word（标记字段），主要记录对象的 Hashcode、分代年龄、锁标志位等信息；
 - class Pointer（类型指针），对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。
 
-<ImgBox src="https://images.shiguangping.com/imgs/eaf81a4c510fd9f943534d9a8489382f2934a423.jpeg" />
+下面是我用 Excel 整理的以 32 位虚拟机为例的内存分配图，并做了注释：
 
-<ImgBox src="https://images.shiguangping.com/imgs/5366d0160924ab18e6cf093c905e0ac87a890b0e.jpeg" />
+<ImgBox src="https://images.shiguangping.com//imgs/20211207224920.png" />
 
+锁标志就存在锁对象对象头的 Mark Word 中，其中：
 
-这里主要看 Mark Word 这部分：
-
-<ImgBox src="https://images.shiguangping.com/imgs/ac4bd11373f08202c1966cfaeb5f17e8aa641b1d.jpeg" />
-
-锁标志就存在锁对象对象头的 Mark Word 中。
-
-<br/>
-
-#### 2.1.3 偏向锁
-
-因为不是所有的时候都会发生线程竞争的情况，如果使用操作系统的管程（Monitor）会显得稍重一些，会发生用户态与内核态的切换，考虑到这一点，在 Jdk 1.6 为 synchronized 引入了偏向锁，偏向锁是考虑到在没有线程竞争的场景下。如果发生了线程竞争的情况，偏向锁会被撤销，从而升级成轻量锁。
-
-<SvgBox src="https://images.shiguangping.com/imgs/%E8%8E%B7%E5%8F%96%E5%81%8F%E5%90%91%E9%94%81.svg" />
-
-
+- lock: 01, biased_lock:0 表示正常状态（无锁）；
+- lock: 01, biased_lock:1 表示偏向锁；
+- lock: 00 表示轻量级锁；
+- lock: 10 表示重量级锁；
+- lock: 11 垃圾回收标记。
 
 <br/>
 
-### 2.2 ReentrantLock
+下面一步一步看对象锁是怎么从偏向锁升级到重量级锁的。
+
+<br/>
+
+### 2.3 偏向锁
+
+<ImgBox src="https://images.shiguangping.com//imgs/20211207234758.png" />
+
+因为不是所有的时候都会发生线程竞争的情况，如果只是一个线程访问同步代码（指使用了 synchronized 保护的代码），使用操作系统的管程（Monitor）会显得小题大做了一些，考虑到这一点，Jdk 1.6 为 synchronized 引入了偏向锁。
+
+偏向锁是考虑到在没有线程竞争的场景下，如果发生了线程竞争的情况，偏向锁会被撤销，从而升级成轻量锁。
+
+看图说话：
+
+<SvgBox src="https://images.shiguangping.com//imgs/%E5%81%8F%E5%90%91%E9%94%81.svg" />
+
+1. 当线程A在访问同步代码时，会判断当前同步代码锁对象的锁标志位，如果锁标志位处于01（无锁 or 偏向锁），判断当前是否是偏向锁；
+2. 如果当前锁是偏向锁，则看偏向锁的 Thread_Id 是否是当前线程Id，如果是当前的线程Id，说明当前线程持有该偏向锁，继续执行同步代码；如果偏向锁的 Thread_Id 不是当前线程的线程Id，则通过 CAS 自旋替换偏向锁的 Thread_Id 为当前线程Id，替换成功，拿到偏向锁，然后执行同步代码；替换失败，说明发生了偏向锁被其它线程持有，此时发生线程竞争，这一过程在轻量级锁再讲；
+3. 如果当前锁不是偏向锁，则通过 CAS 自旋替换 Thread_Id 为当前线程Id，替换成功，拿到偏向锁，执行同步代码。
+
+以上过程是发生在没有线程竞争的情况下。
+
+:::tip
+通过虚拟机参数 `-XX:-UseBiasedLocking=false` 关闭偏向锁。
+:::
+
+<br/>
+
+### 2.4 轻量级锁
+
+
+
+
+<br/>
+
+### 2.5 重量级锁
+
+<br/>
+
+### 2.6 ReentrantLock
