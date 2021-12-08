@@ -20,13 +20,13 @@ export default class SvgBox extends Component{
   }
 
   render() {
-    const {src} = this.props
+    const {src, width} = this.props
 
     return (
       <React.Fragment>
         {/*svg元素*/}
         <div>
-          {src ? <embed src={src} type="image/svg+xml" pluginspage="http://www.adobe.com/svg/viewer/install/" /> : null}
+          {src ? <embed src={src} width={width} type="image/svg+xml" pluginspage="http://www.adobe.com/svg/viewer/install/" /> : null}
         </div>
       </React.Fragment>
     );
