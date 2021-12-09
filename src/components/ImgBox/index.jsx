@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Image} from "rebass";
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 /**
  * <pre>
