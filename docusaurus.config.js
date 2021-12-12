@@ -76,6 +76,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             label: 'Gitee',
             position: 'right',
           },
+          {
+            href: 'https://git.surcode.cn/',
+            label: 'Git',
+            position: 'right'
+          }
         ],
       },
       footer: {
