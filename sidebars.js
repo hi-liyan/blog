@@ -19,95 +19,126 @@ module.exports = {
     {
       type: 'doc',
       id: 'hello',
-      label: '你好'
+      label: 'Introduction'
     },
 
     // 后端
     {
       type: 'category',
-      label: '后端开发(Java)',
+      label: 'Backend',
       items: [
-        'java/jdk-install',
-        'java/javase-note',
-        'java/java-classloader',
-        'java/java-reflect',
-        'java/java-proxy',
-        'java/java-multi-thread',
-        'java/java-synchronized',
-        'java/java-threadlocal',
-        'java/java-io',
-        'java/java-nio',
-        'java/java-stream',
-        'java/java-lambda',
-        'java/uml',
-        'java/design-pattern',
-        'java/springboot-application-context-initializer',
-        'java/springboot-application-event-listener',
-        'java/springboot-auto-configuration',
-        'java/spring-xml-ioc',
-        'java/jsr303',
-        'java/redis-note',
-        'java/rocketmq-quick-start',
-        'java/dubbo-quick-start',
-        'java/elasticsearch-quick-start',
-        'java/spring-cloud-alibaba',
-        'java/springboot-actuator',
-        'java/services-register-and-discovery',
-        'java/ribbon',
-        'java/sentinel',
-        'java/create-ssm-proj',
-        'java/mybatis-plus-multi-tenant',
-        'java/springboot-global-exception-handle',
-        'java/springboot-custom-starter'
-      ]
-    },
-
-    // 其它后端开发
-    {
-      type: 'category',
-      label: '后端开发',
-      items: [
-        'backend/golang-note'
+        {
+          Java: [
+            'java/jdk-install',
+            'java/javase-note',
+            'java/java-classloader',
+            'java/java-reflect',
+            'java/java-proxy',
+            'java/java-multi-thread',
+            'java/java-synchronized',
+            'java/java-threadlocal',
+            'java/java-io',
+            'java/java-nio',
+            'java/java-stream',
+            'java/java-lambda',
+            'java/uml',
+            'java/design-pattern',
+          ]
+        },
+        {
+          SpringFramework: [
+            'java/create-ssm-proj',
+            'java/springboot-application-context-initializer',
+            'java/springboot-application-event-listener',
+            'java/springboot-auto-configuration',
+            'java/spring-xml-ioc',
+            'java/springboot-custom-starter',
+            'java/springboot-actuator',
+            'java/jsr303',
+          ]
+        },
+        {
+          微服务: [
+            'java/spring-cloud-alibaba',
+            'java/nacos-services-register-and-discovery',
+            'java/nacos-configuration-center',
+            'java/ribbon',
+            'java/sentinel',
+            'java/dubbo-quick-start', 
+          ]
+        },
+        {
+          中间件: [
+            'java/redis-note',
+            'java/rocketmq-quick-start',
+            'java/elasticsearch-quick-start',
+          ]
+        },
+        {
+          others: [
+            'java/springboot-global-exception-handle',
+            'java/mybatis-plus-multi-tenant',
+          ]
+        },
+        {
+          Golang: [
+            'backend/golang-note'
+          ]
+        }
       ]
     },
 
     // 前端
     {
       type: 'category',
-      label: '前端开发',
+      label: 'Frontend',
       items: [
-        'frontend/css-note',
-        'frontend/react-note',
-        'frontend/vue-components-communication',
-        'frontend/vue-responsive'
-      ]
-    },
-
-    // Flutter
-    {
-      type: 'category',
-      label: 'Flutter 开发',
-      items: [
-        'flutter/dart-lang-note',
-        'flutter/flutter-note'
+        {
+          三大件: [
+            'frontend/css-note',
+          ]
+        },
+        {
+          React: [
+            'frontend/react-note',
+          ]
+        },
+        {
+          Vue: [
+            'frontend/vue-components-communication',
+            'frontend/vue-responsive'
+          ]
+        },
+        {
+          Flutter: [
+            'flutter/dart-lang-note',
+            'flutter/flutter-note'
+          ]
+        }
       ]
     },
 
     // 其它
     {
       type: 'category',
-      label: '其它',
+      label: 'Others',
       items: [
+        {
+          Docker: [
+            'skill/docker-doc',
+            'skill/docker-install',
+            'skill/harbor-install',
+            'skill/portainer-standalone',
+          ]
+        },
         'skill/idea-view-openjdk-source-code',
         'skill/java-learning-path',
         'skill/java-learning-method',
         'skill/git-memo',
-        'skill/centos-install-docker',
         'skill/frp-install',
         'skill/github-ssh',
         'skill/springboot-jenkins-cicd',
         'skill/group-concat-max-length',
-        'skill/harbor-install',
         'skill/netlify',
         'skill/spring-cross',
         'skill/stored-procedure-oracle',
@@ -116,15 +147,14 @@ module.exports = {
         'skill/redis-story-persistence',
         'skill/session-cookie-jwt',
         'skill/ssh-login',
-        'skill/portainer-standalone',
-        'skill/vim'
+        'skill/vim',
       ]
     },
 
     // 读书笔记
     {
       type: 'category',
-      label: '读书笔记',
+      label: 'Reading',
       items: [
         'reading/编程的原则：改善代码质量的101个方法',
         'reading/一切都是最好的安排',

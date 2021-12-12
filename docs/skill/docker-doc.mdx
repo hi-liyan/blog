@@ -1,0 +1,408 @@
+---
+id: docker-doc
+title: Docker 入门
+---
+import ImgBox from "../../src/components/ImgBox";
+import SvgBox from "../../src/components/SvgBox";
+import ArticleCreation from "../../src/components/ArticleCreation";
+import TipBox from "../../src/components/TipBox";
+
+<ArticleCreation createDate="2021-12-11" />
+
+## 0. Docker 简介
+
+容器化技术是近几年热门的话题，所以本篇手记的主角就是大名鼎鼎的 Docker 了。一个伟大项目的诞生必定是为了解决问题，那 Docker 解决了什么问题呢？
+
+首先，Docker 解决了 “软件跨环境迁移” 的问题，例如把本地项目部署到服务器，可能就会出现因为服务器运行环境本地环境不一致导致的某些问题。
+
+然后，我认为 Docker 使项目部署和管理这件事儿变得更简单。
+
+例如，我想要在本地机器或者服务器上搭建 Mysql、Redis、Nacos ... 这些软件，我只需要在机器上安装一个 Docker ，再使用两个命令 (docker pull xxx, docker run xxx) 就可以很轻松地把这些软件跑起来。并且还有容器编排技术 (docker compose)，写一个配置文件，一个命令就可以运行多个容器，这也是我一个初级开发者爱上 Docker 的主要原因。
+
+<TipBox>
+    今日的学习目标：<br/>
+    1. 学会 Docker 的基本使用；<br/>
+    2. 学会镜像制作以及项目部署；<br/>
+    3. docker-compose 编写。
+</TipBox>
+
+**下面就开始今天的主题。**
+
+<br/>
+
+## 1. Docker 安装
+
+Docker 的安装我之前单独写过一篇手记，介绍在 CentOS 中安装 Docker 的方式，这里就不多赘述了。
+
+[Docker 安装手记](/docs/skill/docker-install)
+
+Windows 或者 MacOS 可以在官网下载和安装桌面软件。
+
+[官方下载页面](https://www.docker.com/get-started)
+
+<br/>
+
+## 2. Docker 基本架构
+
+下面这幅图是 Docker 基本的一个架构图，图中包含三部分：
+
+- 客户端 (Client)
+- 主机 (Host)
+- 仓库 (Repository)
+
+我们在机器上安装的 Docker 包含了前两部分，分别是 **客户端** 和 **服务端** （主机）。Docker 在机器上启动起来后会有一个守护进程 (daemon) 用来处理 Docker 的各种任务，例如客户端发来的各种命令。客户端指的是用来给 Docker 服务端发送命令的工具。仓库是用来存放各种 Docker 镜像的。
+
+<SvgBox src="https://images.shiguangping.com//imgs/Docker%20%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84.drawio.svg" />
+
+
+学习 Docker 需要知道三个基本概念：
+
+- 镜像 (Image)
+- 容器 (Container)
+- 仓库 (Repository)
+
+镜像，其实是一个软件包的集合，它里面包含了软件运行的环境以及软件本身，例如把一个 SpringBoot 项目打包成 Docker 镜像，这个镜像里面起码包含了 Jre 以及编译后的项目本身，有了这两样项目才能跑起来。再举一个例子，一台电脑或者虚拟机想要启动起来，起码要有一个操作系统镜像，安装操作系统后电脑才能运行。
+
+容器，顾名思义，镜像本身只是一个软件包，而我们需要的是让项目跑起来，所以容器就是运行镜像的一个场所，通过镜像来运行容器。并且容器的沙河机制，容器与容器之间是相互隔离的。可以把一个容器理解成一个虚拟机，但是容器要比虚拟机更轻。
+
+仓库，仓库是用来存放镜像的，我们可以在仓库中拉取 (pull) 镜像，并运行容器。仓库分为[官方公共仓库](https://hub.docker.com/)和私有仓库两种，像阿里云等云服务商提供了私有 docker 镜像仓库，也可以自己[搭建私有仓库](/docs/skill/harbor-install)。
+
+**以上这三个概念一定要清楚，Docker 的所有操作都是围绕着这三个概念，尤其是镜像和容器。**
+
+<br/>
+
+## 3. Docker 常用命令
+
+### 3.1 服务相关
+
+启动 Docker（CentOS）：
+```bash
+systemctl start docker
+```
+
+<br/>
+
+查看服务状态：
+```bash
+systemctl status docker
+```
+
+<br/>
+
+关闭 Docker：
+```bash
+systemctl stop docker
+```
+
+<br/>
+
+重启 Docker：
+```bash
+systemctl restart docker
+```
+
+<br/>
+
+开启启动 Docker：
+```bash
+systemctl enable docker
+```
+
+<br/>
+
+### 3.2 镜像相关
+
+查看本地镜像：
+```bash
+docker images [OPTIONS] [REPOSITORY[:TAG]]
+```
+
+OPTIONS（列举常用可选参数）：
+
+- `--all`/`-a` 展示所有镜像
+- `--quiet`/`-q` 仅展示所有镜像的ID
+
+<br/>
+
+通过镜像名称查找镜像（tag是版本号，不指定版本将下载最新版）：
+
+```bash
+docker search image-name:tag
+```
+
+:::tip
+查找镜像可以到[官方镜像仓库](https://hub.docker.com/)。
+:::
+
+<br/>
+
+拉取镜像：
+```bash
+docker pull image-name:tag
+```
+
+<br/>
+
+删除镜像：
+```bash
+docker rmi image-name:tag
+```
+或者通过 Image ID 删除：
+```bash
+docker rmi image-id
+```
+:::tip
+正在被容器使用的镜像无法删除。
+:::
+<br/>
+
+删除全部镜像：
+```bash
+docker rmi `docker images -q`
+```
+<br/>
+
+### 3.3 容器相关
+
+创建容器：
+```bash
+docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+```
+OPTIONS（列举常用可选参数）：
+
+- `--env`/`-e` 设置环境变量
+- `--env-file` 从文件中读取环境变量
+- `--name` 设置容器名称
+- `--volume`/`-v` 挂载一个数据卷
+- `--detach`/`-d` 在后台运行容器并打印容器ID
+- `--interactive`/`-i` 以交互模式运行容器，通常与 -t 一起使用
+- `--tty`/`-t` 为容器分配一个伪输入终端，通常与 -i 一起使用
+- `--publish`/`-p` 设置宿主机与容器的端口映射 -p 8080:8080
+- `--restart` 重启 Docker 服务后自动启动容器
+
+<br/>
+
+查看容器：
+
+如果没有指定可选参数，docker ps 仅查看正在运行的容器。
+
+```bash
+docker ps [OPTIONS]
+```
+
+OPTIONS（列举常用可选参数）：
+
+- `--all`/`-a` 查看全部容器
+- `--quiet`/`-q` 仅展示所有容器的ID
+- `--last`/`-n` 展示 n 个最后创建的容器（创建时间倒序），包含所有状态。docker ps -n 3
+- `--lastest`/`-l` 展示最后一个创建的容器（包含所有状态）
+
+<br/>
+
+查看容器的基础信息：
+
+```bash
+[OPTIONS] NAME|ID [NAME|ID...]
+```
+
+<br/>
+
+删除容器：
+
+```bash
+docker rm [OPTIONS] CONTAINER [CONTAINER...]
+```
+
+OPTIONS：
+
+- `--force`/`-f` 强制移除一个正在运行的容器
+- `--link`/`-l` 移除指定的链接
+- `--volumes`/`-v` 移除与容器关联的匿名数据卷
+
+<br/>
+
+## 4. 数据卷 (Volume)
+
+数据卷的作用是使容器内的数据持久化，使数据不随着容器的结束而结束。那什么是数据卷呢？如何使用数据卷呢？
+
+数据卷实际就是在**宿主机**中创建的一个目录，再将这个目录挂载到容器中需要持久化的目录上，这就让这两个目录形成了一个映射，容器内的数据会同步到宿主机数据卷中，在数据卷中添加数据，也会被同步到容器内。
+
+在创建容器时，如果没有显式地为容器指定数据卷，容器会在宿主机中创建一个匿名数据卷，一般存放在 `/var/lib/docker/volumes` 目录下，里面包含了很多匿名卷（目录名是很长一串字母数字）；
+
+更加常用的方式是在创建容器时，显式地挂载数据卷：
+
+```bash
+docker run -v 宿主机目录:容器内目录 -v 宿主机目录：容器内目录
+```
+
+容器可以挂载多个数据卷，挂载的数据卷就与容器内的目录做了映射，在容器内的目录创建一个文件，宿主机数据卷中也会同步该文件，反之也是如此。
+
+并且，宿主机中的一个数据卷可以同时被多个容器挂载，这也是使容器间接数据通信的一种方式。
+
+<br/>
+
+还有一种更简单的容器间数据通信的方式，可以创建一个数据卷容器，让其挂载宿主机中的数据卷，然后让其它容器从该容器挂载数据卷。
+
+```bash
+docker run --volumes-from 数据卷容器
+```
+
+<br/>
+
+## 5. Dockerfile
+
+### 5.1 镜像 (Image)
+
+### 5.2 通过容器构建镜像
+容器转镜像：
+```bash
+docker commit 容器Id 镜像名称:版本号
+```
+
+:::tip
+注意：通过容器生成的镜像，容器中的数据卷 (Volume) 在新的镜像中不生效。也就是说，通过该镜像创建的容器是不包含原有容器挂载的数据卷的。如果需要挂载数据卷，可以在创建容器时指定要挂载的数据卷。
+:::
+
+<br/>
+
+镜像转压缩文件：
+```bash
+docker save -o 压缩文件名称 镜像名称:版本号
+```
+
+<br/>
+
+压缩文件还原回镜像：
+```bash
+docker load -i 压缩文件名称
+```
+
+<br/>
+
+### 5.3 通过 Dockerfile 构建镜像
+
+Dockerfile 是一个文本文件，里面包含了一条条指令，每一条指令构建一层，基于基础镜像，最终构建出一个新的镜像。
+
+下面是 Dockerfile 中的指令：
+
+|关键字|作用|备注|
+|---|---|---|
+|FROM|指定父镜像|指定基础镜像，基于哪个镜像构建|
+|MAINTAINER|作者信息|用来标明镜像作者信息|
+|LABEL|标签|用来标明镜像的元数据信息，也可以使用 LABEL 代替 MAINTAINER，这些信息最终都在 docker image 基本信息中心可以查看|
+|RUN|执行命令|执行一段命令，默认是 /bin/sh 格式：`RUN command` 或者 `RUN ["command", "param1", "param2", ...]`|
+|CMD|用于运行程序|为启动的容器指定默认要运行的程序，在 docker run 时执行该命令和 ENTRYPOINT 配合使用。格式：`CMD ["<可执行文件或命令>","<param1>","<param2>",...]` 或者 `CMD ["<param1>","<param2>",...]`|
+|ENTRYPOINT|入口|类似于 CMD 指令，但其不会被 docker run 的命令行参数指定的指令所覆盖，而且这些命令行参数会被当作参数送给 ENTRYPOINT 指令指定的程序。但是, 如果运行 docker run 时使用了 --entrypoint 选项，将覆盖 CMD 指令指定的程序。如果 Dockerfile 存在多条 ENTRYPOINT，仅最后一条生效|
+|COPY|复制命令|从上下文目录中复制文件或目录到容器的指定路径，格式：`COPY 源路径 目标路径`|
+|ADD|添加命令|和 COPY 类型，当源文件为压缩文件时，会自动解压到目标路径|
+|ENV|环境变量|指定 build 时的环境变量，可以在创建容器的时候，通过 -e 覆盖或者设置环境变量|
+|ARG|构建参数|构建参数，与 ENV 作用一致。不过作用域不一样。ARG 设置的环境变量仅对 Dockerfile 内有效，也就是说只有 docker build 的过程中有效，构建好的镜像内不存在此环境变量。|
+|VOLUME|定义匿名数据卷|在启动容器时忘记挂载数据卷，会自动挂载到匿名卷。可以在创建容器时使用 -v 挂载数据卷|
+|EXPOSE|暴露端口|定义容器运行时监听的端口号，启动容器时可以使用 -p 指定暴露的端口|
+|WORKDIR|指定工作目录|用 WORKDIR 指定的工作目录，会在构建镜像的每一层中都存在。（WORKDIR 指定的工作目录，必须是提前创建好的）。docker build 构建镜像过程中的，每一个 RUN 命令都是新建的一层。只有通过 WORKDIR 创建的目录才会一直存在。可以指定绝对路径工作目录，`/`开头；如果不指定 `/` 开头，那么是相对上一条 WORKDIR 的相对路径|
+|USER|指定执行用户|指定 build 或者启动的时候，用户在 RUN、CMD、ENTRYPOINT 执行时候的用户|
+|HEALTHCHECK|健康检查|用于指定某个程序或者指令来监控 docker 容器服务的运行状态，不常用|
+|ONBUILD|触发器|当存在该关键字的镜像作为基础镜像的时候，当执行 FROM 完成后，会执行 ONBUILD 的命令，但是不影响当前镜像，不常用|
+|STOPSIGNAL|发送信号量到宿主机|该指令设置将发送到容器的系统调用信号以退出|
+|SHELL|指定执行脚本的 shell|指定 RUN、CMD、ENTRYPOINT 执行命令时，使用的 shell|
+
+例如将 SpringBoot 项目的可执行 jar 包制作成 Docker 镜像：
+
+```dockerfile
+FROM java:8
+MAINTAINER liyan <xxx@xxx.com>
+ADD target/demo-0.0.1-SNAPSHOT.jar app.jar
+CMD java -jar app.jar
+```
+
+<br/>
+
+从 Dockerfile 构建镜像的命令：
+```bash
+docker build -f Dockerfile -t image-name:tag .
+```
+- `-f` Dockerfile 的文件路径
+- `-t` 文件名:版本
+- `.` Dockerfile 上下文路径
+
+这里可以直接写成：(不指定 -f ，会默认从当前目录下读取名为 `Dockerfile` 文件)
+```bash
+docker build -t image-name:tag .
+```
+
+<br/>
+
+还可以从网络位置上的 Dockerfile 构建镜像：
+```bash
+docker build github.com/creack/docker-firefox
+```
+
+:::tip
+[Dockerfile 菜鸟教程](https://www.runoob.com/docker/docker-dockerfile.html)
+:::
+<br/>
+
+## 6. 容器编排 (docker compose)
+
+Docker compose 是一个容器编排技术，可以通过 yaml 文件定义和运行多个容器。
+
+### 6.1 compose 安装
+
+Mac 和 Windows 安装 Docker 桌面程序无需额外安装 compose，下面介绍 Linux 安装：
+
+1. 下载当前稳定版本的Docker Compose：
+
+    ```bash
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    ```
+
+2. 修改文件权限：
+
+    ```bash
+    sudo chmod +x /usr/local/bin/docker-compos
+    ```
+
+3. 测试安装
+    
+    ```bash
+    docker-compose --version
+    ```
+
+:::tip
+参考：
+[官方文档](https://docs.docker.com/compose/install/)
+:::
+
+<br/>
+
+### 6.2 docker-compose 编写
+
+创建名为 `docker-compose.yaml` 的文件， docker-compose.yaml 中可以定义多个容器，并通过 `docker-compose up -d` 命令启动 docker-compose ，启动其中定义的多个容器。
+
+具体写法不多做介绍了，可以[参考菜鸟教程](https://www.runoob.com/docker/docker-compose.html)或者[官方文档](https://docs.docker.com/compose/gettingstarted/#step-7-update-the-application)。
+
+我这里贴出几个我写的 docker-compose 文件，[仓库地址](https://git.surcode.cn/liyan/docker_compose)。
+
+记住两个命令：
+
+通过当前目录下的 `docker-compose.yaml` 启动：( -d 表示后台运行)
+
+```bash
+docker-compose up -d
+```
+
+<br/>
+
+停止 Compose：
+
+```bash
+docker-compose down
+```
+
+<br/>
+
+
+
+## 7. 参考
+
+- [Docker 命令官方文档](https://docs.docker.com/engine/reference/commandline/docker/)
