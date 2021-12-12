@@ -1,6 +1,6 @@
 ---
 id: harbor-install
-title: 搭建Docker镜像仓库Harbor
+title: Harbor 搭建私有 Docker 镜像库
 ---
 
 在本地环境下（或者公司局域网），将Docker镜像推送到Docker Hub速度比较慢，推荐的做法是安装一个第三方的Docker镜像仓库，这里推荐使用Harbor。Harbor是一款开源的Docker镜像存储仓库，其扩展了Docker Distribution，在此基础上添加了我们常用的功能，比如安全认证，RBAC用户权限管理，可视化页面操作等功能。

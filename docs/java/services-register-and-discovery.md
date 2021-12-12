@@ -1,6 +1,6 @@
 ---
-id: services-register-and-discovery
-title: 服务发现注册与发现组件 -Nacos
+id: nacos-services-register-and-discovery
+title: Nacos 服务发现注册与发现组件
 ---
 
 ## 1.1 了解服务注册与发现
