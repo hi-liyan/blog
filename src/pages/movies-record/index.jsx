@@ -68,6 +68,7 @@ class MoviesRecord extends Component {
 
   buildTable() {
     function buildTags(item) {
+      if (!item.tags) return "-"
       return item.tags.split(',').map(tag => {
         let type // 徽章类型（颜色）
         switch (tag) {
