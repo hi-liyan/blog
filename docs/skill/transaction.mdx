@@ -2,6 +2,7 @@
 id: transaction
 title: 浅谈 Transaction 事务
 ---
+import RightAngleBadge from "../../src/components/RightAngleBadge";
 
 ## 1. 事务的 ACID 原则
 
@@ -31,49 +32,63 @@ title: 浅谈 Transaction 事务
 
 ## 3. Spring 中7种事务传播行为
 
-事务的传播行为在平日开发中用到比较少，大多数情况都使用默认的设置，但如果想了解 Spring 提供的这 7 种事务传播行为，要讲的东西还真不少，看了网上的多篇文章对其介绍的很生硬，所以我再重新介绍下 Spring 中的这 7 种事务的传播行为，看看不同的传播行为会导致什么样的结果。*（废话不多说，接着往下瞧...）*
+Spring 提供了 7 种事务传播行为：（这几个单词的直译就能体现它们的作用）
 
-首先，需要先清楚一个概念，那就是**事务的传播方向**，传播方向可以是**正向**的（调用者->被调用者），也可以是**逆向**的（被调用者->调用者）。
+- Propagation.REQUIRED 当前方法**必须**以事务方式执行
+- Propagation.SUPPORTS 当前方法**支持**其它方法的决定
+- Propagation.MANDATORY 当前方法**强制**其它方法必须以事务方式执行
+- Propagation.REQUIRES_NEW 当前方法**需要**以一个新的事务执行，并且执行时会挂起其它事务
+- Propagation.NOT_SUPPORTED 当前方法**不支持**事务方式执行
+- Propagation.NEVER 当前方法**绝不可能**以事务方式执行，也不允许其它方法以事务方式执行
+- Propagation.NESTED 当前方法作为一个子事务**嵌套**在其他事务中，提交还是回滚受其它事务影响
 
+:::tip
+在 SpringBoot 项目中，通常使用 `@Transactional` 注解为方法添加事务，通过注解的 `propagation` 属性（如：@Transactional(propagation = Propagation.REQUIRED) ）可以设置事务的传播行为。
+:::
 
-一个方法设置了事务（默认的传播行为 `Propagation.REQUIRED`），该事务传播方向是往调用它的方法传播（调用者 <- 设置了传播行为的方法），也就是逆向传播。在某种程度约束了该方法的调用者。假设方法A 调用方法B ，方法B 设置了传播行为，受控的是方法A ，以下的介绍也都是以这个为前提：
-
-
-*在 SpringBoot 项目中，通常使用 `@Transactional` 注解为方法添加事务，通过注解的 `propagation` 属性（如：@Transactional(propagation = Propagation.REQUIRED) ）可以设置事务的传播行为。*
+:::caution
+事务的传播行为是作用于两个类的方法之间的，为什么是两个类之间？同一个类中的两个方法不行？这个问题留到后面再说。
+:::
 
 <br/>
 
-
 ### 3.1 Propagation.REQUIRED
 
-方法B 的事务传播行为设置为 `Propagation.REQUIRED` ，那么：
+<RightAngleBadge>表示当前方法必须以事务方式执行。</RightAngleBadge>
 
-- 如果方法A 存在事务，则方法B 不新建事务，而是加入到方法A 的事务中，方法A 或B 任何一个发生异常，事务都会回滚；
-- 如果方法A 不存在事务，则方法B 新建一个事务，而方法A 不以事务方式执行。方法B 发生异常会回滚当前事务，方法A 发生异常不会回滚其数据库操作。
+如果是当前方法调用其它方法，当前方法必须以事务方式执行，其它方法的行为要看其它方法的事务传播行为是如何设置的：
 
+- 例如被调用的方法没有事务，或者被调用方法是 Propagation.REQUIRED 或者 Propagation.SUPPORTS 等，这些不冲突的情况其他方法都会加入到当前方法的事务中，在同一个事务中执行，发生异常，所有操作都会回滚；
+- 如果被调用方法是 `Propagation.REQUIRES_NEW` 或者 `Propagation.NEVER` 这种就不会加入到当前方法的事务中，前者会起一个新的事务执行，后者会直接抛异常，因为它不允许其它方法以事务方式执行。 
+
+如果当前方法是被调用方法，调用者没有事务的情况下，只有当前方法会以事务方式执行，调用者因为没有事务所以不会以事务方式执行。如果调用者存在事务，还要看它的事务传播行为是如何定义的。
 
 :::tip
 Propagation.REQUIRED 是 Spring 中默认的传播行为，也满足大多数使用场景。
 :::
 
-
 <br/>
 
 ### 3.2 Propagation.SUPPORTS
 
-方法B 的事务传播行为设置为 `Propagation.SUPPORTS`，那么：
+<RightAngleBadge>表示当前方法支持其他方法的决定，但本身不以事务执行</RightAngleBadge>
 
-- 如果方法A 存在事务，则方法B 不新建事务，而是加入到方法A 的事务中，方法A 或B 任何一个发生异常，事务都会回滚；
-- 如果方法A 不存在事务，则方法A 和方法B 都不以事务执行，任何一个方法发生异常，都不会回滚数据库操作。
+如果调用它的方法是 Propagation.REQUIRED，则它会加入到调用者的事务中；
+
+如果其它方法是 Propagation.MANDATORY，则会抛出异常，因为 Propagation.MANDATORY 要求其它方法必须以事务方式执行；
+
+如果其它方法是 Propagation.NEVER 也不会抛异常。
+
 
 <br/>
 
 ### 3.3 Propagation.MANDATORY
 
-方法B 的事务传播行为设置为：`Propagation.MANDATORY`，那么：
+<RightAngleBadge>当前方法以事务方式执行，并强制调用它的方法也以事务方式执行。</RightAngleBadge>
 
-- 如果方法A 存在事务，则方法B 不新建事务，而是加入到方法A 的事务中，方法A 或B 任何一个发生异常，事务都会回滚；
-- 如果方法A 不存在事务，则抛出异常。
+强制要求当前方法的调用者以事务方式执行，并加入到调用者的事务中，即便调用者是 Propagation.REQUIRES_NEW，也会在同一个事务中执行，有一个方法发生异常，所有操作都会回滚；如果调用者不以事务执行，则会抛异常。
+
+如果当前方法作为调用者调用其它方法，也会抛出异常。从代码执行顺序来看，先执行当前方法，发现传播行为是 Propagation.MANDATORY，就会在当前事务中找其它方法的事务，发现事务上下文中只有 MANDATORY，所以抛异常了。
 
 <br/>
 
