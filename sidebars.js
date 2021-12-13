@@ -19,13 +19,13 @@ module.exports = {
     {
       type: 'doc',
       id: 'hello',
-      label: 'Introduction'
+      label: '你好'
     },
 
     // 后端
     {
       type: 'category',
-      label: 'Backend',
+      label: '后端开发',
       items: [
         {
           Java: [
@@ -91,10 +91,10 @@ module.exports = {
     // 前端
     {
       type: 'category',
-      label: 'Frontend',
+      label: '前端开发',
       items: [
         {
-          三大件: [
+          'HTML/CSS/JS': [
             'frontend/css-note',
           ]
         },
@@ -121,7 +121,7 @@ module.exports = {
     // 其它
     {
       type: 'category',
-      label: 'Others',
+      label: '其它',
       items: [
         {
           Docker: [
