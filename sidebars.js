@@ -29,60 +29,60 @@ module.exports = {
       items: [
         {
           Java: [
-            'java/jdk-install',
-            'java/javase-note',
-            'java/java-classloader',
-            'java/java-reflect',
-            'java/java-proxy',
-            'java/java-multi-thread',
-            'java/java-synchronized',
-            'java/java-threadlocal',
-            'java/java-io',
-            'java/java-nio',
-            'java/java-stream',
-            'java/java-lambda',
-            'java/uml',
-            'java/design-pattern',
+            'backend/jdk-install',
+            'backend/javase-note',
+            'backend/java-classloader',
+            'backend/java-reflect',
+            'backend/java-proxy',
+            'backend/java-multi-thread',
+            'backend/java-synchronized',
+            'backend/java-threadlocal',
+            'backend/java-io',
+            'backend/java-nio',
+            'backend/java-stream',
+            'backend/java-lambda',
+            'backend/uml',
+            'backend/design-pattern',
           ]
         },
         {
           SpringFramework: [
-            'java/create-ssm-proj',
-            'java/springboot-application-context-initializer',
-            'java/springboot-application-event-listener',
-            'java/springboot-auto-configuration',
-            'java/spring-xml-ioc',
-            'java/springboot-custom-starter',
-            'java/springboot-actuator',
-            'java/jsr303',
+            'backend/create-ssm-proj',
+            'backend/springboot-application-context-initializer',
+            'backend/springboot-application-event-listener',
+            'backend/springboot-auto-configuration',
+            'backend/spring-xml-ioc',
+            'backend/springboot-custom-starter',
+            'backend/springboot-actuator',
+            'backend/jsr303',
           ]
         },
         {
           微服务: [
-            'java/spring-cloud-alibaba',
-            'java/nacos-services-register-and-discovery',
-            'java/nacos-configuration-center',
-            'java/ribbon',
-            'java/sentinel',
-            'java/dubbo-quick-start', 
+            'backend/spring-cloud-alibaba',
+            'backend/nacos-services-register-and-discovery',
+            'backend/nacos-configuration-center',
+            'backend/ribbon',
+            'backend/sentinel',
+            'backend/dubbo-quick-start', 
           ]
         },
         {
           中间件: [
-            'java/redis-note',
-            'java/rocketmq-quick-start',
-            'java/elasticsearch-quick-start',
+            'backend/redis-note',
+            'backend/rocketmq-quick-start',
+            'backend/elasticsearch-quick-start',
           ]
         },
         {
           数据库: [
-            'skill/transaction',
+            'backend/transaction'
           ]
         },
         {
           others: [
-            'java/springboot-global-exception-handle',
-            'java/mybatis-plus-multi-tenant',
+            'backend/springboot-global-exception-handle',
+            'backend/mybatis-plus-multi-tenant',
           ]
         },
         {
@@ -116,8 +116,8 @@ module.exports = {
         },
         {
           Flutter: [
-            'flutter/dart-lang-note',
-            'flutter/flutter-note'
+            'frontend/dart-lang-note',
+            'frontend/flutter-note'
           ]
         }
       ]
@@ -130,29 +130,29 @@ module.exports = {
       items: [
         {
           Docker: [
-            'skill/docker-doc',
-            'skill/docker-install',
-            'skill/harbor-install',
-            'skill/portainer-standalone',
+            'others/docker-doc',
+            'others/docker-install',
+            'others/harbor-install',
+            'others/portainer-standalone',
           ]
         },
-        'skill/idea-view-openjdk-source-code',
-        'skill/java-learning-path',
-        'skill/java-learning-method',
-        'skill/git-memo',
-        'skill/frp-install',
-        'skill/github-ssh',
-        'skill/springboot-jenkins-cicd',
-        'skill/group-concat-max-length',
-        'skill/netlify',
-        'skill/spring-cross',
-        'skill/stored-procedure-oracle',
-        'skill/tcpip-birth-talk-talk',
-        'skill/redis-story',
-        'skill/redis-story-persistence',
-        'skill/session-cookie-jwt',
-        'skill/ssh-login',
-        'skill/vim',
+        'others/idea-view-openjdk-source-code',
+        'others/java-learning-path',
+        'others/java-learning-method',
+        'others/git-memo',
+        'others/frp-install',
+        'others/github-ssh',
+        'others/springboot-jenkins-cicd',
+        'others/group-concat-max-length',
+        'others/netlify',
+        'others/spring-cross',
+        'others/stored-procedure-oracle',
+        'others/tcpip-birth-talk-talk',
+        'others/redis-story',
+        'others/redis-story-persistence',
+        'others/session-cookie-jwt',
+        'others/ssh-login',
+        'others/vim',
       ]
     },
 
