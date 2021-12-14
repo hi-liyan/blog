@@ -75,6 +75,11 @@ module.exports = {
           ]
         },
         {
+          数据库: [
+            'skill/transaction',
+          ]
+        },
+        {
           others: [
             'java/springboot-global-exception-handle',
             'java/mybatis-plus-multi-tenant',
