@@ -1,0 +1,204 @@
+---
+id: react-note
+title: React 语法
+---
+import ArticleCreation from "../../src/components/ArticleCreation";
+import ImgBox from "../../src/components/ImgBox";
+
+## 0、前言
+
+**React** 是由Facebook于2013年推出的前端开发框架。使用函数式编程风格，JSX 语法可以在 JavaScript 编写 UI，它也是目前全球范围内使用人数最多的前端框架。
+
+我认为React的语法风格对后端开发者特别友好。
+
+:::tip
+手记基于 React 17 版本编写。
+:::
+
+参考
+
+- [官方网站](https://reactjs.org)
+
+<br/>
+
+## 1. React 基本使用
+
+在项目中使用 react.js 的方式：
+
+- 第一种：是在HTML页面中通过 `script` 标签来引入 React JS 库，这也是传统的使用方式；
+- 第二种：是利用React脚手架来创建React项目，这也是现在常用的方式。
+
+### 1.1 传统使用方式
+
+1. 通过npm初始化前端项目。
+
+   ```bash
+   npm init
+   ```
+
+2. 进入项目根目录，安装react、react-dom库。
+
+   ```bash
+   npm i react react-dom
+   ```
+
+3. 在html页面内引入react相关的库。
+
+   ```html
+   <script src="./node_modules/react/umd/react.development.js"></script>
+   <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
+   ```
+
+4. 创建react元素。
+
+   ```javascript
+   const title = React.createElement('h1',null,'我是一个H1标题')
+   ```
+
+   React.createElement()方法参数说明：
+
+   - 第一个参数：要创建的标签名称；
+   - 第二个参数：标签的属性，使用对象表示；
+   - 第三个参数及其之后的参数：表示该元素的子节点。（可以设置多个）
+
+5. 元素创建好之后，渲染元素到DOM挂载点。
+
+   ```javascript
+   ReactDOM.render(title, document.getElementById('root'))
+   ```
+
+   ReactDOM.render()方法参数说明：
+
+   - 第一个参数：要渲染的元素；
+   - 第二个参数：指定挂载点。
+
+
+
+示例代码：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React基本使用</title>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+<!-- 1. 引入js文件 -->
+<script src="./node_modules/react/umd/react.development.js"></script>
+<script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
+
+<script>
+    // 2. 创建react元素
+    const title = React.createElement('h1',null,'我是一个H1标题')
+
+    // 3. 渲染元素
+    ReactDOM.render(title, document.getElementById('root'))
+
+</script>
+
+</html>
+```
+
+页面效果：
+
+<ImgBox src="https://images.shiguangping.com//imgs/image-20210801203543888.png" />
+
+一般不会使用这种方式进行开发，但是从上面的步骤可以了解到 **React 是如何创建 React 元素（虚拟 DOM）以及如何把 React 元素渲染到真是 DOM 上**的。
+
+React 的 JSX 可以更容易的开发页面，但 JSX 无法直接运行在浏览器上，通过 babel 编译器可以将 JSX 代码编译成 JS 代码（`React.createElement`, `ReactDOM.render` 这种），最终被浏览器执行。
+
+:::tip
+了解下浏览器和 JavaScript 的关系：
+
+JavaScript 只是语言层面，ES (ECMAScript) 是 JavaScript 的语言规范逐年迭代。浏览器根据 ES 规范做 JavaScript 的具体实现。所以说，JavaScript 的语言特性需要看浏览器支不支持，较老的浏览器一般不支持 JavaScript 的新特性。
+
+
+目前，浏览器对 ES5 支持最好，较新版本的浏览器已经逐渐开始支持 ES6、ES7、ES8 等。
+:::
+
+### 1.2 使用脚手架创建项目
+
+1. 使用官方提供的脚手架创建React项目。（前提是已经安装了 npm）
+
+   ```bash
+   # my-app 是项目名
+   npx create-react-app my-app
+   ```
+
+   第一次创建会比较慢（会下载项目所需的基本依赖）。创建好后，项目结构如下图：
+
+   <ImgBox src="https://images.shiguangping.com/imgs/20211214164925.png" />
+
+   - public/index.html 是真实 DOM，React 元素都会挂载到这个真是 DOM 上；
+   - src/index.js React 虚拟 DOM 挂在到 public/index.html 的挂载点上；
+   - 开发是在 src/ 目录下，一般会创建 pages/ 目录用来画页面，components/ 写组件。
+
+2. 运行项目
+
+   ```bash
+   npm start
+   ```
+
+<br/>
+
+### 1.3 JSX 写 Hello World
+
+在 src/ 目录下创建一个名为 `Hello.jsx` 的文件， 在文件内定义一个名为 Hello 的函数，函数返回一个 React 元素，展示 Hello World，这就是一个函数式组件。
+
+组件写好后，还要使用 `export` 关键字导出组件，否则这个组件只能在该文件内使用。
+
+```javascript
+// 函数式组件，组件名必须大写
+const Hello = () => {
+  return (
+    // JSX 类似于 HTML 标签，但实际不是 HTML，JSX 实现了 HTML 的基础标签，便于开发
+    <h1>Hello World</h1>
+  );
+}
+
+// 导出组件
+export default Hello;
+```
+
+在 src/index.js 中使用 `import` 关键字引入定义好的 Hello 组件，并将组件渲染到页面上。
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Hello from "./pages/hello";
+
+import './index.css';
+
+ReactDOM.render(
+  <React.StrictMode>
+    {/* 像使用 HTML 标签一样使用组件 */}
+    <Hello />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
+
+<br/>
+
+
+### 1.4 组件
+
+组件分为**函数式组件 (function component)**和**类组件 (class component)**，前者一般被称为无状态组件，后者被称为有状态组件。
+
+组件中的数据不是一成不变的，所以变化的数据 React 要求用 `state` 对象进行管理，不变的数据不需要定义在 state 中。修改 state 中的数据时，必须通过 `setState()` 方法进行修改，方法接收一个回调函数，传入修改后的值（具体操作后面再说）。执行 `setState() `后 React 会回调 `render()` 方法重新渲染变化的状态，实现响应式效果。
+
+函数式组件一般是无状态组件，没有 state 对象。在 React 16.8 版本新增了 Hook，可以通过 Hook 让函数式组件也可以像类组件一样，管理状态。
+
+除了 state 对象外，使用 `props` 对象像组件中传值。在使用自定义组件时，可以像标签属性一样传值，例如 `<Hello color="red" />`，在 Hello 组件内通过 `props.color` 可以获取到外面传进来的值。
+
+下面具体操作下函数式组件和类组件。
+
+### 1.5 函数式组件
+
