@@ -34,7 +34,7 @@ import TipBox from "../../src/components/TipBox";
 
 Docker 的安装我之前单独写过一篇手记，介绍在 CentOS 中安装 Docker 的方式，这里就不多赘述了。
 
-[Docker 安装手记](/docs/skill/docker-install)
+[Docker 安装手记](/docs/others/docker-install)
 
 Windows 或者 MacOS 可以在官网下载和安装桌面软件。
 
@@ -65,7 +65,7 @@ Windows 或者 MacOS 可以在官网下载和安装桌面软件。
 
 容器，顾名思义，镜像本身只是一个软件包，而我们需要的是让项目跑起来，所以容器就是运行镜像的一个场所，通过镜像来运行容器。并且容器的沙河机制，容器与容器之间是相互隔离的。可以把一个容器理解成一个虚拟机，但是容器要比虚拟机更轻。
 
-仓库，仓库是用来存放镜像的，我们可以在仓库中拉取 (pull) 镜像，并运行容器。仓库分为[官方公共仓库](https://hub.docker.com/)和私有仓库两种，像阿里云等云服务商提供了私有 docker 镜像仓库，也可以自己[搭建私有仓库](/docs/skill/harbor-install)。
+仓库，仓库是用来存放镜像的，我们可以在仓库中拉取 (pull) 镜像，并运行容器。仓库分为[官方镜像仓库](https://hub.docker.com/)和私有仓库两种，像阿里云等云服务商提供了私有 docker 镜像仓库，也可以自己[搭建私有仓库](/docs/others/harbor-install)。
 
 **以上这三个概念一定要清楚，Docker 的所有操作都是围绕着这三个概念，尤其是镜像和容器。**
 
@@ -252,6 +252,8 @@ docker run --volumes-from 数据卷容器
 ## 5. Dockerfile
 
 ### 5.1 镜像 (Image)
+
+Docker 中的镜像是一种分层结构的镜像，最底层是一个基础镜像，然后根据需要一层一层叠加，分层结构的好处是提高复用。下面介绍下如何创建镜像。
 
 ### 5.2 通过容器构建镜像
 容器转镜像：
