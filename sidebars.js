@@ -101,6 +101,7 @@ module.exports = {
         {
           'HTML/CSS/JS': [
             'frontend/css-note',
+            'frontend/flex-layout'
           ]
         },
         {
