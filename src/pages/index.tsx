@@ -7,8 +7,7 @@ import Link from '@docusaurus/Link';
 
 import styles from './index.module.css';
 
-
-function HomepageHeader() {
+const HomepageMain = () => {
   const {siteConfig} = useDocusaurusContext();
   // 首页自动打字效果文案
   const contents = [
@@ -32,8 +31,8 @@ export default function Home() {
   return (
     <Layout
       title={siteConfig.title}
-      description="Description will go into a meta tag in <head />">
-      <HomepageHeader/>
+      description="李炎的博客。">
+      <HomepageMain/>
       {/*<main>*/}
       {/*  <HomepageFeatures />*/}
       {/*</main>*/}

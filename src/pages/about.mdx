@@ -2,19 +2,10 @@
 id: about
 title: 关于
 ---
-import {Image} from "rebass";
-import {calThePastToToday, calThePastToToday_1} from "../utils/DateUtil";
-import RightAngleBadge from "../components/RightAngleBadge";
 
-export const CodeDays = () => {
-  // 从事开发天数显示
-  return (
-    <span style={{
-      color: '#ca228d',
-      fontWeight: 'bolder'
-    }}>{calThePastToToday_1("2020-08-17")}</span>
-  )
-}
+import {Image} from "rebass";
+import RightAngleBadge from "../components/RightAngleBadge";
+import {CodeDays} from "../components/CodeDays";
 
 :::tip
 欢迎来到我的小站，很高兴遇见你！🤝
@@ -25,12 +16,13 @@ export const CodeDays = () => {
 
 **记笔记**，生活总要留下点儿什么。
 
+<br/>
+
 ## 👨‍💻 博主是谁
 <Image src='https://images.shiguangping.com/imgs/201911/IMG_52d80c.jpg' sx={{
   width: [ '30%' ],
   borderRadius: 8,
 }}/>
-
 
 李炎，94年生
 
@@ -40,21 +32,13 @@ export const CodeDays = () => {
 
 从事开发至今约 <CodeDays /> 。
 
+<br/>
+
 ## ⛹ 标签
 
 <RightAngleBadge>TO BE CREATOR</RightAngleBadge>
 
-## 第一个小程序
-我的第一个小程序上线了，是一个坚持打卡的小程序，为自己立Flag，每天坚持完成目标，让自己变得更优秀。
-
-学了一周的 React 和 CSS ，写了这么一个小东西，别看功能简单，但是该有的东西都有。
-
-后端服务从起初的一个服务拆分成了两个（小程序服务和用户中心服务），以后再有其他服务端可以直接对接用户中心，服务之间使用 Dubbo 做远程方法调用，Nacos 作为服务发现中心和配置中心（配置都移到 Nacos 上了），后来有个小需求还引了 RocketMQ 做异步调用。**麻雀虽小五脏俱全。**
-
-项目通过 Jenkins 构建镜像，Docker 部署，整体开发流程还是很顺畅的。
-
-<Image src='https://images.shiguangping.com//imgs/image-20210816235225121.png' sx={{borderRadius: 8}}/>
-
+<br/>
 
 ## 📬 联系我
 
@@ -62,6 +46,7 @@ QQ: [721748889](http://wpa.qq.com/msgrd?v=3&uin=721748889&site=qq&menu=yes)
 
 Email: [shadow8889@vip.qq.com](mailto://shadow8889@vip.qq.com)
 
+<br/>
 
 ## 🍙 赞赏
 
