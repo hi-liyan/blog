@@ -1,4 +1,12 @@
-import React, {Component} from "react";
+import React from "react";
+
+interface PaginationProps {
+  currentPage: number,
+  pageSize: number,
+  total: number,
+  pagerCount?: number,
+  onChange: (currentPage: number) => void
+}
 
 /**
  * <p>Pagination 分页组件</p>
@@ -11,26 +19,11 @@ import React, {Component} from "react";
  *    onChange 回调函数，当页码改变时回调 (currentPage){}
  * </pre>
  */
-class Pagination extends Component {
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {}
-  }
-
-  // 省略号
-  // buildEllipsis = () =>{
-  //   return (
-  //     <li className="pagination__item" key={Math.random()}>
-  //       <span>...</span>
-  //     </li>
-  //   )
-  // }
+const Pagination = ({currentPage, pageSize, total, pagerCount = 5, onChange}: PaginationProps) => {
 
   // 页码
-  buildPageIndex = (currentPage, pageSize, total) => {
+  const buildPageIndex = (currentPage, pageSize, total) => {
     const pages = Math.ceil(total / pageSize);
-    let pagerCount = this.props.pagerCount ? this.props.pagerCount : 5
 
     const ds = new DataStructure(pagerCount)
 
@@ -53,7 +46,7 @@ class Pagination extends Component {
           <a
             className="pagination__link"
             href="#url"
-            onClick={() => {this.props.onChange(ds.arr[i])}}
+            onClick={() => {onChange(ds.arr[i])}}
           >
             {ds.arr[i]}
           </a>
@@ -64,39 +57,34 @@ class Pagination extends Component {
     return lis
   }
 
-
-  render() {
-    const {currentPage, pageSize, total} = this.props
     const pages = Math.ceil(total / pageSize);
 
     return (
-      <React.Fragment>
+      <>
         <ul className="pagination">
           <li className="pagination__item disabled">
             <a
               className="pagination__link"
               href="#url"
-              onClick={() => {this.props.onChange(currentPage > 1 ? currentPage - 1 : 1)}}
+              onClick={() => {onChange(currentPage > 1 ? currentPage - 1 : 1)}}
             >
               «
             </a>
           </li>
-          {this.buildPageIndex(currentPage, pageSize, total)}
+          {buildPageIndex(currentPage, pageSize, total)}
           <li className="pagination__item">
             <a
               className="pagination__link"
               href="#url"
-              onClick={() => {this.props.onChange(currentPage < pages ? currentPage + 1 : pages)}}
+              onClick={() => {onChange(currentPage < pages ? currentPage + 1 : pages)}}
             >
               »
             </a>
           </li>
         </ul>
-      </React.Fragment>
+      </>
     )
-  }
-
-}
+};
 
 class DataStructure {
 
@@ -125,4 +113,4 @@ class DataStructure {
 
 }
 
-export default Pagination
+export default Pagination;

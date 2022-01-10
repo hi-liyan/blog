@@ -1,9 +1,12 @@
+// @ts-check
+// Note: type annotations allow type checking and IDEs autocompletion
+
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
-/** @type {import('@docusaurus/types').DocusaurusConfig} */
-(module.exports = {
+/** @type {import('@docusaurus/types').Config} */
+const config = {
   title: '时光瓶',
   tagline: '李炎の生活學習日誌',
   url: 'https://www.shiguangping.com',
@@ -150,5 +153,6 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         additionalLanguages: ['dart', 'java', 'groovy'],
       },
     }),
+};
 
-});
+module.exports = config;
