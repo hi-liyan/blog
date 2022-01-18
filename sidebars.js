@@ -137,6 +137,8 @@ module.exports = {
             'others/portainer-standalone',
           ]
         },
+        'others/macos-arm-jdk',
+        'others/macos-install-maven',
         'others/idea-view-openjdk-source-code',
         'others/java-learning-path',
         'others/java-learning-method',

@@ -1,0 +1,62 @@
+---
+id: macos-install-maven
+title: MacOS 安装 Maven
+---
+import ImgBox from "../../src/components/ImgBox";
+
+## 1. 下载 Maven
+
+当前 Maven 最新版本是 3.8.4，为了兼容性本文选择安装 3.6.3 版本，也是我目前一直在用的版本。
+
+之前下载过 3.8.1，在使用过程中出现过一些小问题，为了避免给自己找麻烦，还是选择常用的版本比较好，不必追求最新版本
+
+下载地址：[https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/](https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/)
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118125801.png" width="100%" />
+
+这里选择下载 `.tar` 格式的压缩包，下载好 Maven 压缩包后，双击解压缩到本地。
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118130035.png" width="100%" />
+
+我习惯把它放到用户目录下面：
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118130354.png" width="100%" />
+
+## 2. 配置环境变量
+
+终端输入命令，编辑 `.bash_profile` 配置文件：
+
+```bash
+vim ~/.bash_profile
+```
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118130928.png" />
+
+:::tip
+vim 是文本编辑软件，基本操作命令：
+1. 在终端输入 `vim ~/.bash_profile`，会进入到 vim 界面；
+2. 在 vim 界面按键盘 `i`，变进入到编辑（插入）模式，此时界面下面会出现 `insert` 字样，这时可以开始编辑文本；
+3. 编辑后按下键盘 `Esc` 后 `insert` 字样消失（退出编辑模式），键盘输入 `:wq` 回车，执行**保存和退出**指令。
+:::
+
+编辑退出 vim 后，在终端执行如下命令，使 `.bash_profile` 生效：
+
+```bash
+source ~/.bash_profile
+```
+
+如果没有语法错误的话，执行完这条命令终端不会返回任何信息。
+
+关闭终端后重新打开终端，执行命令：
+
+```bash
+mvn -v
+```
+
+显示 Maven 版本号说明 Maven 配置成功。
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118131311.png" />
+
+## 3. Maven 配置文件
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118131538.png" />
