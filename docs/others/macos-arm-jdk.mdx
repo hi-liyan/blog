@@ -1,0 +1,55 @@
+---
+id: macos-arm-jdk
+title: MacOS (ARM 架构) 安装 JDK
+---
+import ImgBox from "../../src/components/ImgBox";
+
+## 1. 下载 JDK
+
+苹果现在全系都开始使用 ARM 架构 M1 芯片，所以在 JDK 的选择上也要选择 ARM 架构的，这样才能发挥出 M1 强大的性能。根据网上不少程序员评测，使用 ARM 架构的 JDK 在 M1 平台上 Java 项目的编译速度要大大快于之前的 x86 架构，这对于开发者来说大大提高了日常开发效率。
+
+Oracle 官方目前还没有推出基于 ARM 架构的 JDK，所以，推荐安装 azul 开放的 openjdk。
+
+下载地址：[https://www.azul.com/downloads/?version=java-8-lts&os=macos&architecture=arm-64-bit&package=jdk](https://www.azul.com/downloads/?version=java-8-lts&os=macos&architecture=arm-64-bit&package=jdk)
+
+**打开链接后页面往下拉，会看到下载页面。**
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118121957.png" width="100%"/>
+
+:::tip
+这种一般都是境外服务器，下载速度可能有些慢。
+:::
+
+## 2. 安装 JDK
+
+在`访达` -> `下载` 中找到刚刚下载好的安装包，双击安装。
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118123311.png" width="100%" />
+
+双击安装包后会弹出安装窗口，双击图标进行安装，期间根据提示安装即可。
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118123524.png" width="50%" />
+
+安装好后，在 `终端` (在桌面下面程序坞的启动台 -> 其他📂 -> 终端) 中输入 `java -version` 命令，显示版本号说明 jdk 已经安装成功。正常情况下是不需要手动配置环境变量的。
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118123752.png" width="50%"/>
+
+## 3. 附：查看环境变量
+
+在终端输入如下命令，进入到环境变量的编辑界面：
+
+```bash
+vim ~/.bash_profile
+```
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220118124409.png" />
+
+
+:::tip
+vim 是文本编辑软件，基本操作命令：
+1. 在终端输入 `vim ~/.bash_profile`，会进入到 vim 界面；
+2. 在 vim 界面按键盘 `i`，变进入到编辑（插入）模式，此时界面下面会出现 `insert` 字样，这时可以开始编辑文本；
+3. 编辑后按下键盘 `Esc` 后 `insert` 字样消失（退出编辑模式），键盘输入 `:wq` 回车，执行**保存和退出**指令。
+:::
+
+
