@@ -15,8 +15,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-beta.14",
-    "@docusaurus/preset-classic": "^2.0.0-beta.14",
+    "@docusaurus/core": "^2.0.0-beta.16",
+    "@docusaurus/preset-classic": "^2.0.0-beta.16",
     "@easyops-cn/docusaurus-search-local": "^0.19.1",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
@@ -37,7 +37,7 @@
     "url-loader": "^4.1.1"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "2.0.0-beta.14",
+    "@docusaurus/module-type-aliases": "2.0.0-beta.16",
     "@tsconfig/docusaurus": "^1.0.4",
     "@types/qs": "^6.9.7",
     "typescript": "^4.5.2"
