@@ -32,7 +32,8 @@ deploy() {
 
   # 安装依赖
   echo "==========0. 安装依赖=========="
-  npm install --registry=https://registry.npm.taobao.org --unsafe-perm=true --allow-root
+#  npm install --registry=https://registry.npm.taobao.org --unsafe-perm=true --allow-root
+  yarn install
 
   # 构建
   echo "==========1. 开始构建=========="
