@@ -36,8 +36,8 @@ deploy() {
 
   # 构建
   echo "==========1. 开始构建=========="
-  npm run clear
-  npm run build
+  yarn clear
+  yarn build
   echo "ok."
 
   # 打包
