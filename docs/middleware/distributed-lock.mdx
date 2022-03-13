@@ -1,0 +1,248 @@
+---
+id: distributed-lock
+title: 常见的几种分布式锁
+---
+
+## 1. Redis 分布式锁
+
+分布式锁主要应用在当前比较流行的微服务架构场景中，分布式锁的实现方式有很多种，下面简单介绍下比较常见的实现方式。
+
+<br/>
+
+### 1.1 介绍
+
+Redis 锁的实现逻辑是通过 `SETNX` 和 `EXPIRE` 实现的。
+
+- SETNX 是当 KEY 不存在是，进行 SET 操作；存在则不做任何操作；
+- EXPIRE 是为了防止异常情况导致锁没有释放，其他线程始终无法获得锁。
+
+### 1.2 简单实现
+
+添加 Redis 依赖。
+```xml
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+```
+
+配置 redis。
+```yaml
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+```
+
+Redis 锁的简单实现。
+```java
+@Component
+public class RedisLock {
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    /**
+     * 尝试加锁
+     * @param key
+     * @param expire 过期时间(ms)
+     * @return
+     */
+    public boolean tryLock(String key, Long expire) {
+        // setIfAbsent 方法，如果 key 不存在则设置，并返回 true
+        return redisTemplate.opsForValue().setIfAbsent(key, "", expire, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * 释放锁
+     * @param key
+     */
+    public void unlock(String key) {
+        redisTemplate.delete(key);
+    }
+}
+```
+
+测试：
+
+写了一个"添加用户"的接口向数据库添加用户，添加逻辑是先查询库中是否存在要添加的用户名，如果不存在则做插入操作。
+
+使用 Jmeter 做 500 个线程的并发测试，在不添加锁的话，最终库里添加进了 28 条相同名字的数据（每次的情况可能都不一样）。
+
+引入了锁之后，清空数据库再测试，最终库里相同名字的数据只添加进了 1 条，说明锁生效了。
+
+```java
+@Override
+public void addUser(User user) {
+    String key = "UserServiceImpl.addUser." + user.getName();
+    // 尝试获取锁
+    boolean tryLock = redisLock.tryLock(key, 1000L);
+    if (tryLock) {
+        try {
+            LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery(User.class)
+                    .eq(User::getName, user.getName());
+            Integer count = userMapper.selectCount(queryWrapper);
+            if (count == 0) {
+                userMapper.insert(user);
+            }
+        } finally {
+            // 释放锁
+            redisLock.unlock(key);
+        }
+    }
+}
+```
+
+<br/>
+
+## 2. Redisson 分布式锁
+
+Redisson 是 Redis 官方推荐的 Java 实现的 RedLock 算法的分布式锁，Redis 官方称这是一种更规范的使用 Redis 实现分布式锁的算法。
+
+参考：[https://redis.io/topics/distlock](https://redis.io/topics/distlock)
+
+Redisson 已经封装好了实现，下面只介绍用法。
+
+引入 Redisson 依赖。
+```xml
+<dependency>
+  <groupId>org.redisson</groupId>
+  <artifactId>redisson</artifactId>
+  <version>3.16.8</version>
+</dependency>
+```
+
+配置 `RedissonClient`。
+```java
+@Configuration
+public class RedissonConfig {
+
+    @Bean
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://127.0.0.1:6379");
+        return Redisson.create(config);
+    }
+}
+```
+
+:::tip
+SpringBoot 项目也可以直接引入 starter：
+```xml
+<dependency>
+  <groupId>org.redisson</groupId>
+  <artifactId>redisson-spring-boot-starter</artifactId>
+  <version>3.16.8</version>
+</dependency>
+```
+引入 starter 则无需手动配置 `RedissonClient`，只需要在 `application.yaml` 中配置好 redis 即可。
+:::
+
+
+测试：
+
+测试依然使用上面的添加用户接口，锁替换成了 Redisson 中封装的方法。
+
+```java
+@SneakyThrows
+@Override
+public void addUser(User user) {
+    String key = "UserServiceImpl.addUser." + user.getName();
+    // 获取 RLock 对象
+    RLock lock = redisson.getLock(key);
+    // 尝试获取锁 tryLock(等待时间, 锁过期时间, 时间单位)
+    boolean tryLock = lock.tryLock(500, 1000, TimeUnit.MILLISECONDS);
+    if (tryLock) {
+        try {
+            LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery(User.class)
+                    .eq(User::getName, user.getName());
+            Integer count = userMapper.selectCount(queryWrapper);
+            if (count == 0) {
+                userMapper.insert(user);
+            }
+        } finally {
+            // 释放锁
+            lock.unlock();
+        }
+    }
+}
+```
+
+<br/>
+
+## 3. Zookeeper 分布式锁
+
+Zookeeper 是一款开源的分布式服务协调中间件。
+
+Zookeeper 实现分布式锁功能的核心流程是在于创建"临时顺序节点ZNode" 以及采用 Watcher 监听机制监听临时节点的增减，从而判断当前的线程能够成功获得锁。
+
+下面看下具体的使用。
+
+添加 Zookeeper 依赖。
+```xml
+<dependency>
+  <groupId>org.apache.zookeeper</groupId>
+  <artifactId>zookeeper</artifactId>
+  <version>3.8.0</version>
+</dependency>
+<!-- zookeeper 客户端 -->
+<dependency>
+  <groupId>org.apache.curator</groupId>
+  <artifactId>curator-framework</artifactId>
+  <version>5.2.0</version>
+</dependency>
+<dependency>
+  <groupId>org.apache.curator</groupId>
+  <artifactId>curator-recipes</artifactId>
+  <version>5.2.0</version>
+</dependency>
+```
+
+配置 `CuratorFramework`。
+```java
+@Configuration
+public class CuratorConfig {
+
+    @Bean
+    public CuratorFramework curatorFramework() {
+        CuratorFramework client = CuratorFrameworkFactory.builder()
+                .connectString("127.0.0.1:2181")
+                .namespace("zk1")
+                .retryPolicy(new RetryNTimes(5, 1000))
+                .build();
+        client.start();
+        return client;
+    }
+}
+```
+
+测试：
+
+```java
+@Autowired
+private CuratorFramework zkClient;
+
+private static final String pathPrefix = "/middleware/zkLock/";
+
+@SneakyThrows
+@Override
+public void addUser(User user) {
+    // 互斥锁对象
+    InterProcessMutex mutex = new InterProcessMutex(zkClient, pathPrefix + user.getName() + "-Lock");
+    // 获取互斥锁，尝试 500ms
+    if (mutex.acquire(500, TimeUnit.MILLISECONDS)) {
+        try {
+            LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery(User.class)
+                    .eq(User::getName, user.getName());
+            Integer count = userMapper.selectCount(queryWrapper);
+            if (count == 0) {
+                userMapper.insert(user);
+            }
+        } finally {
+            // 释放互斥锁
+            mutex.release();
+        }
+    }
+}
+```

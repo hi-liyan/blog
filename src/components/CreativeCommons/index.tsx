@@ -10,13 +10,13 @@ const CreativeCommons = () => {
   return (
     <div>
       <div dangerouslySetInnerHTML={{__html: htmlSrc}}></div>
-      <br/>
-      授权要求：
-      <ul>
-        <li>署名</li>
-        <li>非商业性</li>
-        <li>相同许可协议共享</li>
-      </ul>
+      {/*<br/>*/}
+      {/*授权要求：*/}
+      {/*<ul>*/}
+      {/*  <li>署名</li>*/}
+      {/*  <li>非商业性</li>*/}
+      {/*  <li>相同许可协议共享</li>*/}
+      {/*</ul>*/}
     </div>
   );
 };

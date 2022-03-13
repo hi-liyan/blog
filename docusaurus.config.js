@@ -73,10 +73,10 @@ const config = {
             label: '手记',
           },
           {to: '/blog', label: '博客', position: 'right'},
-          {to: '/movies-record', label: '观影记录', position: 'right'},
+          // {to: '/movies-record', label: '观影记录', position: 'right'},
           {
             href: 'https://gitee.com/ennriaaa',
-            label: 'Gitee',
+            label: '码云',
             position: 'right',
           },
           {
@@ -100,10 +100,10 @@ const config = {
                 label: '博客',
                 to: '/blog'
               },
-              {
-                label: '观影记录',
-                to: '/movies-record'
-              }
+              // {
+              //   label: '观影记录',
+              //   to: '/movies-record'
+              // }
             ],
           },
           {

@@ -21,78 +21,84 @@ module.exports = {
       id: 'hello',
       label: '你好'
     },
-
-    // 后端
     {
       type: 'category',
-      label: '后端开发',
+      label: 'Java',
       items: [
-        {
-          Java: [
-            'backend/jdk-install',
-            'backend/javase-note',
-            'backend/java-classloader',
-            'backend/java-reflect',
-            'backend/java-proxy',
-            'backend/java-multi-thread',
-            'backend/java-synchronized',
-            'backend/java-threadlocal',
-            'backend/java-io',
-            'backend/java-nio',
-            'backend/java-stream',
-            'backend/java-lambda',
-            'backend/uml',
-            'backend/design-pattern',
-          ]
-        },
-        {
-          SpringFramework: [
-            'backend/create-ssm-proj',
-            'backend/springboot-application-context-initializer',
-            'backend/springboot-application-event-listener',
-            'backend/springboot-auto-configuration',
-            'backend/spring-xml-ioc',
-            'backend/springboot-custom-starter',
-            'backend/springboot-actuator',
-            'backend/jsr303',
-          ]
-        },
-        {
-          微服务: [
-            'backend/spring-cloud-alibaba',
-            'backend/nacos-services-register-and-discovery',
-            'backend/nacos-configuration-center',
-            'backend/ribbon',
-            'backend/sentinel',
-            'backend/dubbo-quick-start', 
-          ]
-        },
-        {
-          中间件: [
-            'backend/redis-note',
-            'backend/rocketmq-quick-start',
-            'backend/elasticsearch-quick-start',
-          ]
-        },
-        {
-          数据库: [
-            'backend/transaction'
-          ]
-        },
-        {
-          others: [
-            'backend/springboot-global-exception-handle',
-            'backend/mybatis-plus-multi-tenant',
-          ]
-        },
-        {
-          Golang: [
-            'backend/golang-note'
-          ]
-        }
+        'java/jdk-install',
+        'java/javase-note',
+        'java/java-classloader',
+        'java/java-reflect',
+        'java/java-proxy',
+        'java/java-multi-thread',
+        'java/java-synchronized',
+        'java/java-threadlocal',
+        'java/java-io',
+        'java/java-nio',
+        'java/java-stream',
+        'java/java-lambda'
       ]
     },
-
+    {
+      type: 'category',
+      label: 'Spring Framework',
+      items: [
+        'spring/create-ssm-proj',
+        'spring/springboot-application-context-initializer',
+        'spring/springboot-application-event-listener',
+        'spring/springboot-auto-configuration',
+        'spring/spring-xml-ioc',
+        'spring/springboot-custom-starter',
+        'spring/springboot-actuator',
+        'spring/jsr303',
+        'spring/springboot-global-exception-handle'
+      ]
+    },
+    {
+      type: 'category',
+      label: '微服务',
+      items: [
+        'micro-service/spring-cloud-alibaba',
+        'micro-service/nacos-services-register-and-discovery',
+        'micro-service/nacos-configuration-center',
+        'micro-service/ribbon',
+        'micro-service/sentinel',
+        'micro-service/dubbo-quick-start',
+      ]
+    },
+    {
+      type: "category",
+      label: "中间件",
+      items: [
+        'middleware/redis-note',
+        'middleware/distributed-lock',
+        'middleware/rocketmq-quick-start',
+        'middleware/elasticsearch-quick-start',
+      ]
+    },
+    {
+      type: "category",
+      label: "数据库",
+      items: [
+        'database/transaction',
+        'database/mybatis-plus-multi-tenant'
+      ]
+    },
+    {
+      type: "category",
+      label: "设计模式",
+      items: [
+        'design-pattern/uml',
+        'design-pattern/design-pattern'
+      ]
+    },
+    {
+      type: "category",
+      label: "Golang",
+      items: [
+        'golang/golang-note'
+      ]
+    },
     // 前端
     {
       type: 'category',
