@@ -152,6 +152,7 @@ const config = {
         darkTheme: darkCodeTheme,
         additionalLanguages: ['dart', 'java', 'groovy'],
       },
+      metadata: [{name: "keywords", content: "时光瓶, Java学习, 编程, 李炎"}]
     }),
 };
 

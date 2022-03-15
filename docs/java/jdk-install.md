@@ -1,42 +1,30 @@
 ---
 id: jdk-install
-title: JDK 安装
+title: JDK 安装与配置
+keywords: ['Jdk安装', 'Jdk配置环境变量']
 ---
 
-## 学前准备
+## 1. 什么是JDK？
 
-1. 下载JDK
-2. 安装IDE
+JDK，全称即 `Java Development Kit`（Java开发工具包），包含了 Java 运行时(JRE)环境以及 Java 开发的常用工具，如 javac 等。
 
+JRE，全称即 `Java Runtime Environment`（Java运行时环境），包含了 JVM 以及运行时所需要的各种类库。
 
+JVM，Java虚拟机，Java 源代码会通过 javac 编译工具编译成以 `.class` 为后缀的符合 Jvm 规范的二进制字节码文件，字节码文件运行在 Jvm 虚拟机上。
 
+## 2. 下载和安装
 
-### 什么是JDK？
+:::tip
+本文以 Windows 系统为例，安装目前使用最多的 Jdk 8 版本。
+:::
 
-JDK，Java Development Kit（Java开发工具包），包含了Java运行时(JRE)以及Java开发的常用工具，如javac。
+### 2.1 下载 Jdk
 
-
-
-JRE，Java Runtime Environment（Java运行时环境），包含了JVM以及运行时所需要的各种类库。
-
-
-
-JVM，Java虚拟机，Java源代码会通过javac编译工具编译成`.class`后缀的二进制字节码文件，字节码文件运行在JVM虚拟机上。
-
-
-
-### 安装JDK（JDK 8）
-
-分两步（以Windows为例）：
-
-1. 下载和安装JDK；
-2. 配置环境变量
-
-
-
-[下载地址](https://www.oracle.com/cn/java/technologies/javase/javase-jdk8-downloads.html)，64位操作系统下载Windows 64的exe安装程序，安装。
+[下载地址](https://www.oracle.com/java/technologies/downloads/)，64位操作系统下载Windows 64的exe安装程序，安装。
 
 安装好后配置环境变量。
+
+### 2.2 配置环境变量
 
 ![image-20210719190038914](https://images.shiguangping.com/imgs/image-20210719190038914.png)
 
@@ -52,7 +40,7 @@ win10系统配置环境变量的位置在：右键此电脑 -> 属性 -> 高级�
 
 
 
-### 安装IDE
+## 3. 安装IDE
 
 IDE（集成开发环境），IDE是写代码的常用工具，一般里面包含了各种开发常用的工具，插件，大大提成开发效率。
 

@@ -26,7 +26,7 @@ module.exports = {
       label: 'Java',
       items: [
         'java/jdk-install',
-        'java/javase-note',
+        'java/javase',
         'java/java-classloader',
         'java/java-reflect',
         'java/java-proxy',
