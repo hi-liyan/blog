@@ -1,0 +1,73 @@
+---
+id: 扩展：Shiro中的注解
+title: 18. 扩展：Shiro中的注解
+---
+
+#### Shiro开启注解：
+
+Spring配置文件中：
+
+```xml
+<!-- 1.配置lifecycleBeanPostProcessor，可以在Spring IOC容器中调用shiro的生命周期方法. -->
+<bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor" id="lifecycleBeanPostProcessor"/>
+
+<!--  2.启用Spring IOC容器Shiro注解，但必须配置了lifecycleBeanPostProcessor后才可以使用 -->
+<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+      depends-on="lifecycleBeanPostProcessor"/>
+
+<!-- 3.开启Spring AOC Shiro注解支持 -->
+<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+  <property name="securityManager" ref="securityManager"/>
+</bean>
+```
+
+
+
+#### Shiro使用注解：
+
+这样就可以在控制类方法中通过注解添加对请求的授权：
+
+```java
+@RequiresPermissions(value = "items:add")
+@GetMapping("/update/{id}")
+public String updateGoodsPage(@PathVariable("id") Integer id, Model model) {
+```
+
+Shiro的注解类型大致如下：
+(1)**@RequiresAuthentication**
+表示当前Subject已经通过login进行了身份验证；即Subject.isAuthenticated()返回true。
+
+(2)**@RequiresUser**
+表示当前Subject已经进行身份验证或者通过“记住我”登录。
+
+(3)**@RequiresGuest**
+表示当前Subject没有身份验证或者通过“记住我”登录过，即是 游客身份。
+
+(4)**@RequiresRoles(value={"admin","user"},logical=Logical.OR)**
+表示当前Subject需要角色admin和user。
+
+(5)**@RequiresPermissions(value={"user:a","user:b"},logical=Logical.OR)**
+表示当前Subject需要权限user:a或user:b。
+
+
+
+#### 拦截异常：
+
+使用注解的时候，如果如果访问的是没有权限的请求，则会抛出异常，通过配置映射异常解析器拦截异常，并设置要跳转的位置：
+
+```xml
+    <!-- shiro为集成springMvc 拦截异常 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <!-- 这里你可以根据需要定义N多个错误异常转发 -->
+                <prop key="org.apache.shiro.authz.UnauthorizedException">redirect:/menus</prop>
+                <prop key="org.apache.shiro.authz.UnauthenticatedException">redirect:/menus</prop>
+                <prop key="java.lang.IllegalArgumentException">/error</prop>
+                <!-- 参数错误(bizError.jsp) -->
+                <prop key="java.lang.Exception">/error</prop>
+            </props>
+        </property>
+    </bean>
+```
+

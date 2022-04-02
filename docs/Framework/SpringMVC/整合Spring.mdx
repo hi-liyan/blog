@@ -1,0 +1,91 @@
+---
+id: 整合Spring
+title: 9. 整合Spring
+---
+
+现在开始整合Spring，Spring的作用就是整合Dao和Service层
+
+
+
+### step1. 创建spring-dao.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:comtext="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--1. 关联数据库配置文件-->
+    <context:property-placeholder location="classpath:database.properties"/>
+
+    <!--2. 连接池-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+    </bean>
+
+    <!--3. SqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--绑定MyBatis配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+    <!--4. 配置Dao接口扫描包，动态实现了Dao接口可以注入到Spring容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--注入SqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!--要扫描的Dao包-->
+        <property name="basePackage" value="com.neu.dao"/>
+    </bean>
+</beans>
+```
+
+这一步做了什么？
+
+- 关联数据库配置文件 database.properties
+- 注册DataSource
+- 注册SqlSessionFactory
+- 配置Dao接口扫描包，动态实现了Dao接口可以注入到Spring容器中
+
+
+
+
+
+### step2. 创建spring-service.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--1. 扫描service下的包，可以使用注解注册bean-->
+    <context:component-scan base-package="com.neu.service"/>
+
+    <!--2. 如果不使用注解方式，可以手动注册BookServiceImpl-->
+    <bean id="bookServiceImpl" class="com.neu.service.BookServiceImpl">
+        <property name="bookMapper" ref="bookMapper"/>
+    </bean>
+
+    <!--3. 声明式事务配置-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--4. AOP事务支持-->
+</beans>
+```
+
+这一步做了什么？
+
+- 扫描service下的包
+- 将业务类注册到Spring
+- 事务配置

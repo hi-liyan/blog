@@ -1,0 +1,69 @@
+---
+id: Spring注解开发
+title: 9. Spring注解开发
+---
+
+在Spring4之后，使用注解开发，必须要保证导入了AOP依赖
+
+![image-20200629224540286](https://images.shiguangping.com/imgs/20200629224540.png)
+
+使用注解需要导入`context`约束，增加注解支持
+
+
+
+#### @Autowired
+
+- 自动装配，自动给属性装配值（在容器中找到Bean并装配）
+- 会自动在Ioc容器上下文中查找，找到同类型的Bean，并装配。ByType方式（默认）
+- 会自动在IoC容器上下文中查找，找到与属性set方法同名的Bean（setXxx()，即找到Xxx）并装配，ByName方式
+- *通过类型可能会找到多个Bean，然后会通过name去确定装配哪一个，如果name确定不了，可以通过`@Qualifier`注解装配指定的Bean*
+
+
+
+#### @Nullable
+
+- 该注解修饰属性，则该属性允许为null
+
+
+
+#### @Resource
+
+- javax中的注解
+- 用法和`@Autowired`类似，可以单独使用，也可以通过name或class自动装配指定Bean
+- `@Resource(name = "cat1")`
+
+
+
+#### @Component
+
+- Spring上下文配置文件中，扫描指定包
+
+  ```xml
+  <!--组件扫描，扫描指定包-->
+  <context:component-scan base-package="com.neu.pojo"/>
+  ```
+
+- 扫描到该注解作用的类，会自动注册到IoC容器中，自动注册Bean
+
+- 衍生注解：
+
+  - Dao层：`@Repository`
+  - service层：`@Service`
+  - controller层：`@Controller`
+
+  *配置文件中要配置组件扫描指定包，Spring扫描到这些注解，就会自动注册Bean*
+
+
+
+#### @Scope("prototype")
+
+- 配置注册Bean的作用域，单例、原型等等
+
+
+
+#### @Value
+
+- 相当于`<property name="name" value="李四"/>`
+
+- 可以作用在属性，或setter上
+

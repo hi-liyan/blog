@@ -1,0 +1,104 @@
+---
+id: 注解实现AOP
+title: 16. 注解实现AOP
+---
+
+#### 几种常用注解：
+
+- `@Aspect`：标记类为切面
+- `@Pointcut("execution(* com.neu.service.LoginServiceImpl.*(..))")`：作用方法，参数设置切入点
+- `@Before()`：前置通知，需要指定切入点
+- `@After()`：后置通知，需要指定切入点
+- `@AfterReturning()`：返回通知，需要指定切入点
+- `@AfterThrowing()`：异常通知，需要指定切入点
+- `@Around()`：环绕通知，需要指定切入点
+
+
+
+配置文件中需要将切面类注册Bean，并开启注解支持：
+
+```xml
+<!--开启切面注解支持。
+    动态代理：
+        JDK（默认的，proxy-target-class="false"）
+        cglib（proxy-target-class="true"）
+    -->
+<aop:aspectj-autoproxy proxy-target-class="false"/>
+```
+
+
+
+#### 代码示例：
+
+通知/增强类：
+
+```java
+@Aspect
+@Component
+public class LoginAdvice {
+
+    @Pointcut("execution(* com.neu.service.LoginServiceImpl.*(..))")
+    public void pointcut(){}
+
+    /**
+     * 方法执行前执行
+     */
+    @Before("pointcut()")
+    public void before(){
+        System.out.println("前置通知");
+    }
+
+    /**
+     * 方法执行后执行
+     */
+    @After("pointcut()")
+    public void after(){
+        System.out.println("后置通知");
+    }
+
+    /**
+     * 在环绕增强中，给定一个参数，代表我们要获取处理切入的点
+     */
+    @Around("pointcut()")
+    public void around(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("环绕前");
+        joinPoint.proceed();
+        System.out.println("环绕后");
+    }
+}
+```
+
+XML只需要开启注解支持即可：
+
+```xml
+<context:component-scan base-package="com.neu"/>
+<aop:aspectj-autoproxy proxy-target-class="false"/>
+```
+
+
+
+测试：
+
+```java
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(locations = "classpath:ApplicationContext.xml")
+public class TestLoginService {
+
+  @Autowired
+  LoginService loginService;
+
+  @Test
+  public void test(){
+    loginService.login();
+  }
+}
+```
+
+结果：
+
+>环绕前
+>前置通知
+>调用了Dao层登录方法
+>环绕后
+>后置通知
+

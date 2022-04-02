@@ -1,0 +1,129 @@
+---
+id: 配置之别名优化
+title: 6. Mybatis配置之别名优化
+---
+
+类型别名可为 Java 类型设置一个缩写名字。 它仅用于 XML 配置，意在降低冗余的全限定类名书写。例如：
+
+```xml
+<typeAliases>
+  <typeAlias alias="Author" type="domain.blog.Author"/>
+  <typeAlias alias="Blog" type="domain.blog.Blog"/>
+  <typeAlias alias="Comment" type="domain.blog.Comment"/>
+  <typeAlias alias="Post" type="domain.blog.Post"/>
+  <typeAlias alias="Section" type="domain.blog.Section"/>
+  <typeAlias alias="Tag" type="domain.blog.Tag"/>
+</typeAliases>
+```
+
+- 这个别名配置只能在Mybatis核心配置文件中使用，且对位置有要求，放在引入外部文件的配置下面。
+
+
+
+也可以指定一个包名，MyBatis 会在包名下面搜索需要的 Java Bean，比如：
+
+```xml
+<typeAliases>
+  <package name="domain.blog"/>
+</typeAliases>
+```
+
+- 这种方法，name中设置实体类的包名，这样直接引用该包下的实体类时，会自动在这个包中搜索实体类。
+
+
+
+小结：
+
+- 第一种方式给实体类起别名，可以自定义实体类的别名，如果实体类比较少可以使用这种方法
+- 如果一个包中实体类比较多，则可以使用第二种方式，但是不能给实体类起别名；如果想给实体类定义别名的话，可以通过在实体类中加入@Alias("XXX")注解，定义别名。
+
+
+
+代码演示：
+
+**第一种方式：**
+
+在mybatis-config.xml中添加别名配置：
+
+```xml
+<typeAliases>
+  <typeAlias type="com.neu.pojo.User" alias="User"/>
+</typeAliases>
+```
+
+在UserMapper.xml中结果类型可以直接引入别名：
+
+```xml
+<select id="getUserList" resultType="User">
+  select * from user
+</select>
+```
+
+
+
+**第二种方式：**
+
+```xml
+<typeAliases>
+  <package name="com.neu.pojo"/>
+</typeAliases>
+```
+
+在UserMapper.xml中结果类型可直接引入包中的实体类（建议小写）：
+
+```xml
+<select id="getUserList" resultType="user">
+  select * from user
+</select>
+```
+
+可以使用注解给实体类加别名：
+
+```java
+@Alias("UserAlias")
+public class User {
+    private int id;
+    private String name;
+    private String pwd;
+//...
+}
+```
+
+那么，UserMapper.xml中引用实体类型时，必须使用别名，否则会找不到该实体类：
+
+```xml
+<select id="getUserList" resultType="UserAlias">
+  select * from user
+</select>
+```
+
+
+
+### 设置：
+
+这是 MyBatis 中极为重要的调整设置，它们会改变 MyBatis 的运行时行为。 下表描述了设置中各项设置的含义、默认值等。
+
+一个配置完整的 settings 元素的示例如下：
+
+```xml
+<settings>
+  <setting name="cacheEnabled" value="true"/>
+  <setting name="lazyLoadingEnabled" value="true"/>
+  <setting name="multipleResultSetsEnabled" value="true"/>
+  <setting name="useColumnLabel" value="true"/>
+  <setting name="useGeneratedKeys" value="false"/>
+  <setting name="autoMappingBehavior" value="PARTIAL"/>
+  <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
+  <setting name="defaultExecutorType" value="SIMPLE"/>
+  <setting name="defaultStatementTimeout" value="25"/>
+  <setting name="defaultFetchSize" value="100"/>
+  <setting name="safeRowBoundsEnabled" value="false"/>
+  <setting name="mapUnderscoreToCamelCase" value="false"/>
+  <setting name="localCacheScope" value="SESSION"/>
+  <setting name="jdbcTypeForNull" value="OTHER"/>
+  <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+</settings>
+```
+
+在Mybatis官方文档查询具体说明：https://mybatis.org/mybatis-3/zh/configuration.html#settings
+

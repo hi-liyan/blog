@@ -1,0 +1,98 @@
+---
+id: Java包装类
+title: 15. Java包装类
+---
+
+基本数据类型没有属性和方法，而包装类拥有属性和方法，可以实现一些特定的功能。
+
+每一个基本数据类型都有对应的包装类。
+
+![](https://images.shiguangping.com/imgs/20200506202314.jpeg)
+
+装箱：把基本数据类型转换成包装类
+
+拆箱：把包装类转换成基本数据类型
+
+装箱和拆箱又分为自动和手动两种。
+
+
+
+### 自动装箱
+
+```java
+int a = 2;
+Integer t = a;//自动装箱：直接把int类型数据赋值给Integer对象
+```
+
+*自动装箱：直接把int类型数据赋值给Integer对象。*
+
+
+
+### 手动装箱
+
+```java
+int a = 2;
+Integer t = new Integer(a);//手动装箱：通过new Integer(int Value)完成手动装箱
+```
+
+*手动装箱：通过new Integer(int Value)完成手动装箱。*
+
+
+
+### 自动拆箱
+
+```java
+Integer t = 12;//这里也是一个自动装箱的过程
+int a = t;//自动拆箱：直接把包装类对象赋值给整型变量
+```
+
+*自动拆箱：直接把包装类对象赋值给整型变量。*
+
+
+
+### 手动拆箱
+
+```java
+Integer t = 12;
+int a = t.inValue();//手动拆箱：通过调用intValue()方法，把返回的结果赋值给整型变量
+```
+
+*手动拆箱：通过调用intValue()方法，把返回的结果赋值给整型变量。*
+
+
+
+```java
+Integer t = new Integer(12);
+double d = t.doubleValue();//也可以把Integer转换成double类型数据，也是手动拆箱
+```
+
+
+
+### 基本数据类型和字符串之间转换
+
+```java
+/*基本数据类型转换成字符串*/
+int a = 12;
+String str = Integer.toString(a);
+```
+
+*通过Integer类的toString()方法，把基本数据类型转换为字符串类型。*
+
+
+
+```java
+/*字符串转换为基本数据类型*/
+//包装类的parseInt()方法
+String str = "123";
+int a = Integer.parseInt(str);
+```
+
+*通过Integer类的parseInt()方法把字符串转换为基本数据类型。*
+
+```java
+//包装类的valueOf()方法
+String str = "123";
+int a = Integer.ValueOf(str);//通过ValueOf()方法把字符串转换成包装类对象，又通过自动拆箱把值赋给int类型变量
+```
+
+*通过ValueOf()方法把字符串转换成包装类对象，又通过自动拆箱把值赋给int类型变量。*

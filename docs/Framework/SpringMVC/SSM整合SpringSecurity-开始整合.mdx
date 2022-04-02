@@ -1,0 +1,100 @@
+---
+id: 扩展：SSM整合SpringSecurity-开始整合
+title: 15. 扩展：SSM整合SpringSecurity-开始整合
+---
+
+通过Java Config整合：
+
+#### 1. 添加SpringSecurity相关依赖
+
+这个在环境搭建的时候写了需要用到的依赖坐标
+
+
+
+#### 2. 配置web.xml中SpringSecurity过滤器：
+
+```xml
+<!-- 配置委派代理过滤器 filter-name是固定的 -->
+<filter>
+  <filter-name>springSecurityFilterChain</filter-name>
+  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+</filter>
+<filter-mapping>
+  <filter-name>springSecurityFilterChain</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+
+需要在web.xml中配置SpringSecurity过滤器，这个不配置的话，SpringSecurity不会生效，即使SpringSecurity配置了需要授权的请求，访问的时候也不会拦截。
+
+过滤器的名称是固定的，不能变，否则会报错。`<filter-name>springSecurityFilterChain</filter-name>`
+
+
+
+#### 3.创建SpringSecurity配置类：
+
+```java
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    /**
+     * 认证
+     *
+     * @param auth
+     * @throws Exception
+     */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // 角色认证
+        auth.inMemoryAuthentication().passwordEncoder(new BCryptPasswordEncoder())
+                .withUser("admin").password(new BCryptPasswordEncoder().encode("123")).roles("vip1", "vip2")
+                .and().withUser("root").password(new BCryptPasswordEncoder().encode("123")).roles("vip1", "vip2", "vip3")
+                .and().withUser("guest").password(new BCryptPasswordEncoder().encode("123")).roles("vip1");
+    }
+
+    /**
+     * 授权
+     *
+     * @param http
+     * @throws Exception
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // 授权规则
+        http.authorizeRequests().antMatchers("/").permitAll()
+                .antMatchers("/level1/**").hasRole("vip1")
+                .antMatchers("/level2/**").hasRole("vip2")
+                .antMatchers("/level3/**").hasRole("vip3");
+
+        // 登录页
+        http.formLogin().loginPage("/toLogin");
+        // 记住我
+        http.rememberMe().rememberMeParameter("remember");
+        // 禁用csrf
+        http.csrf().disable();
+        // 注销
+        http.logout().logoutSuccessUrl("/");
+    }
+}
+```
+
+配置类和在SpringBoot中的创建方式是一样的，类上要加`@EnableWebSecurity`注解。
+
+
+
+#### 4. 在Spring配置文件注册模板引擎时添加SpringSecurity方言：
+
+```xml
+<!-- SpringTemplateEngine：处理模板并渲染结果 -->
+<bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
+  <property name="templateResolver" ref="templateResolver"/>
+  <property name="additionalDialects">
+    <set>
+      <bean class="org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect"/>
+    </set>
+  </property>
+</bean>
+```
+
+设置这个是为了在thymeleaf页面使用SpringSecurity的一些属性，通过判断这些属性，控制页面控件是否显示。
+

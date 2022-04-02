@@ -1,0 +1,153 @@
+---
+id: 动态SQL的使用
+title: 16. 动态SQL的使用
+---
+
+使用 jdbc 或类似的框架，动态拼接 SQL 是很痛苦的。比如根据当前日期选择数据表、根据传入的参数决定更新哪些字段等，都是比较常用的动态查询。MyBatis 拥有强大的动态 SQL 功能，可以在任何 SQL 语句中使用。MyBatis 的动态 SQL 主要使用以下几个元素来实现：
+
+- 单一条件：if
+- 多个条件：choose, when, otherwise
+- 自动封装：trim, where, set
+- 遍历集合：foreach
+
+
+
+由于mybatis 的sql 是配置在mapper.xml文件中的，所有xml解析 < , > , <= , >=会出错，那怎么解决呢？
+
+通过转义字符
+
+
+
+| 原符号   | <      | <=      | >      | >=      | &       | '        | "        |
+| -------- | ------ | ------- | ------ | ------- | ------- | -------- | -------- |
+| 替换符号 | `&lt;` | `&lt;=` | `&gt;` | `&gt;=` | `&amp;` | `&apos;` | `&quot;` |
+
+
+
+## if
+
+if 用于检测条件，动态包含 SQL 语句。例如下面的语句中，根据输入的 title 是否为空来决定是否在查询条件中增加 title 搜索条件。
+
+```xml
+<select id="select" resultType="Person">
+    SELECT * FROM Person WHERE state = ‘ACTIVE’  
+    <if test="title != null">
+        AND title like #{title}  
+    </if>
+</select>
+```
+
+
+
+## choose, when, otherwise
+
+choose 元素提供了类似于 Java 语言中的 switch 功能，可以从多个选项中选择一个加入 SQL 语句。
+
+例如下面的语句，使用了两个 when 和一个 otherwise，类似于 switch 中的 case 和 default。
+
+```xml
+<select id="select" resultType="Person">
+    SELECT * FROM Person WHERE state = ‘ACTIVE’  
+    <choose>
+        <when test="title != null">
+          AND title like #{title}    
+        </when>
+        <when test="sex != null">
+          AND sex = #{sex}    
+        </when>
+        <otherwise>
+          AND height = 170
+        </otherwise>
+    </choose>
+</select>
+```
+
+## trim, where, set
+
+trim 元素可以用于为 SQL 语句增加前缀、后缀，并去除指定的开头和结尾。一共有四个属性：
+
+- prefix：语句的前缀；
+- prefixOverrides：去除开头；
+- suffix：语句的后缀；
+- suffixOverrides：去除结尾。
+
+在下面的语句中，trim 会先删除 somesql 的开头和结尾，然后再增加前缀和后缀。
+
+```xml
+<trim prefix="前缀" prefixOverrides="去除开头" 
+    suffix="后缀" suffixOverrides="去除结尾">
+  somesql
+</trim>
+```
+
+假设使用 if 语句增加两个动态条件，如下所示。如果只满足第二个条件，或者两个条件都不满足，最终得到的 SQL 是一个有 WHERE 但没有条件的非法 SQL。
+
+```xml
+<select id="select" resultType="Person">
+    SELECT * FROM Person WHERE  
+    <if test="sex != null">
+        sex = #{sex}  
+    </if>
+    <if test="title != null">
+        AND title like #{title}  
+    </if>
+</select>
+```
+
+使用 where 元素可以避免这一点，如下所示。where 元素可以检测内部的查询条件是否合法，比如为空、多了 AND / OR，并进行处理使 SQL 语句合法。经过 where 元素处理后，无论内部 if 元素是否成立，我们都可以得到合法的 SQL 语句。
+
+```xml
+<select id="select" resultType="Person">
+    SELECT * FROM Person  
+    <where>
+        <if test="sex != null">
+            sex = #{sex}    
+        </if>
+        <if test="title != null">
+            AND title like #{title}    
+        </if>
+    </where>
+</select>
+```
+
+同样地，update 语句中也可以使用 set 元素来实现类似于 where 元素的功能。在如下的示例中，set 元素确保了 SQL 语句中的 SET 永远是合法的，它能自动处理 SET 为空、结尾多逗号，并自动拼接 SET 字符串。
+
+```xml
+<update id="update">
+    update Person    
+    <set>
+        <if test="title != null">
+            title=#{title},
+        </if>
+        <if test="sex != null">
+            sex=#{sex},
+        </if>
+    </set>
+    where id=#{id}
+</update>
+```
+
+*注意set中的`,`逗号，这里：`title=#{title},`*
+
+## foreach
+
+foreach 用于处理集合，比如批量插入、批量查询条件等情况，支持 List、Array、Set、Map 等。在下面的例子中，查询条件是一个 list，使用 in 来查询。
+
+```xml
+<select id="select" resultType="Person">
+    SELECT * FROM Person WHERE id in  
+    <foreach item="item" index="index" collection="list"
+      open="(" separator="," close=")">
+        #{item}
+    </foreach>
+</select>
+```
+
+foreach 的属性定义如下：
+
+- Item：集合中元素迭代的别名，如果集合为 map 这里是 value；
+- index：集合中元素迭代的索引，如果集合为 map 这里是 key；
+- collection：集合的类型；
+- open：语句的前缀；
+- separator：语句的分隔符；
+- close：语句的后缀。

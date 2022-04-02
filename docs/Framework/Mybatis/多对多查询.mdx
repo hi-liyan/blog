@@ -1,0 +1,121 @@
+---
+id: 多对多查询
+title: 18. 高级映射：多对多查询
+---
+
+需求：*通过订单id查询订单信息，以及对应的用户，对应的订单详情和订单中对应地商品信息*
+
+分析：这里涉及这4个表地关联查询
+
+
+
+1. 实体类Order：
+
+   ```java
+   @Data
+   @AllArgsConstructor
+   @NoArgsConstructor
+   public class Order implements Serializable {
+       private Integer id;
+   
+       private Long userId;
+   
+       private String orderNumber;
+   		//添加User类型属性
+       private User user;
+   		//添加List<OrderDetail>
+       private List<OrderDetail> orderDetails;
+   
+       private static final long serialVersionUID = 1L;
+   }
+   ```
+
+2. 实体类：OrderDetail：
+
+   ```java
+   @Data
+   @AllArgsConstructor
+   @NoArgsConstructor
+   public class OrderDetail implements Serializable {
+       private Integer id;
+   
+       private Integer orderId;
+   
+       private Integer itemId;
+   
+       private Double totalPrice;
+   
+       private Integer status;
+   		//添加Item类型属性，通过订单详情查询对应的商品信息，把查询地商品信息映射到这个属性里
+       private Item item;
+   
+       private static final long serialVersionUID = 1L;
+   }
+   ```
+
+3. Dao接口：
+
+   ```java
+   Order queryOrderdetails(Integer id);
+   ```
+
+4. OrderMapper.xml：
+
+   ```xml
+   <resultMap id="orderDetailsResultMap" type="order" autoMapping="true">
+     <id property="id" column="id"/>
+     <!-- tb_user表查询返回的数据映射到Order类中的user属性 -->
+     <association property="user" javaType="user" autoMapping="true">
+       <id property="id" column="uid"/>
+     </association>
+     <!--
+         tb_orderdetail表查询返回的数据映射到Order类中的List<OrderDetail>属性中，          			查询结果可能是多条，所以实体类中声明List类型
+     -->
+     <collection property="orderDetails" ofType="orderDetail" autoMapping="true">
+       <id property="id" column="odid"/>
+       <!-- 
+   			OrderDetail类中还包含了Item类型的属性，用于将item的查询结果映射到这个属性中 -->
+       <association property="item" javaType="item" autoMapping="true">
+         <id property="id" column="iid"/>
+       </association>
+     </collection>
+   </resultMap>
+   <!-- 关联查询：通过订单id查询订单，以及对应的商品明细，用户明细 -->
+   <select id="queryOrderdetails" parameterType="integer" resultMap="orderDetailsResultMap">
+     select o.*,
+     od.id odid,
+     od.item_id,
+     od.order_id,
+     od.total_price,
+     od.status,
+     u.id uid,
+     u.user_name,
+     u.password,
+     u.name,
+     u.age,
+     u.sex,
+     i.id iid,
+     i.item_name,
+     i.item_price,
+     i.item_detail
+     from tb_order o,
+     tb_orderdetail od,
+     tb_user u,
+     tb_item i
+     where o.id = od.order_id
+     and u.id = o.user_id
+     and od.item_id = i.id
+     and o.id = #{id}
+   </select>
+   ```
+
+
+
+*重点理解涉及多个表关联查询的时候，只能用一个实体类来接收，这时候怎么办呢，需要通过在实体类中添加涉及查询的其它实体类的属性，将关联的表的查询结果映射到对应类型的属性中*
+
+*`resultMap`中涉及的两个标签`association`和`collection`，用于解决复杂的映射关系*
+
+
+
+*当看到mybatis官方文档讲解高级映射这一块时，看到官方的代码示例真是一脸懵B，完全不知所以。等自己理解这其中的关系之后，感觉真实so easy*
+

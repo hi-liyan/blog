@@ -1,0 +1,45 @@
+---
+id: 自定义注解
+title: 21.6 自定义注解
+---
+
+了解了元注解之后，就可以自定义注解了
+
+
+
+```java
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+
+@Target(value={Type,METHOD})
+public @interface MyAnnotation{
+  String name() default "";
+  int id() default 0;
+}
+```
+
+这个就是一个自定义注解，MyAnnotation就是注解名，@Target是该自定义注解可以作用的地方，类、方法上
+
+String name()是注解的属性（参数），后面默认值为`""`，如果不指定默认值，则使用该注解的时候，必须指定属性的值。
+
+**如果直接内只需要定义一个属性，那么该属性名建议使用value，在使用该注解的时候，括号内可以不写属性名value，直接赋值即可**
+
+```java
+@Target(value={Type,METHOD})
+@interface MyAnnotation{
+  String value();
+}
+
+@MyAnnotation("Hello")//可以省略属性名value
+public class Demo(){
+  
+}
+```
+
+
+
+注解除了是给我们自己看之外，还有一个作用就是给编译器看，让编译器知道这个注解是什么意思，否则定义了注解就和注释没有什么区别了。
+
+所以，要学习反射的机制，通过反射来读取注解，让注解变得有意义。

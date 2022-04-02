@@ -1,0 +1,105 @@
+---
+id: throw抛出异常
+title: 14.3 throw在方法中手动抛出异常
+---
+import ImgBox from "../../src/components/ImgBox";
+
+- throw用来抛出一个异常
+- 例如：throw new IOException();
+- throw抛出的只能够是可抛出类Throwable或者子类的实例对象。*（Throwable是Error和Exception的父类）*
+
+### 示例：
+
+```java
+package com.imooc.test;
+
+import java.util.Scanner;
+
+public class TryDemo4 {
+	public static void main(String[] args) {
+
+	}
+
+	// 描述酒店的入住规则：限定年龄，18岁以下，80岁以上的住客必须由亲友陪同
+	public static void testAge() {
+		System.out.print("请输入年龄：");
+		int age = new Scanner(System.in).nextInt();
+		if (age < 18 || age > 80) {// 小贴士：这里使用的是短路||，当前面条件为true时，后面则不再判断
+      //这里手动抛出一个异常，此时编译器会报错要求我们处理这个异常
+			throw new Exception("18岁以下，80岁以上的住客必须由亲友陪同");
+		} else {
+			System.out.println("欢迎入住本酒店");
+		}
+	}
+}
+```
+
+if语句中，手动抛出throw异常时，编译器会报错，提示有未处理的异常，我们可以通过两个方案解决：
+
+方案一（直接把throw语句放到try-catch中，自己处理）：
+
+<ImgBox src="https://images.shiguangping.com/imgs/20200501155903.png" />
+
+一般我们会把可能出现异常的代码都放到try块中：
+
+<ImgBox src="https://images.shiguangping.com/imgs/20200501160331.png" />
+
+方案二（通过在方法声明处throws该异常，由方法调用者去处理该异常）：
+
+```java
+package com.imooc.test;
+
+import java.util.Scanner;
+
+public class TryDemo4 {
+	public static void main(String[] args) {
+		// 调用方案二：由方法调用者通过try-catch捕获处理该异常，也可以选择继续将异常抛出，但是由于这里是main方法，向上抛会抛给虚拟机
+		try {
+			testAge1();
+		} catch (Exception e) {//如果下面方法抛出的是Throwable类型异常，则此处必须有捕获Throwable的catch
+			e.printStackTrace();
+		}
+	}
+
+	// 描述酒店的入住规则：限定年龄，18岁以下，80岁以上的住客必须由亲友陪同
+	// throw抛出异常对象的处理方案：
+	// 方案一：通过try-catch包含throw语句来捕获处理异常
+	public static void testAge() {
+		try {
+			System.out.print("请输入年龄：");
+			int age = new Scanner(System.in).nextInt();
+			if (age < 18 || age > 80) {// 小贴士：这里使用的是短路||，当前面条件为true时，后面则不再判断
+				throw new Exception("18岁以下，80岁以上的住客必须由亲友陪同");
+			} else {
+				System.out.println("欢迎入住本酒店");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// 方案二：通过throws在方法声明处抛出异常，由该方法的调用者去处理该异常
+	public static void testAge1() throws Exception {//也可以抛出Throwable
+
+		System.out.print("请输入年龄：");
+		int age = new Scanner(System.in).nextInt();
+		if (age < 18 || age > 80) {// 小贴士：这里使用的是短路||，当前面条件为true时，后面则不再判断
+			throw new Exception("18岁以下，80岁以上的住客必须由亲友陪同");
+		} else {
+			System.out.println("欢迎入住本酒店");
+		}
+	}
+}
+```
+
+
+
+总结下throws和throw的区别：
+
+- throws：是在方法声明处抛出该方法可能出现的异常（异常可能出现、可能不出现），谁调用谁处理，或者调用者继续向上抛。
+
+- throw：是手动（主动）抛出一个特定异常的对象，可以直接通过try-catch捕获处理，也可以通过在方法声明处throws该异常，再有调用者处理，或者调用者继续向上抛。
+
+  *（当通过throw抛出异常对象时，不建议抛出UncheckedException，因为编译器不会强制处理该异常）*
+
+  

@@ -1,11 +1,9 @@
 ---
-id: java-classloader
-title: Java 类加载器
+id: Java类加载器
+title: 21.3 Java类加载器
 ---
-import ShadowBox from "../../src/components/ShadowBox";
-import MarkPen from "../../src/components/MarkPen";
+
 import SvgBox from "../../src/components/SvgBox";
-import TipBox from "../../src/components/TipBox";
 
 
 ## 1. 三种类加载器
@@ -66,6 +64,14 @@ import TipBox from "../../src/components/TipBox";
 负责在JVM启动时加载来自java命令的class文件，以及classpath环境变量所指定的jar包和类路径，自定义的类均有系统类加载器加载。
 
 ## 2. 双亲委派机制
+
+**双亲委派机制的工作过程**是：如果一个类加载器收到了类加载的请求，它首先不会自己去加载这个类，而是把这个请求委派给父类加载器去完成，每一层的类加载器都是如此，这样所有的加载请求都会被传送到顶层的启动类加载器中，只有当父加载无法完成加载请求（它的搜索范围中没找到所需的类）时，子加载器才会尝试去加载类。下面举一个大家都知道的例子说明为什么要使用双亲委派模型。
+
+黑客自定义一个java.lang.String类，该String类具有系统的String类一样的功能，只是在某个函数稍作修改。比如equals函数，这个函数经常使用，如果在这这个函数中，黑客加入一些“病毒代码”。并且通过自定义类加载器加入到JVM中。此时，如果没有双亲委派模型，那么JVM就可能误以为黑客自定义的java.lang.String类是系统的String类，导致“病毒代码”被执行。
+
+而有了双亲委派模型，黑客自定义的java.lang.String类永远都不会被加载进内存。因为首先是最顶端的类加载器加载系统的java.lang.String类，最终自定义的类加载器无法加载java.lang.String类。
+
+或许你会想，我在自定义的类加载器里面强制加载自定义的java.lang.String类，不去通过调用父加载器不就好了吗?确实，这样是可行。但是，在JVM中，判断一个对象是否是某个类型时，如果该对象的实际类型与待比较的类型的类加载器不同，那么会返回false。
 
 
 ## 3. 自定义类加载器

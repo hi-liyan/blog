@@ -1,0 +1,43 @@
+---
+id: 扩展：Thymeleaf整合Shiro
+title: 19. 扩展：Thymeleaf整合Shiro
+---
+
+pom中添加整合包：
+
+```xml
+<!-- thymeleaf整合shiro -->
+<dependency>
+  <groupId>com.github.theborakompanioni</groupId>
+  <artifactId>thymeleaf-extras-shiro</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+
+
+
+SpringMVC配置文件中，模板引擎中添加方言：
+
+```xml
+<!-- SpringTemplateEngine：处理模板并渲染结果 -->
+<bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
+  <property name="templateResolver" ref="templateResolver"/>
+  <property name="additionalDialects">
+    <set>
+      <bean class="at.pollux.thymeleaf.shiro.dialect.ShiroDialect"/>
+    </set>
+  </property>
+</bean>
+```
+
+*不添加方言的话，页面中的shiro不会生效*
+
+
+
+Thymeleaf页面添加Shiro命名空间：
+
+```html
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+```
+

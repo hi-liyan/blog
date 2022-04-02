@@ -1,0 +1,165 @@
+---
+id: Servlet
+title: Servlet
+---
+import ImgBox from "../../src/components/ImgBox";
+
+## Servlet：server applet
+
+Java Servlet 是运行在 Web 服务器或应用服务器上的程序，它是作为来自 Web 浏览器或其他 HTTP 客户端的请求和 HTTP 服务器上的数据库或应用程序之间的中间层。
+
+<ImgBox src="https://images.shiguangping.com//imgs/20220402130519.png" width="300px" />
+
+
+## 快速开始
+
+ 1. 创建JavaEE（Web项目）项目；
+
+ 2. 定义一个类，实现 Servlet 接口，实现接口中的方法;
+
+    ```java
+    public class ServletDemo1 implements Servlet{
+      //实现Servlet接口的方法
+    }
+    ```
+
+ 3. 配置Servlet：配置web.xml文件
+
+    *下面的标签写在web-app标签内*
+
+    ```xml
+    <!--配置Servlet-->
+    <servlet>
+        <servlet-name>demo1</servlet-name>
+        <servlet-class>cn.itcast.web.servlet.ServletDemo1</servlet-class>
+    </servlet>
+    <!--mappint映射-->
+    <servlet-mapping>
+        <servlet-name>demo1</servlet-name>
+        <url-pattern>/demo1</url-pattern>
+    </servlet-mapping>
+    ```
+
+
+
+## 执行过程
+
+```
+1. 当服务器接收到客户端浏览器的请求后，会解析这个请求的URL路径，获取要访问的Servlet的资源路径；
+2. Tomcat会查找web.xml文件是否有对应的<url-pattern>标签内容；
+3. 如果有，则再找到对应的<servlet-class>的类；
+4. 找到对应类后，Tomcat会将其字节码文件加载进内存，创建其对象；
+5. 然后调用方法；
+```
+
+
+
+## Servlet中的生命周期(方法)
+
+### init()
+
+初始化时：执行init()方法，只执行一次。一般用于加载资源
+
+    ```
+    - Servlet什么时候被创建？
+      1. 默认情况下，第一次被访问时，Servlet被创建
+      2. 还可以配置执行Servlet的创建时机(配置web.xml文件)
+        在<servlet>标签下：
+        1.第一次被访问时创建：
+            <load-on-startup>标签值为负数，则第一次访问时被创建。（该标签默认值为-1）
+        2.在服务器启动时创建：
+            <load-on-startup>标签值配置成0或正整数
+    
+    - Servlet的init()方法，只执行一次，说明一个Servlet在内存中只存在一个对象，说明Servlet是单例的。
+      - 多个用户同时访问时，可能存在线程安全问题
+    	- 解决：
+    		尽量不要在Servlet中定义成员变量，即是定义了成员变量，也不要对其修改值。
+    ```
+
+### service()
+
+服务：执行service()方法，Servlet每次被访问时，都会被执行
+
+    ```
+    - 每次访问Servlet时，service()方法都会被调用一次。
+    ```
+
+### destroy()
+
+销毁时：执行destroy()方法，只执行一次
+
+    ```
+    - Servlet被销毁时执行。服务器关闭时，Servlet被销毁
+    - 只有服务器正常关闭时，才会执行destroy()方法
+    - destroy()在Servlet销毁之前执行，一般用于释放资源。
+    ```
+
+    
+
+## Servlet 3.0
+
+好处：
+
+​		支持注解配置。可以不需要web.xml了。
+
+步骤：
+
+1. 创建JavaEE项目，选择Servlet的版本3.0以上，可以不创建web.xml
+
+   2. 定义一个类，实现Servlet接口，实现Servlet接口方法
+
+   4. 在类上使用@WebServlet注解，进行配置
+
+      ```java
+      @WebServlet(urlPatterns = "/demo1") 或@WebServlet("/demo1")
+      ```
+
+      
+
+## IDEA与Tomcat的相关配置
+
+1. IDEA会为每一个Tomcat部署的项目，单独建立一份儿配置文件
+
+   查看控制台log日志CATALINA_BASE:     /Users/liyan/Library/......
+
+2. 工作空间项目和Tomcat部署的web项目是两个路径
+
+   Tomcat真正访问的是"Tomcat部署的web项目"，它对应着工作空间下web目录下的所有资源
+
+   WEB-INF目录下的资源不能被浏览器直接访问。
+
+3. 断点调试：通过debug启动
+
+
+
+## Servlet体系结构
+
+实现类：
+
+1. Servlet 接口
+
+2. GenericServlet 抽象类：将Servlet接口中其他的方法做了空实现，只将service()方法作为抽象，之后定义Servlet类时，可以继承GenericServlet类，实现service()方法即可。
+
+3. HttpServlet 抽象类
+
+   1. 定义一个类，继承HttpServlet类
+   2. 重写doGet()、doPost()方法
+
+   ​	
+
+## Servlet相关配置
+
+1. urlpartten：Servlet访问路径
+
+   1. 一个Servlet可以定义多个访问路径
+
+      ```java
+      @WebServlet({"/d4","/dd4","/ddd4"})
+      ```
+
+   2. 路径定义规则：
+
+      1. /xxx
+      2. /xxx/xxx ：多层路径，目录结构
+      3. *.do
+

@@ -1,0 +1,82 @@
+---
+id: 一对多查询
+title: 18. 高级映射：一对多查询
+---
+
+需求：*通过订单id查询订单数据及订单详情*
+
+分析：
+
+- 一个订单中可能包含多个商品，订单详情表中一件商品就对应一条数据，所以这是一个一对多的关系
+- 这里面涉及`tb_order表`和`tb_orderdetail表`
+
+
+
+1. 实体类Order中添加`List<Orderdetail>`属性：
+
+   ```java
+   @Data
+   @AllArgsConstructor
+   @NoArgsConstructor
+   public class Order implements Serializable {
+       private Integer id;
+   
+       private Long userId;
+   
+       private String orderNumber;
+   
+       private User user;
+   		//一条订单可能会查询出多条订单详情的数据，所以这里声明的是列表
+       private List<OrderDetail> orderDetails;
+   
+       private static final long serialVersionUID = 1L;
+   }
+   ```
+
+2. Dao接口：
+
+   通过id查询：
+
+   ```java
+   Order queryOrderdetails(Integer id);
+   ```
+
+3. OrderMapper.xml：
+
+   ```xml
+   <resultMap id="orderDetailsResultMap" type="order" autoMapping="true">
+     <id property="id" column="id"/>
+     <!--
+               通过collection标签为Order类中List<>属性赋值，
+               把查询到的多条orderDetail数据注入到List<OrderDetail>属性中
+           -->
+     <collection property="orderDetails" ofType="orderDetail" autoMapping="true">
+       <id property="id" column="odid"/>
+     </collection>
+   </resultMap>
+   <!-- 一对多查询：通过订单id查询订单，以及对应的商品明细，用户明细 -->
+   <select id="queryOrderdetails" parameterType="integer" resultMap="orderDetailsResultMap">
+     select o.*,
+     od.id odid,
+     od.item_id,
+     od.order_id,
+     od.total_price,
+     od.status
+     from tb_order o,
+     tb_orderdetail od
+     where o.id = od.order_id
+     and o.id = #{id}
+   </select>
+   ```
+
+   通过`collection`标签为Order类中的List属性赋值，把查询结果映射到这个属性中
+
+   *注意：查询的两个表中都有id这个字段，所以需要给一个id字段设置个别名，在resultMap中显式地去定义映射关系，否则查询结果可能无法正常映射，甚至会报错。*
+
+
+
+​	
+
+
+
+​	

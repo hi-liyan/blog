@@ -1,0 +1,47 @@
+---
+id: 日志工厂
+title: 9. 日志工厂
+---
+
+在数据库操作出现问题时，可以通过日志来帮助我们查找错误。
+
+Mybatis 通过使用内置的日志工厂提供日志功能。内置日志工厂将会把日志工作委托给下面的实现之一：
+
+- SLF4J
+- Apache Commons Logging
+- Log4j 2
+- Log4j
+- JDK logging
+
+如果你的应用部署在一个类路径已经包含 Commons Logging 的环境中，而你又想使用其它日志实现，你可以通过在 MyBatis 配置文件 mybatis-config.xml 里面添加一项 setting 来选择其它日志实现。
+
+```xml
+<configuration>
+  <settings>
+    ...
+    <setting name="logImpl" value="LOG4J"/>
+    ...
+  </settings>
+</configuration>
+```
+
+![image-20200617212307373](https://images.shiguangping.com/imgs/20200617212326.png)
+
+可选的值有：SLF4J、LOG4J、LOG4J2、JDK_LOGGING、COMMONS_LOGGING、STDOUT_LOGGING、NO_LOGGING，或者是实现了 `org.apache.ibatis.logging.Log` 接口，且构造方法以字符串为参数的类完全限定名。
+
+
+
+*上面这些都来自于官方文档，下面就来实际操作一下：*
+
+
+
+### 示例：
+
+在mybatis-config.xml中配置日志工厂
+
+![image-20200617210105215](https://images.shiguangping.com/imgs/20200617210105.png)
+
+在执行`select * from user`查询语句后，控制台打印出日志信息：
+
+![image-20200617210618104](https://images.shiguangping.com/imgs/20200617210618.png)
+

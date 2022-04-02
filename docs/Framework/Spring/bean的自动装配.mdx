@@ -1,0 +1,163 @@
+---
+id: Bean的自动装配
+title: 8. Bean的自动装配
+---
+
+- 自动装配是Spring满足Bean依赖一种方式
+- Spring会在上下文中自动寻找，并自动给Bean装配属性
+
+
+
+在Spring中有三种装配方式：
+
+- 在xml中显式配置
+- 在Java中显式配置
+- 隐式地自动配置Bean【重要】
+
+
+
+***搭建测试环境：***
+
+一个人两个动物：
+
+```java
+package com.neu.pojo;
+
+public class Person {
+    private Cat cat;
+    private Dog dog;
+    private String name;
+
+    public Cat getCat() {
+        return cat;
+    }
+
+    public void setCat(Cat cat) {
+        this.cat = cat;
+    }
+
+    public Dog getDog() {
+        return dog;
+    }
+
+    public void setDog(Dog dog) {
+        this.dog = dog;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "cat=" + cat +
+                ", dog=" + dog +
+                ", name='" + name + '\'' +
+                '}';
+    }
+}
+```
+
+Dog类：
+
+```java
+package com.neu.pojo;
+
+public class Dog {
+    public void shout(){
+        System.out.println("汪汪汪~");
+    }
+}
+```
+
+Cat类：
+
+```java
+package com.neu.pojo;
+
+public class Cat {
+    public void shout(){
+        System.out.println("喵喵喵~");
+    }
+}
+```
+
+Beans.xml：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="cat" class="com.neu.pojo.Cat"/>
+    <bean id="dog" class="com.neu.pojo.Dog"/>
+    <bean id="person" class="com.neu.pojo.Person">
+        <property name="name" value="张三"/>
+        <property name="cat" ref="cat"/>
+        <property name="dog" ref="dog"/>
+    </bean>
+
+</beans>
+```
+
+Test类：
+
+```java
+import com.neu.pojo.Person;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MyTest {
+
+    @Test
+    public void test1() {
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        Person person = context.getBean("person", Person.class);
+        person.getDog().shout();
+        person.getCat().shout();
+    }
+}
+```
+
+结果：
+
+>汪汪汪~
+>喵喵喵~
+
+
+
+### ByName自动装配
+
+```xml
+<!--会自动在容器上下文中查找，和自己对象set方法后面的值对应的beanid-->
+<bean id="person" class="com.neu.pojo.Person" autowire="byName">
+  <property name="name" value="张三"/>
+  <!--这里不再需要给dog和cat赋值-->
+</bean>
+```
+
+
+
+### ByType自动装配：
+
+```xml
+<!--会根据类型属性的类型去自动装配-->
+<bean id="person" class="com.neu.pojo.Person" autowire="byType">
+  <property name="name" value="张三"/>
+</bean>
+```
+
+
+
+小结：
+
+- ByName的时候，要保证所有Bean的id唯一，并且Bean的id要和自动装配的属性的set方法的值一致
+- ByType的时候，要保证Bean的Class唯一，并且这个Bean需要和自动装配的属性的类型一致

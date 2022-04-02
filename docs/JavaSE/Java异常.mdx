@@ -1,0 +1,79 @@
+---
+id: Java异常处理
+title: 14. Java异常处理
+---
+import ImgBox from "../../src/components/ImgBox";
+
+什么是异常？
+
+- 异常就是一种程序上的错误；
+- 错误一般有编译时错误，和运行时错误。
+
+异常分类：
+
+<ImgBox src="https://images.shiguangping.com/imgs/20200501124108.jpeg" width="450px" />
+
+`Throwable`是异常处理的根类，它又分两个直接子类`Error`和`Exception`。
+
+
+
+`Error`是程序无法处理的错误，表示运行应用程序中较严重的问题。
+
+- VirtualMachineError 虚拟机错误
+- OutOfMemoryError 内存溢出
+- ThreadDeath 线程锁死
+- ... ...(这些错误是不可查的，它们在应用程序的控制和处理能力之外，而且绝大多数是程序运行时不允许出现的状况)
+
+
+
+`Exception`是程序本身可以处理的异常。异常处理通常指针对这种类型的处理。
+
+- Checked Exception 检查异常（编译器要求必须处理这些异常）
+
+  除了RuntimeException以及它的子类，其余的异常都算Checked Exception
+
+  - IOException IO异常
+  - SQLException SQL异常
+
+
+
+- Unchecked Exception 非检查异常（编译器不要求强制处理的异常）
+
+  - RuntimeException 运行时异常（以及它的子类）
+
+    例如：
+
+    - NullPointerException 空指针异常
+    - ArrayIndexOutOfBoundsException 数组下标越界异常
+    - ArithmeticException 算术异常
+    - ClassCastException 类型转换异常
+
+
+
+## 异常处理
+
+在Java应用程序中，异常处理机制为：
+
+- 抛出异常
+- 捕获异常
+
+
+
+异常处理关键字：`try`,`catch`,`finally`,`throw`,`throws`
+
+捕获异常：
+
+- try -> 执行可能产生异常的代码
+- catch -> 捕获异常
+- finally -> 无论是否发生异常代码总能执行
+
+声明异常：
+
+- throws -> 声明可能抛出的异常
+
+抛出异常：
+
+- throw ->手动抛出异常
+
+
+

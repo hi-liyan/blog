@@ -1,0 +1,71 @@
+---
+id: RestFul风格
+title: 5. RestFul风格
+---
+
+RestFul就是一个资源定位及资源操作的风格。不是标准也不是协议，只是一种风格。基于这个风格设计的软件可以更简洁，更有层次，更易于实现缓存等机制。
+
+
+
+### 代码示例：
+
+```java
+@Controller
+public class RestFulController {
+    @RequestMapping("/add")
+    public String test1(int a, int b, Model model) {
+        int res = a + b;
+        model.addAttribute("msg", "结果为：" + res);
+        return "test1";
+    }
+}
+```
+
+方法参数定义了两个整型变量a和b，会直接获取到前端请求中的a和b
+
+请求路径是这个样子的：`http://localhost:8080/springmvc_04_controller/add?a=1&b=2`
+
+方法获取到请求中的参数a和b，相加之后再放到msg中
+
+
+
+### RestFul风格：
+
+在SpringMVC中可以使用`@PathVarible`注解，让方法参数的值对应绑定到URI模板变量上。
+
+```java
+@Controller
+public class RestFulController {
+    @RequestMapping(value = "/add/{a}/{b}", method = RequestMethod.GET)
+    public String test1(@PathVariable int a, @PathVariable int b, Model model) {
+        int res = a + b;
+        model.addAttribute("msg", "结果为：" + res);
+        return "test1";
+    }
+}
+```
+
+请求路径变为这个样子：`http://localhost:8080/springmvc_04_controller/add/2/5`
+
+`@RequestMapping`还可以通过method来约束请求方式：
+
+```java
+@RequestMapping(value = "/add/{a}/{b}", method = RequestMethod.GET)
+```
+
+
+
+也可以通过这几种注解来代替`@RequestMapping`来设置请求方式：
+
+```
+@GetMapping			相当于@RequestMapping(method = RequestMethod.GET)
+@PostMapping
+@PutMapping
+@DeleteMapping
+@PatchMapping
+```
+
+
+
+
+

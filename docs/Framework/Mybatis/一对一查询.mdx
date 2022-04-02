@@ -1,0 +1,160 @@
+---
+id: 一对一查询
+title: 17. 高级映射：一对一查询
+---
+
+#### 准备工作：
+
+1、准备数据表，数据库直接导入这四张表
+
+```sql
+DROP TABLE IF EXISTS `tb_item`;
+-- 创建商品表
+CREATE TABLE `tb_item` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `item_name` VARCHAR(32) NOT NULL COMMENT '商品名称',
+  `item_price` FLOAT(6,1) NOT NULL COMMENT '商品价格',
+  `item_detail` TEXT COMMENT '商品描述',
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `tb_item` VALUES ('1', 'iPhone 6', '5288.0', '苹果公司新发布的手机产品。');
+INSERT INTO `tb_item` VALUES ('2', 'iPhone 6 plus', '6288.0', '苹果公司发布的新大屏手机。');
+
+-- 创建用户表
+
+DROP TABLE IF EXISTS `tb_user`;
+CREATE TABLE `tb_user` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `user_name` VARCHAR(100) DEFAULT NULL COMMENT '用户名',
+  `password` VARCHAR(100) DEFAULT NULL COMMENT '密码',
+  `name` VARCHAR(100) DEFAULT NULL COMMENT '姓名',
+  `age` INT(10) DEFAULT NULL COMMENT '年龄',
+  `sex` TINYINT(1) DEFAULT NULL COMMENT '性别，1男性，2女性',
+  `birthday` DATE DEFAULT NULL COMMENT '出生日期',
+  `created` DATETIME DEFAULT NULL COMMENT '创建时间',
+  `updated` DATETIME DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`user_name`)
+) ENGINE=INNODB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `tb_user` VALUES ('1', 'zhangsan', '123456', '张三', '30', '1', '1984-08-08', '2014-09-19 16:56:04', '2014-09-21 11:24:59');
+INSERT INTO `tb_user` VALUES ('2', 'lisi', '123456', '李四', '21', '2', '1991-01-01', '2014-09-19 16:56:04', '2014-09-19 16:56:04');
+INSERT INTO `tb_user` VALUES ('3', 'wangwu', '123456', '王五', '22', '2', '1989-01-01', '2014-09-19 16:56:04', '2014-09-19 16:56:04');
+INSERT INTO `tb_user` VALUES ('4', 'zhangwei', '123456', '张伟', '20', '1', '1988-09-01', '2014-09-19 16:56:04', '2014-09-19 16:56:04');
+INSERT INTO `tb_user` VALUES ('5', 'lina', '123456', '李娜', '28', '1', '1985-01-01', '2014-09-19 16:56:04', '2014-09-19 16:56:04');
+INSERT INTO `tb_user` VALUES ('6', 'lilei', '123456', '李磊', '23', '1', '1988-08-08', '2014-09-20 11:41:15', '2014-09-20 11:41:15');
+
+-- 订单表
+DROP TABLE IF EXISTS `tb_order`;
+CREATE TABLE `tb_order` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT(20) NOT NULL,
+  `order_number` VARCHAR(20) NOT NULL COMMENT '订单号',
+  PRIMARY KEY (`id`),
+  KEY `FK_orders_1` (`user_id`),
+  CONSTRAINT `FK_orders_1` FOREIGN KEY (`user_id`) REFERENCES `tb_user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=INNODB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `tb_order` VALUES ('1', '1', '20140921001');
+INSERT INTO `tb_order` VALUES ('2', '2', '20140921002');
+INSERT INTO `tb_order` VALUES ('3', '1', '20140921003');
+
+-- 创建订单明细表
+
+DROP TABLE IF EXISTS `tb_orderdetail`;
+CREATE TABLE `tb_orderdetail` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `order_id` INT(32) DEFAULT NULL COMMENT '订单号',
+  `item_id` INT(32) DEFAULT NULL COMMENT '商品id',
+  `total_price` DOUBLE(20,0) DEFAULT NULL COMMENT '商品总价',
+  `status` INT(11) DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (`id`),
+  KEY `FK_orderdetail_1` (`order_id`),
+  KEY `FK_orderdetail_2` (`item_id`),
+  CONSTRAINT `FK_orderdetail_1` FOREIGN KEY (`order_id`) REFERENCES `tb_order` (`id`),
+  CONSTRAINT `FK_orderdetail_2` FOREIGN KEY (`item_id`) REFERENCES `tb_item` (`id`)
+) ENGINE=INNODB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `tb_orderdetail` VALUES ('1', '1', '1', '5288', '1');
+INSERT INTO `tb_orderdetail` VALUES ('2', '1', '2', '6288', '1');
+INSERT INTO `tb_orderdetail` VALUES ('3', '2', '2', '6288', '1');
+INSERT INTO `tb_orderdetail` VALUES ('4', '3', '1', '5288', '1');
+```
+
+2、这是这4张表之间的关系：
+
+<img src="https://images.shiguangping.com/imgs/20200708142859.png" alt="image-20200708142859567" width="500px" />
+
+
+
+#### 一对一查询：
+
+需求：*通过订单ID查询订单信息及对应的用户信息*
+
+分析：
+
+- 一个订单对应一个用户，这是一对一的关系；一个用户会对应多个订单，这是一对多的关系。
+
+- 这里面只涉及`tb_order表`和`tb_user表`
+
+
+
+1. 首先，在Order实体类中添加User属性，为了把查询的User信息映射到user属性里
+
+   ```java
+   @Data
+   @AllArgsConstructor
+   @NoArgsConstructor
+   public class Order implements Serializable {
+       private Integer id;
+   
+       private Long userId;
+   
+       private String orderNumber;
+   		//添加一个User类型的属性
+       private User user;
+   
+       private static final long serialVersionUID = 1L;
+   }
+   ```
+
+   
+
+2. 定义Dao接口
+
+   ```java
+   Order queryOrderById(Integer id);
+   ```
+
+   
+
+3. OrderMapper.xml
+
+   ```xml
+       <resultMap id="orderResultMap" type="order" autoMapping="true">
+           <association property="user" javaType="user" autoMapping="true"/>
+       </resultMap>
+       
+       <select id="queryOrderById" parameterType="integer" resultMap="orderResultMap">
+           select tb_order.id,
+                  tb_order.user_id,
+                  tb_order.order_number,
+                  tb_user.*
+           from tb_order,
+                tb_user
+           where tb_order.user_id = tb_user.id
+             and tb_order.id = #{id}
+       </select>
+   ```
+
+   结果映射使用`resultMap`，通过`<association>`标签为Order中的User属性赋值，把select查询返回的User表中的数据映射到User属性中。
+
+
+
+- `association`：用于映射类中的自定义类型的属性，把结果映射到该对象的属性中
+

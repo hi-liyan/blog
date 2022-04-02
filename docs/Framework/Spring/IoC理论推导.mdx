@@ -1,0 +1,144 @@
+---
+id: IoC理论推导
+title: 2. IoC理论推导
+---
+
+之前在操作数据库时，我们首先需要在Dao层定义接口，定义增删改查等抽象方法，然后在Dao层定义实现类来实现这些方法：
+
+1. UserDao接口
+
+   ```java
+   package com.neu.dao;
+   
+   public interface UserDao {
+   		//从数据库中获取用户数据
+       void getUser();
+   }
+   ```
+
+   
+
+2. UserDaoImpl实现类
+
+   ```java
+   package com.neu.dao;
+   
+   public class UserDaoImpl implements UserDao{
+     	//实现接口中的方法，操作数据库获取用户数据
+       public void getUser() {
+           System.out.println("默认获取用户的数据");
+       }
+   }
+   ```
+
+   
+
+在Service层中定义和Dao层相同的接口，然后定义一个实现类来实现这些方法，使用实现的方法调用Dao层的接口，使用户面向业务层，而不是直接操作Dao层。
+
+1. UserService接口
+
+   ```java
+   package com.neu.service;
+   
+   public interface UserService {
+     	//定义与Dao层接口相同的方法
+       void getUser();
+   }
+   ```
+
+   
+
+2. UserServiceImpl实现类
+
+   ```java
+   package com.neu.service;
+   
+   import com.neu.dao.UserDao;
+   import com.neu.dao.UserDaoImpl;
+   
+   public class UserServiceImpl implements UserService{
+       private UserDao userDao = new UserDaoImpl();
+   
+       /**
+        * 业务层中实现的方法只用来调用Dao层实现类中的方法
+        */
+       public void getUser() {
+           userDao.getUser();
+       }
+   }
+   ```
+
+3. 测试代码：
+
+   ```java
+   import com.neu.service.UserServiceImpl;
+   
+   public class MyTest {
+       public static void main(String[] args) {
+           //用户实际调用的是service层，dao层他们不需要接触
+           UserServiceImpl userService = new UserServiceImpl();
+           userService.getUser();//调用业务层来实现功能
+       }
+   }
+   ```
+
+==这里就会有一个问题：如果Dao层中有多个实现类需要操作的话，需要怎么办？==
+
+![image-20200606171027933](https://images.shiguangping.com/imgs/20200606171027.png)
+
+下图是之前的做法，UserDao对象指向不同的实现类（子类）实例，来调用不同实现类的重写方法：
+
+![image-20200606175006210](https://images.shiguangping.com/imgs/20200606175006.png)
+
+这里就会遇到一个很大的问题，==那就是如果再增加需求，就需要再次修改业务层的代码，如果项目很大的话，就需要修改很多的代码，这明显不是一个好的程序。==
+
+所以，需要换一个思路来解决这个问题：
+
+![image-20200606180230453](https://images.shiguangping.com/imgs/20200606180230.png)
+
+这样，用户可以自己去选择调用哪个，而不需要在业务层上做修改：
+
+![image-20200606182806020](https://images.shiguangping.com/imgs/20200606182806.png)
+
+
+
+**总结：**
+
+修改前和修改后的区别：
+
+- 修改前，程序是主动创建对象，控制权在程序员手里，程序员需要去手动修改业务层创建哪个对象去调用哪个实现类
+- 之后set注入之后，程序不再具有主动性，而是变成了被动接受对象，传入哪个实现类对象，就可以调用哪个实现类
+
+这种思想，从本质上解决了问题，程序猿不用再去管理对象的创建了，大大降低了系统的耦合性，可以更加专注在业务的实现上，这就是IoC的原型。
+
+![image-20200607114153684](https://images.shiguangping.com/imgs/20200607114153.png)
+
+
+
+### IoC的本质：
+
+**控制反转IoC(Inversion of Control)，是一种设计思想，DI(依赖注入)是实现IoC的一种方法**，也有人认为DI只是IoC的另一种说法。没有IoC的的程序中，我们使用面向对象编程，对象的创建与对象间的依赖关系完全硬编码在程序中，对象的创建由程序自己控制，控制反转后将对象的创建转移给第三方，所谓控制反转就是：获得依赖对象的方式反转了。
+
+
+
+采用XML方式配置Bean的时候，Bean的定义信息是和实现分离的，而采用注解的方式可以把二者合为一体，Bean的定义信息直接以注解的形式定义在实现类中，从而达到零配置的目的。
+
+
+
+**控制反转是一种通过(XML或注解)并通过第三方去生产或获取特定对象的方法。在Spring中实现控制反转的是IoC容器，其实现方法是依赖注入(Dependency Injection,DI)。**
+
+
+
+---
+
+***写完第一个Spring Hello程序，回来用Spring的方式改造下上面的例子：***
+
+#### 1. 在resources中创建beans.xml文件：
+
+![image-20200607135840404](https://images.shiguangping.com/imgs/20200607135840.png)
+
+
+
+#### 2. 测试：
+
+![image-20200607140216754](https://images.shiguangping.com/imgs/20200607140216.png)

@@ -1,0 +1,72 @@
+---
+id: 扩展：Spring中使用thymeleaf
+title: 13. 扩展：Spring中使用thymeleaf
+---
+
+SpringBoot中使用thymeleaf模板引擎直接添加启动器即可使用，无需再做其它配置。Spring项目中如何使用thymeleaf呢？
+
+
+
+#### 1. 添加thymeleaf依赖：
+
+```xml
+<!-- thymeleaf -->
+<dependency>
+  <groupId>org.thymeleaf</groupId>
+  <artifactId>thymeleaf-spring5</artifactId>
+  <version>3.0.11.RELEASE</version>
+</dependency>
+```
+
+
+
+#### 2. 配置视图解析器：
+
+在Spring配置文件中配置thymeleaf的视图解析器：
+
+- `templateResolver`：模板解析器，配置前缀后缀
+- `templateEngine`：模板引擎，将模板解析器注入给它（处理模板相关的）
+- `thymeleafViewResolver`：视图解析器，将模板引擎注入给它（处理视图相关的）
+
+```xml
+<!--Thymeleaf 视图解析器，优先级最高-->
+<!-- TemplateResolver：加载 Thymeleaf 模板 -->
+<bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+  <property name="prefix" value="/"/>
+  <property name="suffix" value=".html"/>
+  <property name="templateMode" value="LEGACYHTML5"/>
+  <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
+</bean>
+
+<!-- SpringTemplateEngine：处理模板并渲染结果 -->
+<bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
+  <property name="templateResolver" ref="templateResolver"/>
+</bean>
+
+<!-- ThymeleafViewResolver：将逻辑视图名称解析为 Thymeleaf 模板视图 -->
+<bean id="thymeleafViewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+  <property name="templateEngine" ref="templateEngine"/>
+  <!-- 解决页面中文乱码 -->
+  <property name="characterEncoding" value="UTF-8"/>
+</bean>
+
+
+<!--配置默认视图解析器，这里只能解析jsp后缀的页面，不能解析html后缀的页面，优先级最低-->
+<bean id="viewResolver"
+      class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+  <property name="prefix" value="/WEB-INF/views/"/>
+  <property name="suffix" value=".jsp"/>
+  <property name="order" value="#{T(org.springframework.core.Ordered).LOWEST_PRECEDENCE}"/>
+</bean>
+```
+
+
+
+#### 3. HTML页面添加命名空间，使用th绑定属性：
+
+```html
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <a th:href="#"></a>
+</html>
+```
+

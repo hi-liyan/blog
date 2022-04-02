@@ -1,0 +1,78 @@
+---
+id: Limit实现分页
+title: 11. Limit实现分页
+---
+
+分页查询：
+
+```sql
+select * from tableName limit startIndex,pageSize
+# startIndex 是查询的起始位置
+# pageSize 每页查询的数量
+```
+
+如：
+
+```sql
+select * from user limit 0,2;
+```
+
+查询结果：（实际user表中有4条数据）
+
+>1,admin,123456
+>2,李四,123456
+
+
+
+拓展：
+
+```sql
+select * from user limit 0,-1;
+```
+
+这个之前表示从第一条查到最后一条，但这种用法之前实际上是mysql的一个bug，现在已经被修复了。
+
+
+
+
+
+### 代码示例：
+
+1. 接口：
+
+   ```java
+   List<User> getUserByLimit(Map<String,Integer> map);
+   ```
+
+2. xml
+
+   ```xml
+   <select id="getUserByLimit" parameterType="map" resultType="user">
+     select * from user limit #{startIndex},#{pageSize}
+   </select>
+   ```
+
+3. 测试：
+
+   ```java
+   @org.junit.Test
+     public void test(){
+     SqlSession sqlSession = MybatisUtil.getSqlSession();
+     UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+     Map<String,Integer> map = new HashMap<String, Integer>();
+     map.put("startIndex",0);
+     map.put("pageSize",2);
+   
+     List<User> userByLimit = mapper.getUserByLimit(map);
+     for (User user : userByLimit) {
+       System.out.println(user);
+     }
+   }
+   ```
+
+
+
+运行结果：
+
+>User{id=1, name='admin', pwd='123456'}
+>User{id=2, name='李四', pwd='123456'}

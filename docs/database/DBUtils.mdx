@@ -1,0 +1,66 @@
+---
+id: DBUtils
+title: DBUtils工具类
+---
+
+第一步：引入依赖，Maven坐标：
+
+```xml
+<!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
+<dependency>
+  <groupId>commons-dbutils</groupId>
+  <artifactId>commons-dbutils</artifactId>
+  <version>1.7</version>
+</dependency>
+```
+
+
+
+第二步：获取QueryRunner对象：
+
+```java
+QueryRunner queryRunner = new QueryRunner(DataSource dataSource);
+```
+
+
+
+第三步：
+
+### 常用方法：
+
+- **查询：返回实体类**
+
+  ```java
+  User user = queryRunner.query(sql, new BeanHandler<User>(User.class), id);
+  ```
+
+  查询单条数据时，可以将查询结果封装成实体类对象
+
+  query方法的参数分别是：
+
+  - sql语句
+
+  - ```java
+    new BeanHandler<User>(User.class)
+    ```
+
+  - sql中要赋值的参数
+
+- **查询：返回实体类列表**
+
+  ```java
+  List<User> userList = queryRunner.query(sql, new BeanListHandler<User>(User.class));
+  ```
+
+  查询多条数据时，可以将查询的每条结果封装成实体类对象再放到List中
+
+- 更新
+
+  ```java
+  int i = queryRunner.update(sql, user.getId(), user.getUsername());
+  ```
+
+  执行DML（增、删、改）时，使用update()方法
+
+  方法参数是sql语句，如果sql中需要传参，接着写就行
+

@@ -1,0 +1,83 @@
+---
+id: 使用注解增删改查
+title: 15. 使用注解增删改查
+---
+
+设置自动提交事务：
+
+*SqlSessionFactory接口中提供了一个openSession(boolean autoCommit)方法，可以设置自动提交事务，下面是该方法的实现：*
+
+```java
+@Override
+public SqlSession openSession(boolean autoCommit) {
+  return openSessionFromDataSource(configuration.getDefaultExecutorType(), null, autoCommit);
+}
+```
+
+
+
+### 查询操作：
+
+不带参数查询：
+
+```java
+@Select("select * from user")
+List<User> getUsers();
+```
+
+
+
+带参数查询：如通过id查询User
+
+```java
+@Select("select * from user where id = #{id}")
+User getUserById(@Param("id") int id);
+```
+
+注意事项：
+
+- 如果方法中的参数是基本数据类型或String类型，且只有一个参数的情况下，参数前面的@Param("id")注解加不加都可以
+- 如果是多个参数的情况下，则每个参数前必须加@Param("xxx")注解，SQL语句中的参数是通过@Param来查找的。
+
+
+
+### 插入操作：
+
+```java
+@Insert("insert into user values(#{id},#{name},#{pwd})")
+int addUser(User user);
+```
+
+注意事项：
+
+- SQL语句中#{"xxx"}的参数名要和实体类中的属性名一致，否则会找不到
+
+
+
+### 更新操作：
+
+```java
+@Update("update user set name = #{name},pwd = #{pwd} where id = #{id}")
+int updateUser(User user);
+```
+
+
+
+### 删除操作：
+
+```java
+@Delete("delete from user where id = #{id}")
+int deleteUser(@Param("id") int id);
+```
+
+
+
+
+
+### 号外~
+
+SQL语句中`#{}`和`${}`的区别：
+
+- `#{}是预编译的，能很大程度防止SQL注入问题`
+- `${}不能防止SQL注入问题，相对不安全`
+

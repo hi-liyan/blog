@@ -1,0 +1,98 @@
+---
+id: Mybatis增删改查
+title: 3. Mybatis增删改查
+---
+
+### 接口代码：
+
+和之前操作数据库dao层接口是一样的
+
+```java
+package com.neu.dao;
+
+import com.neu.pojo.User;
+
+import java.util.List;
+
+public interface UserMapper {
+
+    /**
+     * 查询所有User
+     * @return List<User>
+     */
+    List<User> getUserList();
+
+    /**
+     * 通过id查询User
+     * @param id
+     * @return int
+     */
+    User getUserById(int id);
+
+    /**
+     * 插入User
+     * @param user
+     * @return int
+     */
+    int addUser(User user);
+
+    /**
+     * 修改User
+     * @param user
+     * @return int
+     */
+    int updateUser(User user);
+
+    /**
+     * 通过id删除User
+     * @param id
+     * @return int
+     */
+    int deleteUser(int id);
+}
+```
+
+
+
+### UserMapper.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace绑定UserDao/UserMapper-->
+<mapper namespace="com.neu.dao.UserMapper">
+    <!--select id="绑定的dao接口中的方法名"-->
+    <select id="getUserList" resultType="com.neu.pojo.User">
+        select * from user
+    </select>
+
+    <!--通过id查询-->
+    <select id="getUserById" parameterType="int" resultType="com.neu.pojo.User">
+        select * from user where id = #{id}
+    </select>
+
+    <!--增-->
+    <insert id="addUser" parameterType="com.neu.pojo.User">
+        insert into user values (#{id},#{name},#{pwd})
+    </insert>
+
+    <!--改-->
+    <update id="updateUser" parameterType="com.neu.pojo.User">
+        update user set name = #{name} ,pwd = #{pwd} where id = #{id}
+    </update>
+
+    <!--删-->
+    <delete id="deleteUser" parameterType="int">
+        delete from user where id = #{id}
+    </delete>
+</mapper>
+```
+
+
+
+### 测试代码：
+
+![image-20200606151531321](https://images.shiguangping.com/imgs/20200606151531.png)

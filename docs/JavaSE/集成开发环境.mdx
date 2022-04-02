@@ -1,0 +1,49 @@
+---
+id: 集成开发环境
+title: 1.2 集成开发环境
+---
+
+## 用STS新建一个Java文件
+
+**首先来介绍下什么是IDE（集成开发环境）：**
+
+**集成开发环境**（Integrated Development Environment，简称**IDE**，也称为Integration Design Environment、Integration Debugging Environment）是一种辅助程序开发人员开发[软件](https://zh.wikipedia.org/wiki/軟體)的[应用软件](https://zh.wikipedia.org/wiki/應用軟體)，在开发工具内部就可以辅助编写源代码文本、并编译打包成为可用的程序，有些甚至可以设计图形接口。
+
+IDE通常包括[编程语言编辑器](https://zh.wikipedia.org/wiki/文本编辑器)、[自动构建](https://zh.wikipedia.org/wiki/自动构建)工具、通常还包括[调试器](https://zh.wikipedia.org/wiki/除錯器)。有些IDE包含[编译器](https://zh.wikipedia.org/wiki/編譯器)／[解释器](https://zh.wikipedia.org/wiki/直譯器)，如微软的[Microsoft Visual Studio](https://zh.wikipedia.org/wiki/Microsoft_Visual_Studio)，有些则不包含，如[Eclipse](https://zh.wikipedia.org/wiki/Eclipse)、[SharpDevelop](https://zh.wikipedia.org/wiki/SharpDevelop)等，这些IDE是通过调用第三方编译器来实现代码的编译工作的。有时IDE还会包含[版本控制](https://zh.wikipedia.org/wiki/版本控制)系统和一些可以设计[图形用户界面](https://zh.wikipedia.org/wiki/圖形用戶界面)的工具。许多支持[面向对象](https://zh.wikipedia.org/wiki/物件導向)的现代化IDE还包括了类别浏览器、对象查看器、对象结构图。虽然当前有一些IDE支持多种编程语言（例如[Eclipse](https://zh.wikipedia.org/wiki/Eclipse)、[NetBeans](https://zh.wikipedia.org/wiki/NetBeans)、[Microsoft Visual Studio](https://zh.wikipedia.org/wiki/Microsoft_Visual_Studio)），但是一般而言，IDE主要还是针对特定的编程语言而量身打造（例如[Visual Basic](https://zh.wikipedia.org/wiki/Visual_Basic)）。
+
+---
+
+Java常用的开发工具有：[eclipse](https://www.eclipse.org/)、[IDEA](https://www.jetbrains.com/idea/)、[Spring Tool Suite](https://spring.io/tools)(sts)等。
+
+这里我们使用的是sts，sts是基于eclipse工具并集成了Spring，它本身也是使用Java语言编写的，完全开源、免费。
+
+eclipse本身也是一款开源的开发工具，完全免费。
+
+IDEA是jetbrains公司开发的一款Java开发工具，深受企业级开发者喜爱，但它是付费的。
+
+---
+
+***安装开发工具之前，一定要安装JDK并配置好环境变量！！！***
+
+打开安装好的sts工具，双击工具图标后会出现：
+
+![](https://images.shiguangping.com/imgs/20200501194558.png)
+
+然后会出现对话框，`选择工作空间文件夹`。工作空间的路径可以默认也可以自定义。
+
+![](https://images.shiguangping.com/imgs/20200501194448.png)
+
+选择好工作空间后，点击`Launch`，进入工具的工作页面：
+
+![](https://images.shiguangping.com/imgs/20200501194919.png)
+
+### 新建Java文件流程：
+
+1. **新建项目**：在sts工具package explorer空白处，右键鼠标，New-->Java Project，新建java工程
+- project name：工程名
+- JRE项选择所需要的JDK版本，这里选择JRE1.8（此处是java开发所需的jdk环境）
+2. **创建包**：鼠标右键新建的工程目录下src，New-->Package
+- 包名通常是域名的反写，例如com.neu.demo
+3. **创建java文件**：鼠标右键创建好的包，New-->Class
+- Name：类名
+- 一个类文件要想编译并运行，类文件里要包含main方法（程序运行的入口）

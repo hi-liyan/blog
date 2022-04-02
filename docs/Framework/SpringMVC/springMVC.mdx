@@ -1,0 +1,159 @@
+---
+id: SpringMVC
+title: 1. SpringMVC
+---
+
+什么是SSM？
+
+- SSM：mybatis + spring + springMVC
+
+SSM的应用图示：
+
+![](https://images.shiguangping.com/imgs/20200620211359.png)
+
+什么是MVC？
+
+- MVC分别指代：Model模型、View视图、Controller控制器，MVC是一种软件设计模型，一种设计思想，一种设计规范。
+
+
+
+**The request processing workflow in Spring Web MVC (high level)**
+
+![mvc](https://images.shiguangping.com/imgs/20200620221141.png)
+
+SpringMVC中，引入了一个DispatcherServlet（调度者Servlet）的模式，
+
+Spring的Web MVC框架是由请求驱动的，围绕中央Servlet设计（即DispatcherServlet），该Servlet将请求分发给其他控制器并提供其他功能来促进Web应用程序的开发。
+
+
+
+**Spring Web MVC中的典型上下文层次结构**
+
+![mvc context hierarchy](https://images.shiguangping.com/imgs/20200621004728.png)
+
+
+
+### 第一个SpringMVC程序搭建
+
+1. 配置web.xml
+
+   注册DispatcherSerlvet，并关联SpringMVC的配置文件
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+            version="4.0">
+   
+     <!--注册DispatcherServlet-->
+     <servlet>
+       <servlet-name>springmvc</servlet-name>
+       <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+       <!--关联一个SpringMVC的配置文件：【servlet-name】-servlet.xml-->
+       <init-param>
+         <param-name>contextConfigLocation</param-name>
+         <param-value>classpath:springmvc-servlet.xml</param-value>
+       </init-param>
+       <!--启动级别-1-->
+       <load-on-startup>1</load-on-startup>
+     </servlet>
+   
+     <!--/ 匹配所有的请求（不包括.jsp）-->
+     <!--/* 匹配所有的请求（包括.jsp）-->
+     <servlet-mapping>
+       <servlet-name>springmvc</servlet-name>
+       <url-pattern>/</url-pattern>
+     </servlet-mapping>
+   </web-app>
+   ```
+
+2. 配置springmvc-servlet.xml
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8" ?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.springframework.org/schema/beans
+                              http://www.springframework.org/schema/beans/spring-beans.xsd">
+   
+     <!--BeanNameUrlHandlerMapping BeanName操作者映射-->
+     <!--SimpleControllerHandlerAdapter 简单的控制器操作者适配器-->
+     <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+     <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+   
+     <!--视图解析器：DispatcherServlet给他的ModelAndView-->
+     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="internalResourceViewResolver">
+       <!--前缀-->
+       <property name="prefix" value="/WEB-INF/jsp/"/>
+       <!--后缀-->
+       <property name="suffix" value=".jsp"/>
+     </bean>
+   
+     <!--Handler-->
+     <bean id="/hello" class="com.neu.controller.HelloController"/>
+   </beans>
+   ```
+
+3. 创建一个类实现Controller接口并实现handleRequest()方法
+
+   ```java
+   package com.neu.controller;
+   
+   import org.springframework.web.servlet.ModelAndView;
+   import org.springframework.web.servlet.mvc.Controller;
+   
+   import javax.servlet.http.HttpServletRequest;
+   import javax.servlet.http.HttpServletResponse;
+   
+   public class HelloController implements Controller {
+       public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+           //实例化ModelAndView对象
+           ModelAndView mv = new ModelAndView();
+           //添加一个属性
+           mv.addObject("msg","Hello SpringMVC");
+           //设置跳转，设置ViewName，该名称会通过xml的前缀和后缀拼接成/WEB-INF/jsp/hello.jsp
+           mv.setViewName("hello");
+           return mv;
+       }
+   }
+   ```
+
+4. 运行Tomcat，浏览器访问`http://localhost:8080/springmvc_02_hellomvc/hello`
+
+   ![image-20200621003458490](https://images.shiguangping.com/imgs/20200621003458.png)
+
+注意事项：浏览器访问可能会出现404问题
+
+- 检查代码和Tomcat是否有问题
+
+- 添加相关依赖
+
+  ![image-20200621003840502](https://images.shiguangping.com/imgs/20200621003840.png)
+
+- 重启Tomcat，再次访问
+
+
+
+*总结：*
+
+- 通过web.xml配置DispatcherServlet，即调度Servlet
+
+- 创建自定义的HelloController类并实现Controller接口
+
+- 配置上下文springmvc-servlet.xml，该配置文件中配置了HelloController的bean
+
+  ```java
+  <bean id="/hello" class="com.neu.controller.HelloController"/>
+  ```
+
+- 浏览器访问`http://localhost:8080/springmvc_02_hellomvc/hello`，具体请求流程：
+
+  1. 浏览器发出请求会先找到web.xml中注册的DispatcherServlet
+  2. 之后找到DispatcherServlet关联的SpringMVC配置文件
+  3. 通过`BeanNameUrlHandlerMapping`和`SimpleControllerHandlerAdapter`来找可以处理该请求的`handler`
+  4. 在上下文配置文件中找到`/hello`，
+  5. 再通过`/hello`找到对应的HelloController类，执行类中`handleRequest()`方法
+  6. 在`handleRequest()`方法中通过`（ModelAndView(模型和视图)：模型用来存储数据，视图用来设置要跳转的页面资源）`对象添加了一个msg数据，并设置跳转的视图名称，返回`ModelAndView`对象
+  7. 之后会通过SpringMVC配置文件的中的视图解析器拼接完整的视图资源地址，跳转到该视图页面，*此时，整个请求的处理流程结束~*
+

@@ -1,0 +1,45 @@
+---
+id: SpringMVC执行流程
+title: 2. SpringMVC执行流程
+---
+
+![image-20200621122819868](https://images.shiguangping.com/imgs/20200621122820.png)
+
+**分步解析：**
+
+1. DispatcherServlet表示前置控制器（调度器），是整个SpringMVC的控制中心，用户发出请求，DispatcherServlet接收请求并拦截请求。
+
+   - 假设请求的url为`http://localhost:8080/SpringMVC/hello`
+
+   - 把这个url拆分成3个部分：
+
+     - `http://localhost:8080`表示服务器域名
+     - `/SpringMVC`是部署在这个服务器上的web站点
+     - `/hello`表示控制器
+
+     通过分析，这个url表示为，请求位于`http://localhost:8080`上的`/SpringMVC`站点的`/hello`控制器
+
+2. HandlerMapping为处理器映射，由DIspatcherServlet调用：
+
+   HandlerMapping根据请求url查找Handler
+
+3. HandlerExecution表示具体的Handler，其主要作用是根据url查找控制器，如上url被查找到的控制器为`hello`
+
+4. HandlerExecution将解析后的信息传递给DispatcherServlet，如解析控制器映射等
+
+5. HandlerAdapter表示处理器适配器，其按照特定的规则去执行Handler
+
+6. Handler让具体的Controller执行
+
+7. Controller将具体的执行信息返回给HandlerAdapter，如ModelAndView
+
+8. HandlerAdapter将视图逻辑名或模型传递给DispatcherServlet
+
+9. DispatcherServlet调用视图解析器（ViewResolver）来解析HandlerAdapter传递的逻辑视图名
+
+10. 视图解析器将解析的逻辑视图名传递给DispatcherServlet
+
+11. DispatcherServlet根据视图解析器的视图结果，调用具体的视图
+
+12. 最终视图呈现给用户
+

@@ -1,0 +1,76 @@
+---
+id: IoC创建对象的方式
+title: 4. IoC创建对象的方式
+---
+
+### 无参构造创建对象：
+
+Spring默认调用无参构造器来创建对象。
+
+在获取Spring的ApplicationContext对象，加载xml配置文件时，xml中所有的Bean就被初始化了。
+
+
+
+### 有参构造创建对象：
+
+当实体类中只有带参构造，没有无参构造器时，XML中会报错，因为Spring是默认调用实体类的无参构造器来创建对象的，这时，可以用几种不同的方式使用带参构造器来创建对象：
+
+*实体类Student：*
+
+```java
+package com.neu.pojo;
+
+public class Student {
+    private String name;
+
+    public Student(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void show() {
+        System.out.println("name = " + name);
+    }
+}
+```
+
+
+
+使用带参构造器创建对象，需要使用constructor-arg标签
+
+方式一：**index下标**，为构造器参数赋值，0为第一个参数
+
+```xml
+<bean id="stu" class="com.neu.pojo.Student">
+    <constructor-arg index="0" value="张三"/>
+</bean>
+```
+
+
+
+方式二：**type类型**，根据带参构造的参数类型赋值（不建议使用）
+
+```xml
+<bean id="stu" class="com.neu.pojo.Student">
+    <constructor-arg type="java.lang.String" value="张三"/>
+</bean>
+```
+
+
+
+方式三：**name属性**，通过参数名为参数赋值
+
+```xml
+<bean id="stu" class="com.neu.pojo.Student">
+    <constructor-arg name="name" value="张三"/>
+  	<!--如果多个参数，要写多个constructor-arg-->
+</bean>
+```
+

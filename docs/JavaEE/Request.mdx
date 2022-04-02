@@ -1,0 +1,414 @@
+---
+id: Request
+title: Request
+---
+import ImgBox from "../../src/components/ImgBox";
+
+Request请求消息分四个部分：
+
+- 请求行：
+- 请求头：
+- 请求空行：起分割作用
+- 请求体：通过POST方式请求时，请求体中包含请求参数
+
+
+
+### 各个部分说明：
+
+**1. 请求行：**
+
+- 请求行格式：
+	请求方式/请求url 请求协议/版本
+	如：GET /day14/demo3?username=liyan HTTP/1.1
+
+- 请求方式：
+	HTTP协议有7中请求方式，常用的有两种:
+  - GET：
+      请求参数在请求行中，如：GET /day14/demo3?username=liyan HTTP/1.1
+      请求的URL长度是有限制的
+      GET请求不太安全
+  - POST：
+      请求参数在请求体中，如：username=liyan
+      请求的URL长度没有限制
+      POST请求相对安全
+
+
+
+**2. 请求头：（浏览器告诉服务器的一些信息）**
+
+- 请求头格式：请求头名称:值,值,值...
+	Host：主机
+	User-Agent：浏览器告诉服务器，我访问你使用的浏览器的版本信息
+	- 可以在服务器端获取该头信息，来解决浏览器的兼容性问题
+	Referer：http://localhost:8080/login.html 告诉服务器，当前请求从哪里来
+	- 防盗链
+	- 统计来源
+	
+	... ...
+
+图示：
+
+<ImgBox src="https://images.shiguangping.com/imgs/20200527000849.png" />
+
+**3. 请求空行：**
+
+请求空行就是一个空行，起分割作用
+
+
+
+**4. 请求体（请求正文）：封装POST请求消息的请求体的**
+
+- GET请求：没有请求体；
+- POST请求：请求体中包含请求参数，如：username=liyan
+
+图示：（在页面上写了两个输入框用来提交用户名和密码）
+
+<ImgBox src="https://images.shiguangping.com/imgs/20200527001010.png" />
+
+
+
+### Servlet中的Request对象：
+
+- request对象和response对象的原理：
+
+  1. request和response是由Tomcat服务器创建的，我们来使用；
+  2. request对象是来获取请求消息的，response是来设置响应消息的。
+
+
+
+- request对象继承结构：
+
+  1. Interface ServletRequest：是一个接口
+  2. Interface HttpServletRequest：继承自ServletRequest
+  3. org.apache.catalina.connector.RequestFacade：HttpServletRequest的实现类(Tomcat实现) 
+
+  
+
+### request获取功能：(获取请求数据)
+
+**1. 获取请求行数据：**请求行数据的格式 (GET /day14/demo3?username=liyan HTTP/1.1) 
+
+- 获取请求方式：String getMethod();
+- 获取虚拟目录：String getContextPath();
+- 获取Servlet路径：String getServletPath();
+- 获取get方式请求参数：String getQueryString();
+- 获取请求URI：String getRequestURI();
+- 获取请求URL：StringBuffer getRequestRUL();
+  URI:统一资源标识符
+    		URL:统一资源定位符
+- 获取连接协议和版本：String getProtocol();
+- 获取客户机IP地址：String getRemoteAddr();
+  	
+
+**2. 获取请求头数据：**
+
+- String getHeader(String name); 通过请求头的名称获取请求头的值
+- Enumeration getHeaderNames(); 获取所有请求头的名称
+
+```java
+ Enumeration<String> names = request.getHeaderNames();
+ while (names.hasMoreElements()) {
+      String s = names.nextElement();
+      System.out.println(s + "为：" + request.getHeader(s));
+}
+```
+
+
+
+**3. 获取请求体数据：**
+
+*只有POST请求方式才有请求体，请求体中封装了POST请求的请求参数*，获取步骤：
+
+- 获取流对象：
+
+  BufferedReader getReader(); 获取字符输入流，只能操作字符数据。
+
+  BufferedReader对象可以通过调用readLine()方法返回字符串。
+
+  ServletInputStream getInputStream(); 获取字节输入流，可以操作所有类型的数据
+
+- 在从流对象中拿数据：
+
+```java
+BufferedReader bufferedReader = request.getReader();
+String line = null;
+while ((line = bufferedReader.readLine()) != null) {
+        System.out.println(line);
+}
+```
+
+
+
+### Request其他功能：
+
+**1. 获取请求参数(GET/POST通用方法)：**
+
+```
+1. String getParameter(String name); 根据参数名称获取参数值
+2. String[] getParameterValues(String name); 根据参数名称获取参数值的数组
+3. Enumeration<String> getParameterName(); 获取所有请求参数的名称
+4. Map<String,String[]> getParameterMap();获取所有桉树的map集合
+```
+
+代码示例：
+
+```java
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Map;
+
+@WebServlet("/requestDemo")
+public class RequestDemo extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      //如果是get方式请求，则调用post方法获取请求参数
+        this.doPost(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //post获取请求参数
+        //根据参数名称获取参数
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+        System.out.println("post获取到的用户名：" + username + "，密码：" + password);
+        //根据参数名称获取参数，得到数据
+        String[] langs = req.getParameterValues("lang");
+        for (String lang : langs) {
+            System.out.println("获取到的lang：" + lang);
+        }
+        //获取所有请求参数的名称
+        Enumeration<String> parameterNames = req.getParameterNames();
+        System.out.println("所有请求参数名：");
+        while (parameterNames.hasMoreElements()) {
+            String name = parameterNames.nextElement();
+            String value = req.getParameter(name);
+            System.out.println("请求参数：" + name + "，值：" + value);
+        }
+        System.out.println("--------------------------------");
+        //获取所有参数，得到map集合
+        Map<String, String[]> parameterMap = req.getParameterMap();
+        for (String s : parameterMap.keySet()) {
+            System.out.print("请求参数：" + s +": ");
+            for (String val : parameterMap.get(s)) {
+                System.out.print(val+" ");
+            }
+            System.out.println();
+        }
+    }
+}
+```
+
+中文乱码问题：
+
+- get方式：Tomcat8已经解决了get方式的中文乱码问题
+- post方式：在获取参数前，设置request的编码：req.setCharacterEncoding("utf-8");  
+
+
+
+**2. 请求转发：一种在服务器内部资源跳转的方式**
+
+1. 通过request对象获取请求转发器对象：RequestDispatcher getRequestDispatcher(String path)
+
+2. 使用RequestDispatcher对象来进行转发：forward(ServletRequest request,ServletResponse response)
+
+```java
+@Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/demo2");// "/demo2"是要跳转到的Servlet类的urlPatterns
+        requestDispatcher.forward(request, response); 
+    }
+```
+
+
+
+特点：
+
+- 浏览器地址栏路径没有发生变化
+- 只能转发到当前服务器的内部资源
+- 转发是一次请求
+
+
+
+**3. 共享数据**
+
+* 域对象：一个有作用范围的对象，可以在范围内共享数据
+
+* request域：代表一次请求的范围，一般用于请求转发的多个资源中共享数据
+
+* 方法：
+
+  1. void setAttribute(String name,Object obj); 存储数据
+  2. Object getAttribute(String name); 通过键获取值
+  3. void removeAttribute(String name); 通过键移除数据
+
+  ```java
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+          System.out.println("demo1被访问了~");
+     			//存储数据到request域中，要在请求转发之前
+          request.setAttribute("msg","Hello");
+          //请求转发
+          request.getRequestDispatcher("/demo2").forward(request, response);
+      }
+  ```
+
+  
+
+**4. 获取ServletContext**
+
+```java
+ServletContext servletContext = request.getServletContext();
+```
+
+*概念：ServletContext对象代表了整个Web应用，可以和程序的容器（服务器）来通信*
+
+
+
+获取：*(在同一个Web应用中，无论哪种获取方式，获取到的ServletContext对象都是同一个)*
+
+- 通过request对象获取： request.getServletContext();
+- 通过HttpServlet获取：this.getServletContext(); *GenericServle()方式是其父类GenericServlet的方法*
+
+
+
+**功能：**
+
+- 获取MIME类型：在互联网通信过程中定义的一种文件数据类型
+
+  - 格式：大类型/小类型，如:text/html	image/jpeg
+
+  - 获取：String getMimeType(String file);  
+
+    *Mime类型是通过文件后缀获取到的，通过后缀映射到它对应的Mime类型，所有的映射关系都存储在Tomcat-->conf-->web.xml中。由于ServletContext对象能和Web容器通信，所以，可以访问到所有的映射关系，获取文件的Mime类型。*
+
+    ```java
+    String mimeType = servletContext.getMimeType(fileName);
+    ```
+
+    
+
+- 域对象：共享数据*（ServletContext对象是域对象）*
+
+  域对象有三个方法：
+
+  - void setAttribute(String name,Object obj); 存储数据
+  - Object getAttribute(String name); 通过键获取值
+  - void removeAttribute(String name); 通过键移除数据
+
+  ServletContext对象的范围：所有用户所有请求
+
+
+
+- 获取文件的真实（服务器）路径
+
+  - 方法：String getRealPath(String path);
+  - 获取不同目录下文件的真是路径的获取方式：
+
+  ```java
+  String realPath1 = context.getRealPath("/WEB-INF/classes/1.txt");//src下的文件获取
+          
+  String realPath2 = context.getRealPath("/2.txt");//web下的文件获取
+          
+  String realPath3 = context.getRealPath("/WEB-INF/3.txt");//web->WEB-INF下的文件获取
+  ```
+
+
+
+
+### 扩展：BeanUtils工具类
+
+*可以把页面获取到的所有参数直接封装成JavaBean*
+
+```java
+@Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //1.设置编码
+        request.setCharacterEncoding("utf-8");
+        //2.获取所有参数
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        //3.创建User对象
+        User loginUser = new User();
+        //使用BeanUtils封装
+        try {
+            BeanUtils.populate(loginUser,parameterMap);//使用BeanUtils中populate()
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        //4.调用UserDao中login方法
+        UserDao dao = new UserDao();
+        User user = dao.login(loginUser);
+        //5.判断user
+        if(user==null){
+            request.getRequestDispatcher("/failServlet").forward(request,response);
+        }else {
+            request.setAttribute("user",user);
+            request.getRequestDispatcher("/successServlet").forward(request,response);
+        }
+    }
+```
+
+BeanUtils概述：
+
+- 用于封装JavaBean，什么是JavaBean：
+
+  - JavaBean是表标准的Java类
+  - 类必须被public修饰
+  - 必须提供空参的构造器
+  - 成员变量必须使用private修饰
+  - 提供公共的setter/getter方法
+
+- 概念：
+
+  - 成员变量：
+  - 属性：setter/getter方法截取后的产物
+    - 例如：getName()-->Name-->name
+
+  ```java
+  /**
+  *说明下属性的含义
+  */
+  
+  public class User {
+   
+      private int id;
+      private String username;
+      private String password;
+   
+      private String gender;//成员变量gender
+   
+      public void setHehe(String gender){//setHehe来给成员变量gender赋值
+          this.gender = gender;
+      }
+   		
+      public String getHehe(){
+          return gender;
+      }
+  }
+  ```
+
+  
+
+  ```java
+  User user = new User();
+  BeanUtils.setProperty(user,"hehe","male");//设置属性hehe的值
+  String gender = BeanUtils.getProperty(user, "hehe");
+  ```
+
+  *上面说属性是setHehe()-->Hehe-->hehe后得到的这个hehe，通过hehe可以完成对JavaBean的赋值和取值。*
+
+- 方法：
+  - setProperty(); 设置属性值
+  - getProperty(); 获取属性值
+  - populate(); 封装JavaBean
+
+
+
+*注意：使用BeanUtils.populate()封装JavaBean时，请求参数的参数名（即页面中的name属性）要和实体类中的属性名一致，才能正常封装，不一致的话运行时会报错。*

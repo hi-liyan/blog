@@ -1,0 +1,70 @@
+---
+id: SpringJDBC
+title: SpringJDBC工具类
+---
+
+Sprint框架对JDBC的简单封装，提供了一个JDBCTemplate对象简化JDBC的开发。
+
+*步骤：*
+
+1. 导入JDBCTemplate jar包
+
+2. 创建JdbcTemplate对象，依赖于数据源DataSource
+
+   ```java
+   JdbcTemplate template = new JdbcTemplate(dataSource);
+   ```
+
+3. 调用JdbcTemplate的方法来完成CRUD的操作。
+
+   - update() 方法：执行DML语句（数据操作语言），增删改
+
+   - queryForMap() 方法：执行DQL语言（数据查询语言），将查询结果集封装为map集合
+
+     ```java
+     //queryForMap(sql); 会将列名作为key，字段的值作为value封装到map里。所以，该方法只能查询一行数据，将一行数据每个字段值作为键值对存放到map中
+     Map<String, Object> map = template.queryForMap(sql, 1);
+     ```
+
+   - queryForList() 方法：将查询结果集封装为List集合
+
+     ```java
+     //queryForList(sql)将每一条记录封装为Map集合，再把一个个map对象放到List里
+     List<Map<String, Object>> maps = template.queryForList(sql);
+     ```
+
+   - query() 方法：将查询结果封装为JavaBean对象
+
+     ```java
+     //query(sql, new BeanPropertyRowMapper<Account>(Account.class)); 方法里面除了传入sql语句，还要实例化BeanPropertyRowMapper<类型>(类型.class)
+     List<Account> list = template.query(sql, new BeanPropertyRowMapper<Account>(Account.class));
+     ```
+
+   - queryForObject() 方法：将查询结果封装为对象
+
+     ```java
+     //queryForObject(sql, Long.class);一般用于聚合函数的查询
+     Long total = template.queryForObject(sql, Long.class);
+     ```
+
+   
+
+   代码示例：
+
+   ```java
+   public class JdbcTemplateDemo1 {
+       public static void main(String[] args) {
+           //创建JdbcTemplate对象(这里调用了写好的工具类生成DataSource对象)
+           JdbcTemplate template = new JdbcTemplate(JDBCUtils.getDataSource());
+           //调用方法
+           String sql = "update account set balance = ? where name = ?";
+           int count = template.update(sql,5000,"社会王");
+           System.out.println(count);//count是返回影戏的行数
+       }
+   }
+   ```
+
+   *使用JdbcTemplate后，不需要创建Statement对象，也不需要释放资源了，大大简化了工作量。*
+
+
+

@@ -1,0 +1,152 @@
+---
+id: Controller控制器
+title: 3. Controller控制器
+---
+
+### 控制器 Controller
+
+- 控制器负责提供访问应用程序的的行为，通常通过接口定义或注解定义两种方法实现
+- 控制器负责解析用户的请求并将其转换为一个模型
+- 在SpringMVC中，一个控制器类可以包含多个方法
+- 在SpringMVC中，对于Controller的配置方式有很多种
+
+
+
+具体的实现方法：
+
+### 实现Controller接口
+
+Controller是一个接口，在org.springframework.web.servlet.mvc包下，接口中只有一个方法：
+
+```java
+//实现该接口的类会获取控制器功能
+@FunctionalInterface
+public interface Controller {
+	
+  //处理请求返回一个模型和视图对象
+	@Nullable
+	ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+}
+```
+
+
+
+代码示例：
+
+1. 新建模块，springmvc-04-controller
+
+   配置web.xml、springmvc-04-servlet.xml
+
+2. 编写Controller类，ControllerDemo1实现Controller接口
+
+   ```java
+   package com.neu.controller;
+   
+   /**
+    * 只要实现了Controller接口的类，这个类就是一个控制器
+    */
+   public class ControllerDemo1 implements Controller {
+       public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+           ModelAndView mv = new ModelAndView();
+   
+           mv.addObject("msg","ControllerDemo1");
+           mv.setViewName("test1");
+   
+           return mv;
+       }
+   }
+   ```
+
+3. 控制器定义完毕，在springmvc-04-servlert.xml中注册Bean，id对应请求的路径，class对应控制器类
+
+   ```xml
+   <bean id="/controllerDemo" class="com.neu.controller.ControllerDemo1"/>
+   ```
+
+4. 编写test1.jsp页面，注意在WEB-INF/jsp目录下，对应视图解析器
+
+   ```jsp
+   <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+   <html>
+     <head>
+       <title>Title</title>
+     </head>
+     <body>
+       ${msg}
+     </body>
+   </html>
+   ```
+
+5. 运行Tomcat，访问：`http://localhost:8080/springmvc_04_controller/controllerDemo`
+
+   ![image-20200621152029252](https://images.shiguangping.com/imgs/20200621152029.png)
+
+小结：
+
+- 实现Controller接口定义控制器是比较老的办法
+- 缺点：一个控制器中只有一个方法，如果要多个方法则需要定义多个Controller；定义的方式比较麻烦，除了要定义多个控制器类之外，还需要在上下文配置中注册多个Bean
+
+
+
+### 使用注解@Controller
+
+- `@Controller`注解类型用于声明Spring类的实例时一个控制器，这几个注解的作用是相同的
+
+  ```
+  @Component 组件
+  @Service service
+  @Controller controller
+  @Repository dao
+  ```
+
+- Spring可以使用扫描机制来找到对应程序中所有的基于注解的控制器类，为了保证Spring能找到控制器，需要在上下文配置中声明组件扫描：
+
+  ```xml
+  <!--自动扫描指定的包，包内所有注解类都交给IoC容器管理-->
+  <context:component-scan base-package="com.neu.controller"/>
+  ```
+
+
+
+代码示例：
+
+1. 配置spring-04-servlet.xml
+
+   ```xml
+   <context:component-scan base-package="com.neu.controller"/>
+   <mvc:default-servlet-handler/>
+   <mvc:annotation-driven/>
+   ```
+
+2. 编写控制类ControllerDemo2，不需要实现Controller接口，而是通过`@Controller`注解
+
+   ```java
+   package com.neu.controller;
+   
+   @Controller
+   /**
+    * @Controller 代表这个类会被Spring托管
+    * 这个类中的所有方法，如果返回值是String，并且有具体页面可以跳转，那么就会被视图解析器解析
+    */
+   public class ControllerDemo2 {
+       @RequestMapping("controllerDemo2")
+       public String test(Model model) {
+           model.addAttribute("msg", "ControllerDemo2");
+           return "test1";
+       }
+   }
+   ```
+
+   同样是转发到test1.jsp的页面
+
+3. 编写完控制器后，不需要在上下文配置中注册Bean
+
+4. 运行Tomcat，访问：`http://localhost:8080/springmvc_04_controller/controllerDemo2`
+
+   ![image-20200621154519232](https://images.shiguangping.com/imgs/20200621154519.png)
+
+小结：
+
+- 使用注解可以在同一个控制器类实现多个方法，并且省去了在上下文配置文件中注册Bean的过程
+

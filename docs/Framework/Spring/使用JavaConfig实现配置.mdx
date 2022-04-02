@@ -1,0 +1,82 @@
+---
+id: 使用JavaConfig实现配置
+title: 10. 使用JavaConfig实现配置
+---
+
+通过JavaConfig来配置Spring，而不实用XML配置
+
+JavaConfig是Spring的一个子项目，在Spring4之后，它成为了一个核心项目。
+
+
+
+**实体类User：**
+
+```java
+package com.neu.pojo;
+
+import org.springframework.beans.factory.annotation.Value;
+
+public class User {
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+    @Value("张三")
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+}
+```
+
+**配置类：**
+
+```java
+package com.neu.config;
+
+import com.neu.pojo.User;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan("com.neu.pojo")
+public class AppConfig {
+		
+    @Bean
+    public User user(){
+        return new User();
+    }
+}
+```
+
+`@Configuration`作用在类上，说明这是一个Spring配置类
+
+`@Bean`注册到IoC容器的Bean，方法名就是Bean的名字
+
+- 方法名：相当于id
+- 返回值：相当于class
+- return：相当于Bean注入的对象
+
+`@ComponentScan("com.neu.pojo")`扫描组件
+
+`@Import(AppConfig2.class)`引入其它配置类
+
+
+
+**获取配置类的上下文对象**
+
+```java
+ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+```
+
+
+
+***这种纯Java的配置方式，在SpringBoot中随处可见***
+

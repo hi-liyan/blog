@@ -1,0 +1,101 @@
+---
+id: log4j
+title: 10. log4j
+---
+
+Log4j是Apache的一个开源项目，通过使用Log4j，我们可以控制日志信息输送的目的地是控制台、文件、GUI组件，甚至是套接口服务器、NT的事件记录器、UNIX Syslog守护进程等。
+
+我们也可以控制每一条日志的输出格式，
+
+通过定义每一条日志信息的级别，我们能够更加细致地控制日志的生成过程，
+
+这些可以通过一个[配置文件](https://baike.baidu.com/item/配置文件/286550)来灵活地进行配置，而不需要修改应用的代码。
+
+
+
+### mybatis中配置log4j：
+
+第一步：导入jar包，如果是Maven项目则可以通过添加坐标导入依赖：
+
+```xml
+<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+<dependency>
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>1.2.17</version>
+</dependency>
+```
+
+
+
+第二步：在CLASSPATH下建立log4j.properties
+
+```properties
+# 将等级为DEBUG的日志信息输出到console和file两个目的地，console和file的定义在下面的代码
+log4j.rootLogger=DEBUG,console,file
+
+# 控制台输出的相关配置
+log4j.appender.console = org.apache.log4j.ConsoleAppender
+log4j.appender.console.Target = System.out
+log4j.appender.console.Threshold = DEBUG
+log4j.appender.console.layout = org.apache.log4j.PatternLayout
+log4j.appender.console.layout.ConversionPattern=[%c]-%m%n
+
+# 文件输出的相关配置
+log4j.appender.file=org.apache.log4j.RollingFileAppender
+log4j.appender.file.File=./log/debug.log
+log4j.appender.file.MaxFileSize = 10mb
+log4j.appender.file.Threshold=DEBUG
+log4j.appender.file.layout = org.apache.log4j.PatternLayout
+log4j.appender.file.layout.ConversionPattern=[%p][%d{yy-MM-dd}][%c]%m%n
+
+# 日志输出级别
+log4j.logger.org.mybatis=DEBUG
+log4j.logger.java.sql=DEBUG
+log4j.logger.java.sql.Statement=DEBUG
+log4j.logger.java.sql.ResultSet=DEBUG
+log4j.logger.java.sql.PreparedStatement=DEBUG
+```
+
+
+
+第三步：mybatis-config.xml中配置日志
+
+```xml
+<settings>
+  <setting name="logImpl" value="LOG4J"/>
+</settings>
+```
+
+
+
+第四步：运行，控制台输出了日志信息
+
+![image-20200617215946088](https://images.shiguangping.com/imgs/20200617215946.png)
+
+
+
+
+
+### log4j简单使用：
+
+*通过Logger对象，自定义输出不同级别的日志*
+
+1. 在要使用log4j的类中，导入包` import org.apache.log4j.Logger;`
+
+2. 获取Logger对象，参数为当前类的class
+
+   ```java
+   static Logger logger = Logger.getLogger(Test.class);
+   ```
+
+3. 日志级别，常用：
+
+   ```java
+   logger.info("info：进入了testLog4j");
+   logger.debug("debug：进入了testLog4j");
+   logger.error("error：进入了testLog4j");
+   ```
+
+   
+

@@ -1,0 +1,123 @@
+---
+id: JSP
+title: JSP
+---
+
+### 概念：
+
+- Java Server Pages：Java服务器端页面
+- 可以理解为：一个特殊的页面，其中既可以指定定义HTML标签，又可以定义Java代码
+- 用于简化书写的
+
+
+
+### 原理：
+
+JSP本质上就是一个Servlet
+
+JSP引擎会把JSP文件转换成.java文件，这个.java文件继承自Tomcat内的一个org.apache.jasper.runtime.HttpJspBase类，而HttpJspBase类又继承了HttpServlet，所以说，JSP本质上就是一个Servlet。
+
+
+
+### JSP的脚本：
+
+JSP脚本：JSP定义Java代码的方式
+
+- **<% 代码 %>**：定义的Java代码，在service方法中。service方法中可以定义什么，该脚本中就可以定义什么。
+- **<%! 代码 %>**：定义的Java代码，在JSP转换后的Java类的成员位置，即定义成员变量、成员方法、代码块等（用得比较少）。
+- **<%= 代码 %>**：定义的Java代码，会输出到页面上，输出语句中可以定义什么，该脚本就可以定义什么。这个输出语句定义在service方法中。
+
+
+
+### JSP的指令：
+
+作用：用于配置JSP页面，导入资源文件
+
+格式：<%@ 指令名称 属性名1=属性值1 属性名2=属性值2%>
+
+分类：
+
+- page：配置JSP页面的
+
+  - contentType：等同于response.setContentType()，
+
+    设置响应体的mime类型及字符集，设置当前JSP页面的编码
+
+    设置当前JSP页面的编码（只能是高级的IDE才能生效，如果使用低级的工具，则需要设置pageEncoding属性来设置当前页面的字符集）
+
+  - import：导包（推荐一个包一行）
+
+  - errorPage：当前页面发生异常后，会自动跳转到指定的错误页面
+
+  - isErrorPage：表示当前页面是否是错误页面，设置成true，可以使用exception内置对象。
+
+  
+
+- include：页面包含的。导入页面的资源文件
+
+  *可以把其它页面引入进来，例如很多页面都有共同的头和脚，那就可以单独写一个头页面或脚页面，然后在其它页面中通过include把头页面的资源引进来。*
+
+  ```jsp
+  <% include file = "top.jsp" %>
+  ```
+
+  
+
+- taglib：导入资源（例如导入标签库）
+
+  - prefix：定义前缀
+
+  ```java
+  <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+  ```
+
+  
+
+  
+
+### JSP的注释：
+
+- HTML注释：注释的代码在前端页面源码中可见
+
+  ```html
+  <!-- 只能注释HTML代码片段 -->
+  ```
+
+- JSP注释：不会发送到前端页面中
+
+  ```jsp
+  <%-- 可以注释所有 --%>
+  ```
+
+  
+
+### JSP的内置对象：
+
+内置对象：在JSP页面中不需要获取创建，可以直接使用的对象。
+
+JSP一共有9个内置对象：(前四个是域对象)
+
+- PageContext pageContext：当前页面共享数据，还可以获取其他八个内置对象，通过它的get方法
+
+- HttpServletRequest request：一次请求访问的多个资源（转发）
+- HttpSession session：一次会话的多个请求间
+- ServletContext application：所有用户间共享数据（服务器开启被创建，服务器关闭被销毁）
+
+
+
+- HttpServletResponse response：相应对象
+- Object page：当前页面(Servlet)对象，this
+
+
+
+- JspWriter out：字符输出流对象，可以将数据输出到页面上。和response.getWriter()类似，区别：
+
+  在Tomcat服务器真正给客户端作出相应之前，会先找response缓冲区数据，再找out缓冲区数据。
+
+  response.getWriter()数据输出永远在out.write()之前。
+
+
+
+- ServletConfig config：Servlet的配置对象
+- Throwable exception：异常对象，声明isErrorPage="true"，才能使用
+

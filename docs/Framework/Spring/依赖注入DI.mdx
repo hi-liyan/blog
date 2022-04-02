@@ -1,0 +1,140 @@
+---
+id: 依赖注入
+title: 6. 依赖注入(DI)
+---
+
+- 基于构造器的依赖注入，参照【IoC创建对象的方式】
+- 基于setter的依赖注入
+- 其他方式注入
+
+
+
+### set注入：【重点】
+
+- 依赖注入：set注入
+  - 依赖：Bean对象的创建依赖于Spring容器
+  - 注入：Bean对象中的所有属性由容器来注入
+
+
+
+**创建实体类Student，里面定义了各种类型参数，分别注入：**
+
+*其中Address是自定义的类，里面只有一个String address参数和get/set方法*
+
+```java
+public class Student {
+    private String name;
+    private Address address;
+    private String[] books;
+    private List<String> hobbies;
+    private Map<String, String> cards;
+    private Set<String> games;
+    private Properties info;
+    private String wife;
+}
+```
+
+
+
+xml中的注入方式：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+  	 <bean id="address" class="com.neu.pojo.Address">
+        <property name="address" value="大连高新区"/>
+     </bean>
+
+    <bean id="student" class="com.neu.pojo.Student">
+        <!--普通注入，value=""-->
+        <property name="name" value="张三"/>
+
+        <!--bean注入，ref=""-->
+        <property name="address" ref="address"/>
+
+        <!--数组注入-->
+        <property name="books">
+            <array>
+                <value>Java编程思想</value>
+                <value>数据结构与算法</value>
+            </array>
+        </property>
+
+        <!--List注入-->
+        <property name="hobbies">
+            <list>
+                <value>打游戏</value>
+                <value>写代码</value>
+                <value>看动漫</value>
+            </list>
+        </property>
+
+        <!--set注入-->
+        <property name="games">
+            <set>
+                <value>奥日与黑暗森林</value>
+                <value>消逝的光芒</value>
+                <value>巫师三</value>
+            </set>
+        </property>
+
+        <!--map注入-->
+        <property name="cards">
+            <map>
+                <entry key="学号" value="stu0101"/>
+                <entry key="身份证" value="211121"/>
+                <entry key="银行卡" value="626262111"/>
+            </map>
+        </property>
+
+        <!--null值注入-->
+        <!--空字符串：<property name="wife" value=""/>-->
+        <property name="wife">
+            <null/>
+        </property>
+
+        <!--Properties注入-->
+        <property name="info">
+            <props>
+                <prop key="username">root</prop>
+                <prop key="password">123456</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
+```
+
+
+
+### p命名注入、c命名空间注入
+
+需要先导入xml约束：xmlns:p xmlns:c
+
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+</beans>
+```
+
+
+
+导入方式：
+
+```xml
+<!--p命名空间注入，可以直接注入属性的值(通过Setter注入)-->
+<bean id="user" class="com.neu.pojo.User" p:name="张三" p:age="28"/>
+
+<!--p命名空间注入，(通过有参构造器注入)-->
+<bean id="user2" class="com.neu.pojo.User" c:name="李四" c:age="27"/>
+```
+
+
+

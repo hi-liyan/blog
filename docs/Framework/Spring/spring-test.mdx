@@ -1,0 +1,91 @@
+---
+id: spring-test
+title: 11. spring-test
+---
+
+Maven坐标：
+
+```xml
+<!-- spring-test -->
+<dependency>
+  <groupId>org.springframework</groupId>
+  <artifactId>spring-test</artifactId>
+  <version>5.2.7.RELEASE</version>
+  <scope>test</scope>
+</dependency>
+```
+
+还需要导入junit依赖：
+
+```xml
+
+<!--junit单元测试-->
+<dependency>
+  <groupId>junit</groupId>
+  <artifactId>junit</artifactId>
+  <version>4.11</version>
+  <scope>test</scope>
+</dependency>
+
+<dependency>
+  <groupId>org.junit.jupiter</groupId>
+  <artifactId>junit-jupiter-api</artifactId>
+  <version>5.6.2</version>
+  <scope>test</scope>
+</dependency>
+```
+
+
+
+#### 简单用法：
+
+Spring + Junit4：
+
+```java
+@RunWith(SpringRunner.class)
+@ContextConfiguration(locations = {"classpath:ApplicationContext.xml"})
+public class TestUserService{
+  //自动装配
+  @Autowired
+  @Qualifier("userServiceImpl")
+  UserService userService;
+
+  @Test
+  public void test(){
+
+  }
+}
+```
+
+`@RunWith(SpringRunner.class)`测试环境
+
+`@ContextConfiguration(locations = {"classpath:ApplicationContext.xml"})`导入上下文配置
+
+这是两个常用注解，测试类中可以实现自动装配
+
+
+
+Spring + Junit5：
+
+```java
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(locations = {"classpath:ApplicationContext.xml"})
+public class TestUserService{
+
+  //自动装配
+  @Autowired
+  @Qualifier("userServiceImpl")
+  UserService userService;
+
+  public void test(){
+
+  }
+}
+```
+
+`@ExtendWith(SpringExtension.class)`替换了Junit4的RunWith
+
+`@ContextConfiguration(locations = {"classpath:ApplicationContext.xml"})`导入上下文配置
+
+
+

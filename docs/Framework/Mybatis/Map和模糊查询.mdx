@@ -1,0 +1,62 @@
+---
+id: Map和模糊查询
+title: 4. Map和模糊查询
+---
+
+### Map传参：
+
+假设实体类或数据库中的属性或字段比较多，可以适当使用Map来操作数据库：
+
+现在在UserMapper接口中又定义了一个插入方法，addUser2，传入的参数使用Map：
+
+![image-20200609220904883](https://images.shiguangping.com/imgs/20200609220905.png)
+
+UserMapper.xml
+
+![image-20200609221416014](https://images.shiguangping.com/imgs/20200609221416.png)
+
+测试方法：
+
+![image-20200609222002524](https://images.shiguangping.com/imgs/20200609222002.png)
+
+- Map传递参数，直接在sql中取key即可---`parameterType="map"`
+
+- 对象传递参数，直接sql中取对象属性即可---`parameterType="com.neu.pojo.User"`
+
+- 只有一个基本数据类型参数的话，可以直接在sql中取到
+
+- 多个参数用Map，或注解
+
+
+
+
+
+### 模糊查询：
+
+- 在Java代码执行时，传递通配符% %
+
+  ```xml
+  <select id="getUserLike" resultType="com.neu.pojo.User">
+    select * from user where name like #{name}
+  </select>
+  ```
+
+  ```java
+  List<User> list = mapper.getUserLike("%李%");
+  ```
+
+  
+
+- 在sql拼接中使用通配符
+
+  ```xml
+  <select id="getUserLike" resultType="com.neu.pojo.User">
+    select * from user where name like "%"#{name}"%"
+  </select>
+  ```
+
+  ```java
+  List<User> list = mapper.getUserLike("李");
+  ```
+
+  

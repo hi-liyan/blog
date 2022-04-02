@@ -1,0 +1,123 @@
+---
+id: HelloSpring
+title: 3. Hello Spring
+---
+
+创建第一个Spring程序，体会Spring的使用方式和IoC控制反转的思想，IoC控制反转的实现方式是DI依赖注入。
+
+
+
+### 创建Maven项目并添加坐标：
+
+```xml
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc</artifactId>
+    <version>5.2.6.RELEASE</version>
+</dependency>
+```
+
+添加spring-webmvc，Maven会自动导入其他的Spring依赖。
+
+
+
+### 创建实体类Hello：
+
+![image-20200607132332220](https://images.shiguangping.com/imgs/20200607132332.png)
+
+Java代码：
+
+```java
+package com.neu.pojo;
+
+public class Hello {
+    private String str;
+
+    public String getStr() {
+        return str;
+    }
+
+    public void setStr(String str) {
+        this.str = str;
+    }
+
+    @Override
+    public String toString() {
+        return "Hello{" +
+                "str='" + str + '\'' +
+                '}';
+    }
+}
+```
+
+
+
+### 在resources中创建Spring配置文件：
+
+![image-20200607132520510](https://images.shiguangping.com/imgs/20200607132520.png)
+
+XML配置文件：起名beans.xml（文件名自定义）
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--现在通过Spring来创建对象，在Spring中这些对象都成为Bean
+        Spring中可以创建多个Bean（即多个对象），这些对象都将有Spring管理：
+				
+				之前实例化对象：
+        	类型 对象名 = new 类型();
+        	Hello hello = new Hello();
+				Spring中：
+        	id = 对象名
+        	class = new 类型()
+        	property = 相当于给Hello类中的属性赋值
+        	name = 属性名
+        	value = 属性值
+        -->
+    <bean id="hello" class="com.neu.pojo.Hello">
+        <property name="str" value="spring"/>
+    </bean>
+</beans>
+```
+
+XML配置文件说明：
+
+- 之前传统Java在实例化对象的时候都需要去主动new对象
+- 而在Spring中，将实体类交由Spring容器去管理，通过配置XML或注解的方式
+- 在XML配置文件中，可以使用bean标签去绑定多个实体类，之后再通过获取ApplicationContext对象，来获取实体类的对象。
+
+
+
+### 测试：
+
+![image-20200607133421304](https://images.shiguangping.com/imgs/20200607133421.png)
+
+Java代码：
+
+```java
+import com.neu.pojo.Hello;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MyTest {
+
+    public static void main(String[] args) {
+        //获取Spring的上下文对象
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        //我们的对象现在都在Spring中管理了，我们要使用，直接去Spring里面取
+        Hello hello = (Hello) context.getBean("hello");
+        System.out.println(hello);
+    }
+}
+```
+
+
+
+---
+
+***总结一句话：对象由Spring来创建、管理、装配。***
+

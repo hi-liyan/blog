@@ -1,0 +1,62 @@
+---
+id: 配置之映射器
+title: 7. Mybatis配置之映射器
+---
+
+在【第一个mybatis程序】中，后面运行中报了一个错误，找不到UserMapper.xml
+
+所以，每一个Mapper.xml都需要在mybatis核心配置文件中注册（映射），注册方式有4中，常用的是一下三种：
+
+#### 方式一：
+
+```xml
+<!-- 使用相对于类路径的资源引用 -->
+<mappers>
+  <mapper resource="org/mybatis/builder/AuthorMapper.xml"/>
+  <mapper resource="org/mybatis/builder/BlogMapper.xml"/>
+  <mapper resource="org/mybatis/builder/PostMapper.xml"/>
+</mappers>
+```
+
+
+
+#### 方式二：
+
+```xml
+<!-- 使用映射器接口实现类的完全限定类名 -->
+<mappers>
+  <mapper class="org.mybatis.builder.AuthorMapper"/>
+  <mapper class="org.mybatis.builder.BlogMapper"/>
+  <mapper class="org.mybatis.builder.PostMapper"/>
+</mappers>
+```
+
+注意：
+
+- 接口和Mapper.xml配置文件必须同名
+- 接口和Mapper.xml配置文件必须必须在同一个包下
+
+
+
+#### 方式三：
+
+```xml
+<!-- 将包内的映射器接口实现全部注册为映射器 -->
+<mappers>
+  <package name="org.mybatis.builder"/>
+</mappers>
+```
+
+注意：
+
+- 接口和Mapper.xml配置文件必须同名
+- 接口和Mapper.xml配置文件必须必须在同一个包下
+
+
+
+**使用后两种方法：**
+
+如果需要把Mapper.xml配置文件放到resources里，只要在resources中创建和对应接口相同的包即可：
+
+![image-20200613102624246](https://images.shiguangping.com/imgs/20200613102624.png)
+

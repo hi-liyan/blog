@@ -1,0 +1,90 @@
+---
+id: Cookie
+title: Cookie
+---
+
+概念：客户端会话技术，将数据保存到客户端
+
+### 使用步骤：
+
+1. 创建Cookie对象，绑定数据
+
+   new Cookie(String name, String value);
+
+2. 发送Cookie
+
+   response.addCookie(Cookie cookie);
+
+3. 获取Cookie，拿到数据
+
+   Cookie[] request.getCookies();
+
+
+
+### 实现原理：
+
+- 基于响应头set-cookie和请求头cookie实现
+
+  *创建Cookie对象同时绑定数据并通过response发送Cookie对象，在浏览器第一次访问服务器时，服务器把cookie数据发送给浏览器（在浏览器的响应头set-cookie属性可见），浏览器接收到cookie时会把cookie数据保存到浏览器，当浏览器再次访问服务器时，请求消息会携带刚刚保存的cookie数据（在浏览器请求头cookie属性可见）。*
+
+
+
+### Cookie的细节：
+
+- 一次发送多个Cookie：创建多个Cookie对象，使用response调用addCookie()多次即可。
+
+
+
+- Cookie在浏览器中保存时间：
+
+  - 默认情况下，当浏览器被关闭后，Cookie数据被销毁
+  - 设置Cookie的生命周期，来持久化存储：setMaxAge(int seconds);方法。其中int参数为正数，Cookie数据则持久化存储到硬盘文件中，int参数为存活时间（秒）；负数表示Cookie默认的生命周期，浏览器关闭时销毁Cookie数据；int参数为0时表示删除Cookie数据。
+
+  
+
+- Cookie存储中文数据
+
+  在Tomcat8之前，Cookie中不能直接存储中文数据，需要将中文数据转码，一般采用URL编码
+
+  在Tomcat8之后，Cookie中可以直接存储中文数据
+
+
+
+- Cookie共享
+
+  1 同一个Tomcat服务器内共享Cookie：
+
+  *假设在一个Tomcat服务器中，部署了多个Web项目，默认情况下Cookie不能共享。*
+
+  **setPath(String path);**方法： 
+
+  - 设置Cookie的共享范围。默认情况下，设置当前项目的虚拟目录。如果想设置成整个Tomcat容器内的所有Web项目共享，则可设置成：setPath("/");
+
+  
+
+  2 不同的Tomcat服务器间共享Cookie：
+
+  **setDomain(String path);**方法：
+
+  - 如果设置一级域名相同，那么多个服务器之间Cookie可以共享。
+
+  - setDomain(".baidu.com"); 那么tieba.baidu.com和news.baidu.com中的Cookie可以共享。
+
+
+
+### Cookie的特点和作用：
+
+- Cookie存储数据在客户端浏览器（相对不太安全）
+- 浏览器对于单个Cookie的大小有限制(4KB)，以及对同一个域名下的总Cookie数量有限制(一般限制在20个以内)。
+
+作用：
+
+- Cookie一般用于存储少量的不太敏感的数据
+- 在不登录的情况下，完成对客户端的身份识别
+
+
+
+### 案例：记住上一次访问的时间
+
+
+

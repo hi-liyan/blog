@@ -1,0 +1,61 @@
+---
+id: 使用注解开发
+title: 13. 使用注解开发
+---
+
+*来自官方文档的说明：*
+
+*使用注解来映射简单语句会使代码显得更加简洁，但对于稍微复杂一点的语句，Java 注解不仅力不从心，还会让你本就复杂的 SQL 语句更加混乱不堪。 因此，如果你需要做一些很复杂的操作，最好用 XML 来映射语句。*
+
+
+
+### 使用流程：
+
+1. 给接口中的方法添加@Select("sql语句")注解：
+
+   ```java
+   public interface UserMapper {
+       @Select("select * from user")
+       List<User> getUsers();
+   }
+   ```
+
+2. 需要在mybatis-config.xml中注册（映射）接口：
+
+   ```xml
+   <mappers>
+     <mapper class="com.neu.dao.UserMapper"/>
+   </mappers>
+   ```
+
+3. 测试代码：
+
+   ```java
+   @org.junit.Test
+     public void test(){
+     SqlSession sqlSession = MybatisUtil.getSqlSession();
+     //底层主要应用反射
+     UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+     List<User> users = mapper.getUsers();
+     for (User user : users) {
+       System.out.println(user);
+     }
+     sqlSession.close();
+   }
+   ```
+
+   运行：
+
+   >User{id=1, name='admin', pwd='123456'}
+   >User{id=2, name='李四', pwd='123456'}
+   >User{id=3, name='liyan', pwd='123'}
+   >User{id=4, name='李炎', pwd='123'}
+
+
+
+
+
+本质：反射机制
+
+底层：动态代理
+
