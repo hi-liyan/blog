@@ -17,13 +17,13 @@
   "dependencies": {
     "@docusaurus/core": "^2.0.0-beta.18",
     "@docusaurus/preset-classic": "^2.0.0-beta.18",
-    "@easyops-cn/docusaurus-search-local": "^0.19.1",
+    "@easyops-cn/docusaurus-search-local": "^0.23.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mdx-js/react": "^1.6.21",
-    "@svgr/webpack": "^5.5.0",
+    "@svgr/webpack": "^6.2.1",
     "clsx": "^1.1.1",
-    "docusaurus-plugin-sass": "^0.2.1",
+    "docusaurus-plugin-sass": "^0.2.2",
     "file-loader": "^6.2.0",
     "ityped": "^1.0.3",
     "nodejieba": "^2.6.0",
@@ -33,7 +33,7 @@
     "react-dom": "^17.0.1",
     "react-query": "^3.34.7",
     "rebass": "^4.0.7",
-    "sass": "^1.42.1",
+    "sass": "^1.49.11",
     "url-loader": "^4.1.1"
   },
   "devDependencies": {
