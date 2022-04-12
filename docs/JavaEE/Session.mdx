@@ -33,13 +33,13 @@ HttpSession对象：
 
 1. 浏览器第一次访问服务器端时，服务器端会检查请求头中的cookie是否含有JSESSIONID，如果没有，服务器会创建一个Session对象，并响应给浏览器一个JSESSIONID：
 
-<img src="https://images.shiguangping.com/imgs/20200603162748.png" alt="image-20200603162747986" width="500px" />
+<img src="https://upyun.shiguangping.com/imgs/20200603162748.png" alt="image-20200603162747986" width="500px" />
 
 
 
 2. 浏览器之后再访问服务器端时，请求消息的请求头cookie会携带服务器给的JSESSIONID，服务器端收到请求后会按照JSESSIONID检索Session对象（如果检索不到，可能会新建一个）
 
-<img src="https://images.shiguangping.com/imgs/20200603163350.png" alt="image-20200603163350289" width="500px" />
+<img src="https://upyun.shiguangping.com/imgs/20200603163350.png" alt="image-20200603163350289" width="500px" />
 
 
 

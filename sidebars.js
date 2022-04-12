@@ -202,6 +202,7 @@ module.exports = {
             'Framework/Spring/IoC理论推导',
             'Framework/Spring/HelloSpring',
             'Framework/Spring/IoC创建对象的方式',
+            'Framework/Spring/spring-xml-ioc',
             'Framework/Spring/Spring配置',
             'Framework/Spring/依赖注入',
             'Framework/Spring/Bean的作用域',
@@ -216,6 +217,7 @@ module.exports = {
             'Framework/Spring/注解实现AOP',
             'Framework/Spring/整合Mybatis',
             'Framework/Spring/Spring声明式事务',
+            'Framework/Spring/create-ssm-proj',
           ]
         },
         {
@@ -242,22 +244,18 @@ module.exports = {
             'Framework/SpringMVC/扩展：Shiro中的注解',
             'Framework/SpringMVC/扩展：Thymeleaf整合Shiro',
           ]
+        },
+        {
+          'SpringBoot': [
+            'Framework/SpringBoot/springboot-application-context-initializer',
+            'Framework/SpringBoot/springboot-application-event-listener',
+            'Framework/SpringBoot/springboot-auto-configuration',
+            'Framework/SpringBoot/springboot-custom-starter',
+            'Framework/SpringBoot/springboot-actuator',
+            'Framework/SpringBoot/springboot-global-exception-handle',
+            'Framework/SpringBoot/jsr303',
+          ]
         }
-      ]
-    },
-    {
-      type: 'category',
-      label: 'Spring Framework',
-      items: [
-        'spring/create-ssm-proj',
-        'spring/springboot-application-context-initializer',
-        'spring/springboot-application-event-listener',
-        'spring/springboot-auto-configuration',
-        'spring/spring-xml-ioc',
-        'spring/springboot-custom-starter',
-        'spring/springboot-actuator',
-        'spring/jsr303',
-        'spring/springboot-global-exception-handle'
       ]
     },
     {

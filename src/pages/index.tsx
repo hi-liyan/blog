@@ -4,8 +4,11 @@ import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import StringPrinter from "../components/StringPrinter";
 import Link from '@docusaurus/Link';
+import Programmer from "../../static/img/programmer.svg";
 
 import styles from './index.module.css';
+import styled from "@emotion/styled";
+import Button from "../components/Button";
 
 const HomepageMain = () => {
   const {siteConfig} = useDocusaurusContext();
@@ -17,10 +20,20 @@ const HomepageMain = () => {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <Link to='/docs/hello'><h1 className="hero__title">{siteConfig.title}</h1></Link>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <Row>
+          <div>
+            <Programmer style={{width: '50vw',height: '50vh'}}>111</Programmer>
+          </div>
+          <Column>
+            <div style={{marginBottom: '30px'}}>
+              <Link to='/docs/hello'><Button>从这里开始.</Button></Link>
+            </div>
+            <p className="hero__subtitle">{siteConfig.tagline}</p>
+            {/*<StringPrinter contents={contents}/>*/}
+          </Column>
+        </Row>
       </div>
-      <StringPrinter contents={contents}/>
+
     </header>
   );
 }
@@ -39,4 +52,21 @@ export default function Home() {
     </Layout>
   );
 }
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 50vh;
+`;
 

@@ -201,7 +201,7 @@ public class TestThread {
 
 ## 3.1 四种基本状态
 
-![image-20210516211929358](https://images.shiguangping.com/imgs/20210516211929.png)
+![image-20210516211929358](https://upyun.shiguangping.com/imgs/20210516211929.png)
 
 
 
@@ -269,7 +269,7 @@ public final void setDaemon(boolean on)
 
 ## 3.3 线程状态（等待）
 
-![image-20210516230903898](https://images.shiguangping.com/imgs/20210516230903.png)
+![image-20210516230903898](https://upyun.shiguangping.com/imgs/20210516230903.png)
 
 执行`sleep()`方法，线程会进入*限期等待*状态，当休眠到期，线程会进入到*就绪状态*，等待获取CPU时间片执行线程；
 
@@ -327,7 +327,7 @@ public class ThreadSafe {
 
 可能出现的结果：
 
-![image-20210516233155156](https://images.shiguangping.com/imgs/20210516233155.png)
+![image-20210516233155156](https://upyun.shiguangping.com/imgs/20210516233155.png)
 
 正常结果应该是数组中存入了两个字符串，"Hello World"。
 
@@ -396,7 +396,7 @@ public class ThreadSafe {
 
 ## 3.6 线程状态（阻塞）
 
-![image-20210517132350130](https://images.shiguangping.com/imgs/20210517132350.png)
+![image-20210517132350130](https://upyun.shiguangping.com/imgs/20210517132350.png)
 
 使用`synchronized`同步锁锁定临界资源，当线程访问临界资源时发现资源已被其他线程加锁，则线程进入阻塞状态，直到其他线程释放同步锁，当前线程拿到临界资源锁时，线程进入就绪状态，等到获取CPU时间片，线程执行。
 
@@ -524,7 +524,7 @@ public class MyLockTest {
 }
 ```
 
-![image-20210517141301893](https://images.shiguangping.com/imgs/20210517141301.png)
+![image-20210517141301893](https://upyun.shiguangping.com/imgs/20210517141301.png)
 
 最终会出现，男孩拿到筷子a的锁标记，然后去拿筷子b，同时女孩拿着筷子b的锁标记，去拿筷子a，最终两个线程都阻塞，造成死锁。
 

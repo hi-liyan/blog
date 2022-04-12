@@ -280,14 +280,14 @@ public class UserController {
 
 正常返回：
 
-![image-20210220000657896](https://images.shiguangping.com/imgs/20210220000658.png)
+![image-20210220000657896](https://upyun.shiguangping.com/imgs/20210220000658.png)
 
 发生异常：
 
-![image-20210220000756723](https://images.shiguangping.com/imgs/20210220000756.png)
+![image-20210220000756723](https://upyun.shiguangping.com/imgs/20210220000756.png)
 
 
 
 ### 测试自定义异常
 
-![image-20210220000839465](https://images.shiguangping.com/imgs/20210220000839.png)
+![image-20210220000839465](https://upyun.shiguangping.com/imgs/20210220000839.png)

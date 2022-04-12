@@ -217,7 +217,7 @@ synchronized 在 jdk 1.6 之前使用重量级锁，会将访问同步代码但�
 
 下面是我用 Excel 整理的以 32 位虚拟机为例的内存分配图，并做了注释：
 
-<ImgBox src="https://images.shiguangping.com//imgs/20211207224920.png" width="100%" />
+<ImgBox src="https://upyun.shiguangping.com//imgs/20211207224920.png" width="100%" />
 
 锁标志就存在锁对象对象头的 Mark Word 中，其中：
 
@@ -235,7 +235,7 @@ synchronized 在 jdk 1.6 之前使用重量级锁，会将访问同步代码但�
 
 ### 3.3 偏向锁
 
-<ImgBox src="https://images.shiguangping.com//imgs/20211207234758.png" width="100%" />
+<ImgBox src="https://upyun.shiguangping.com//imgs/20211207234758.png" width="100%" />
 
 如果只有一个线程访问同步代码，那么每次获取锁时都需要使用操作系统的管程（Monitor），用户态与内核态的频繁切换会造成大量系统开销，这显得有些小题大做了。Java 的大佬们发现，在大多数情况下，锁不仅不存在线程竞争，而且总是由一个线程多次获取，为了让线程获得锁的代价更低，大佬们在 Jdk 1.6 时为 synchronized 引入了偏向锁。
 
@@ -243,7 +243,7 @@ synchronized 在 jdk 1.6 之前使用重量级锁，会将访问同步代码但�
 
 看图说话：
 
-<SvgBox src="https://images.shiguangping.com//imgs/%E5%81%8F%E5%90%91%E9%94%81.svg" />
+<SvgBox src="https://upyun.shiguangping.com//imgs/%E5%81%8F%E5%90%91%E9%94%81.svg" />
 
 <br/>
 
@@ -256,7 +256,7 @@ synchronized 在 jdk 1.6 之前使用重量级锁，会将访问同步代码但�
 
 ### 3.4 轻量级锁
 
-<ImgBox src="https://images.shiguangping.com/imgs/20211208112008.png" width="100%" />
+<ImgBox src="https://upyun.shiguangping.com/imgs/20211208112008.png" width="100%" />
 
 偏向锁是考虑到在没有锁竞争的情况下，偏向锁会偏向当前持有锁的线程，线程在每次执行同步代码时不需要重复获取锁，执行效率高。
 
@@ -278,7 +278,7 @@ synchronized 在 jdk 1.6 之前使用重量级锁，会将访问同步代码但�
 
 以下是偏向锁升级到轻量级锁的流程：
 
-<SvgBox src="https://images.shiguangping.com//imgs/java-synchronized-Page-2.drawio.svg" />
+<SvgBox src="https://upyun.shiguangping.com//imgs/java-synchronized-Page-2.drawio.svg" />
 
 偏向锁和轻量级锁都是采用了 CAS 获取锁，属于乐观锁。
 
@@ -286,7 +286,7 @@ synchronized 在 jdk 1.6 之前使用重量级锁，会将访问同步代码但�
 
 ### 3.5 重量级锁
 
-<ImgBox src="https://images.shiguangping.com/imgs/20211209094152.png" width="100%" />
+<ImgBox src="https://upyun.shiguangping.com/imgs/20211209094152.png" width="100%" />
 
 偏向锁和轻量级锁都是考虑线程没有实际竞争的情况下，可以通过 CAS 自旋（自己尝试几次就可以拿到锁，不麻烦操作系统了）的方式，提高程序的执行效率。
 
@@ -294,7 +294,7 @@ synchronized 在 jdk 1.6 之前使用重量级锁，会将访问同步代码但�
 
 流程图：
 
-<SvgBox src="https://images.shiguangping.com/imgs/synchronized%20%E9%94%81%E6%B5%81%E7%A8%8B.svg" />
+<SvgBox src="https://upyun.shiguangping.com/imgs/synchronized%20%E9%94%81%E6%B5%81%E7%A8%8B.svg" />
 
 <br/>
 
@@ -319,7 +319,7 @@ CAS (Compare And Swap) 是 CPU 提供的一种原子指令，也是乐观锁的�
 
 在轻量级锁中，线程会通过 CAS 去替换锁对象头中的锁记录指针，如果替换失败，会发生自旋，继续尝试，直到获取锁或者锁膨胀为重量级锁。
 
-<SvgBox src="https://images.shiguangping.com/imgs/cas.drawio.svg" />
+<SvgBox src="https://upyun.shiguangping.com/imgs/cas.drawio.svg" />
 
 <br/>
 

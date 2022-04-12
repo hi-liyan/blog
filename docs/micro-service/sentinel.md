@@ -11,7 +11,7 @@ title: 服务容错 -Sentinel
 
 如下图，假设这是一个高并发的应用系统。当A服务不可用时，B依然向A发出请求并且请求不会立即失败，而是等待超时，这就造成了线程阻塞，时间久了，B服务也可能挂掉。随着时间推移，C、D服务最终也可能会挂掉。
 
-![image-20210701001944544](https://images.shiguangping.com/imgs/20210701001956.png)
+![image-20210701001944544](https://upyun.shiguangping.com/imgs/20210701001956.png)
 
 
 
@@ -26,7 +26,7 @@ title: 服务容错 -Sentinel
 
 熔断器模式的三种状态：
 
-![circuit-breaker](https://images.shiguangping.com/imgs/20210703224238.png)
+![circuit-breaker](https://upyun.shiguangping.com/imgs/20210703224238.png)
 
 熔断器有三种状态：
 

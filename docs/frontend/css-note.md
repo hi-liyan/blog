@@ -399,7 +399,7 @@ background-size是CSS3新增的属性，通过background-size设置背景图片�
 
 但是，设置盒子高度固定后，会存在盒子内容超出了盒子本身设置高度的情况，导致内容溢出的效果。如下图中所示：
 
-![image-20210808100845375](https://images.shiguangping.com//imgs/image-20210808100845375.png)
+![image-20210808100845375](https://upyun.shiguangping.com//imgs/image-20210808100845375.png)
 
 这种情况可以通过`overflow`溢出属性来设置盒子的内容的展示效果。
 
@@ -426,7 +426,7 @@ background-size是CSS3新增的属性，通过background-size设置背景图片�
 
 ### 盒模型-居中
 
-![image-20210808092249236](https://images.shiguangping.com//imgs/image-20210808092249236.png)
+![image-20210808092249236](https://upyun.shiguangping.com//imgs/image-20210808092249236.png)
 
 
 
@@ -498,7 +498,7 @@ background-size是CSS3新增的属性，通过background-size设置背景图片�
 
 页面效果：
 
-![image-20210808095418206](https://images.shiguangping.com//imgs/image-20210808095418206.png)
+![image-20210808095418206](https://upyun.shiguangping.com//imgs/image-20210808095418206.png)
 
 > 可以动手尝试实现图中的效果。
 
@@ -524,7 +524,7 @@ margin塌陷现象：在垂直方向（纵向）如果有两个元素的外边�
 
 上面额元素又下边距，下面的元素有上边距，两个边距相遇，真正的盒子间距是较大的那个间距值，而不是两个盒子外边距的和。
 
-![image-20210808105232056](https://images.shiguangping.com//imgs/image-20210808105232056.png)
+![image-20210808105232056](https://upyun.shiguangping.com//imgs/image-20210808105232056.png)
 
 :::tip 查看代码
 
@@ -574,7 +574,7 @@ margin塌陷现象：在垂直方向（纵向）如果有两个元素的外边�
 
 父子元素之间也会出现margin塌陷现象，父子元素设置了相同方向的margin-top值，两个属性之间没有其他内容进行隔离，导致两个属性相遇，发生margin塌陷。
 
-![image-20210808110111111](https://images.shiguangping.com//imgs/image-20210808110111111.png)
+![image-20210808110111111](https://upyun.shiguangping.com//imgs/image-20210808110111111.png)
 
 :::tip 查看代码
 
@@ -624,7 +624,7 @@ margin塌陷现象：在垂直方向（纵向）如果有两个元素的外边�
 
 或者，父元素本身没有设置与上一个元素的外边距，应该与上一个元素紧挨着，但子元素设置了垂直方向上的上边距，这时会带着父元素一起掉下来。
 
-![image-20210808110747168](https://images.shiguangping.com//imgs/image-20210808110747168.png)
+![image-20210808110747168](https://upyun.shiguangping.com//imgs/image-20210808110747168.png)
 
 :::tip 查看代码
 
@@ -789,23 +789,23 @@ HTML中的标准文档流通过两种方式体现：
 
 - 父元素宽度足够，所有子元素会按照HTML的书写顺序，依次向左进行贴边，父元素左边←子元素1←子元素2←子元素3←子元素4。
 
-  ![image-20210808154052609](https://images.shiguangping.com//imgs/image-20210808154052609.png)
+  ![image-20210808154052609](https://upyun.shiguangping.com//imgs/image-20210808154052609.png)
 
 - 父元素宽度如果不够，例如不能放下子元素4，那么子元素4在贴边时，会跳过上一个子元素3，向更上一个子元素2进行贴边，如果子元素2后面位置不够，继续跳过子元素2向前面的子元素1进行贴边。
 
-  ![image-20210808154521778](https://images.shiguangping.com//imgs/image-20210808154521778.png)
+  ![image-20210808154521778](https://upyun.shiguangping.com//imgs/image-20210808154521778.png)
 
 - 如果贴边的这个子元素4宽度小于子元素2，子元素2的高度低于子元素1和子元素3，形成一个凹陷，子元素4会受到前一个元素子元素3的高度影响，不会出现钻空现象。
 
-  ![image-20210808154814541](https://images.shiguangping.com//imgs/image-20210808154814541.png)
+  ![image-20210808154814541](https://upyun.shiguangping.com//imgs/image-20210808154814541.png)
 
 - 如果子元素1后面的距离也放不下子元素4，子元素4最终会贴到父元素的左边，如果子元素4的宽度超过了父元素，只会出现溢出现象。
 
-  ![image-20210808155032014](https://images.shiguangping.com//imgs/image-20210808155032014.png)
+  ![image-20210808155032014](https://upyun.shiguangping.com//imgs/image-20210808155032014.png)
 
 - 右浮动的效果与左浮动贴边效果是一致的，只是贴边的方向不同。按照HTML书写顺序依次向右上一个元素贴边，第一个元素贴父元素的右边。
 
-  ![image-20210808155459923](https://images.shiguangping.com//imgs/image-20210808155459923.png)
+  ![image-20210808155459923](https://upyun.shiguangping.com//imgs/image-20210808155459923.png)
 
 
 
@@ -905,7 +905,7 @@ margin塌陷现象出现在标准文档流中，浮动元素由于脱离了标�
 
 与压盖效果结构类似，同级元素中前面的元素浮动，后面的元素不浮动，不浮动的元素内部还有一些文字，浮动的蓝盒子会压盖住粉盒子的一部分，但是文字内容不会被盖住，粉盒子中的文字会让开蓝盒子位置，围绕它进行加载。
 
-![image-20210808163426642](https://images.shiguangping.com//imgs/image-20210808163426642.png)
+![image-20210808163426642](https://upyun.shiguangping.com//imgs/image-20210808163426642.png)
 
 
 
@@ -913,7 +913,7 @@ margin塌陷现象出现在标准文档流中，浮动元素由于脱离了标�
 
 标准流中的元素，不设置高度的情况下，都能被内部的标准流元素自动撑高。如果内部的子元素进行了浮动，浮动的子元素无法撑高父元素的高度。
 
-![image-20210808165600870](https://images.shiguangping.com//imgs/image-20210808165600870.png)
+![image-20210808165600870](https://upyun.shiguangping.com//imgs/image-20210808165600870.png)
 
 
 
@@ -921,7 +921,7 @@ margin塌陷现象出现在标准文档流中，浮动元素由于脱离了标�
 
 父元素没有高度，会影响后面元素的标准流位置，如果浮动的子元素足够高时，有可能影响到后面元素中浮动的子元素的贴边位置。
 
-![image-20210808165818506](https://images.shiguangping.com//imgs/image-20210808165818506.png)
+![image-20210808165818506](https://upyun.shiguangping.com//imgs/image-20210808165818506.png)
 
 
 
@@ -929,7 +929,7 @@ margin塌陷现象出现在标准文档流中，浮动元素由于脱离了标�
 
 解决上面问题的方式之一，是强制给标准流父元素添加一个高度。
 
-![image-20210808170122383](https://images.shiguangping.com//imgs/image-20210808170122383.png)
+![image-20210808170122383](https://upyun.shiguangping.com//imgs/image-20210808170122383.png)
 
 这种方式解决了前面标准流父元素中浮动的子元素影响了后面标准流父元素中子元素浮动的贴边位置和效果，但是也存在另一种问题，当子元素的高度发生变化，父元素依然无法自适应，因为浮动的元素无法自动撑开父元素的高度。
 
@@ -949,7 +949,7 @@ margin塌陷现象出现在标准文档流中，浮动元素由于脱离了标�
 
 **作用**：给标准流父元素添加clear属性，父元素不受前面浮动影响，不会再占有浮动让出的标准流位置。
 
-![image-20210808171139905](https://images.shiguangping.com//imgs/image-20210808171139905.png)
+![image-20210808171139905](https://upyun.shiguangping.com//imgs/image-20210808171139905.png)
 
 这种方式无法解决浮动元素撑不开父元素高度的问题，并且两个标准流父元素之间如果有margin效果不正确。
 
@@ -1025,7 +1025,7 @@ margin塌陷现象出现在标准文档流中，浮动元素由于脱离了标�
 
 外墙法：在两个标准流父元素之间，添加一个div标签，标签上带有clear属性，并且给这个div一个合适的高度。
 
-![image-20210809085830128](https://images.shiguangping.com/imgs/image-20210809085830128.png)
+![image-20210809085830128](https://upyun.shiguangping.com/imgs/image-20210809085830128.png)
 
 这种方法最终实现的效果与上一种解决方式类似，区别在于可以给中间隔着的div一个高度，实现一个margin效果。但是本质上没有完全解决问题，浮动元素仍然无法自动撑开父元素的高度。
 
@@ -1101,7 +1101,7 @@ margin塌陷现象出现在标准文档流中，浮动元素由于脱离了标�
 
 内墙法：在父元素内部，所有的浮动子元素后面添加一个空的div元素，标签高度为0，添加clear属性。
 
-![image-20210809091408571](https://images.shiguangping.com/imgs/image-20210809091408571.png)
+![image-20210809091408571](https://upyun.shiguangping.com/imgs/image-20210809091408571.png)
 
 这种方式解决了以上遇到的问题，但也存在一定的缺憾。浮动属于CSS样式带来的效果，CSS本身是用来修饰HTML的，但是以上问题靠的是添加HTML结构解决的，如果页面浮动元素很多，那么需要添加多个没有语义的空标签，造成HTML结构冗余。
 
@@ -1195,7 +1195,7 @@ margin塌陷现象出现在标准文档流中，浮动元素由于脱离了标�
 
 将伪类添加给一个选中父盒子的选择器后面，一般给需要清除浮动的父盒子设置一个clearfix的类名(class属性)。
 
-![image-20210809102014935](https://images.shiguangping.com/imgs/image-20210809102014935.png)
+![image-20210809102014935](https://upyun.shiguangping.com/imgs/image-20210809102014935.png)
 
 :::tip 查看代码
 
@@ -1338,7 +1338,7 @@ position属性值：`relative`
 
 **相对定位的性质**：相对定位的元素不脱离标签原始状态（标准标准文档流、浮动），不会让出原来占用的标准流位置，如下图。
 
-![image-20210809154749127](https://images.shiguangping.com/imgs/image-20210809154749127.png)
+![image-20210809154749127](https://upyun.shiguangping.com/imgs/image-20210809154749127.png)
 
 元素显示效果上，**原位留坑，形影分离**。
 
@@ -1391,7 +1391,7 @@ position属性值：`absolute`
 
 left/top属性组合：参考点是祖先的border以内的左上顶点，对比点是盒子自身的左上角；
 
-![image-20210809174530873](https://images.shiguangping.com/imgs/image-20210809174530873.png)
+![image-20210809174530873](https://upyun.shiguangping.com/imgs/image-20210809174530873.png)
 
 :::tip 查看代码
 
@@ -1443,7 +1443,7 @@ left/top属性组合：参考点是祖先的border以内的左上顶点，对比
 
 right/top属性组合：参考点是祖先的border以内的右上顶点，对比点是盒子自身的右上角；
 
-![image-20210809174847984](https://images.shiguangping.com/imgs/image-20210809174847984.png)
+![image-20210809174847984](https://upyun.shiguangping.com/imgs/image-20210809174847984.png)
 
 :::tip 查看代码
 
@@ -1495,7 +1495,7 @@ right/top属性组合：参考点是祖先的border以内的右上顶点，对�
 
 left/bottom属性组合：参考点是祖先的border以内的左下顶点，对比点是盒子自身的左下角；
 
-![image-20210809175019881](https://images.shiguangping.com/imgs/image-20210809175019881.png)
+![image-20210809175019881](https://upyun.shiguangping.com/imgs/image-20210809175019881.png)
 
 :::tip 查看代码
 
@@ -1547,7 +1547,7 @@ left/bottom属性组合：参考点是祖先的border以内的左下顶点，对
 
 right/bottom属性组合：参考点是祖先的border以内的右下顶点，对比点是盒子自身的右下角；
 
-![image-20210809175100392](https://images.shiguangping.com/imgs/image-20210809175100392.png)
+![image-20210809175100392](https://upyun.shiguangping.com/imgs/image-20210809175100392.png)
 
 :::tip 查看代码
 
@@ -1611,7 +1611,7 @@ position属性值：`fixed`
 
 **固定定位的性质**：固定定位的元素会脱离标准文档流限制，让出标准流位置，可以设置宽高，根据偏移量属性可以任意设置在浏览器窗口的位置。固定定位的元素会始终显示在浏览器窗口上。
 
-![image-20210809184400207](https://images.shiguangping.com/imgs/image-20210809184400207.png)
+![image-20210809184400207](https://upyun.shiguangping.com/imgs/image-20210809184400207.png)
 
 :::info 查看代码
 
@@ -1680,7 +1680,7 @@ position属性值：`fixed`
 
 由于绝对定位的元素会脱离标准文档流，不占用标准文档流的位置，压盖效果更彻底，在实际应用中，常见压盖效果都是使用绝对定位实现的。
 
-![image-20210809185611139](https://images.shiguangping.com/imgs/image-20210809185611139.png)
+![image-20210809185611139](https://upyun.shiguangping.com/imgs/image-20210809185611139.png)
 
 :::tip 查看代码
 
@@ -1767,7 +1767,7 @@ position属性值：`fixed`
 1. 第一步：在居中的方向使用一个偏移量属性，例如left，设置属性值为50%，定位元素的作顶点会移动到参考元素的中心位置；
 2. 第二步：设置一个同方向的margin值，例如margin-left，属性值为负的自身宽度的一半。
 
-![image-20210809190643169](https://images.shiguangping.com/imgs/image-20210809190643169.png)
+![image-20210809190643169](https://upyun.shiguangping.com/imgs/image-20210809190643169.png)
 
 这种方式也适用于宽的子盒子在窄的父盒子中居中。
 

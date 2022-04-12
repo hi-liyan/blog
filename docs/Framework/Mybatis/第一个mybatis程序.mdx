@@ -68,7 +68,7 @@ mysql> create table user(
 
 #### 3. 创建一个子模块
 
-![image-20200606101237597](https://images.shiguangping.com/imgs/20200606101237.png)
+![image-20200606101237597](https://upyun.shiguangping.com/imgs/20200606101237.png)
 
 - 配置MyBatis核心配置文件：mybatis-config.xml
 
@@ -163,7 +163,7 @@ public class MybatisUtils {
 
 创建User实体类：
 
-![image-20200606125807764](https://images.shiguangping.com/imgs/20200606125807.png)
+![image-20200606125807764](https://upyun.shiguangping.com/imgs/20200606125807.png)
 
 
 
@@ -171,13 +171,13 @@ public class MybatisUtils {
 
 这里把UserDao接口的名字写成UserMapper了，在Mybatis里面主要体现的是映射的关系
 
-![image-20200606130355911](https://images.shiguangping.com/imgs/20200606130355.png)
+![image-20200606130355911](https://upyun.shiguangping.com/imgs/20200606130355.png)
 
 
 
 创建UserMapper.xml配置文件：
 
-![image-20200606130931242](https://images.shiguangping.com/imgs/20200606130931.png)
+![image-20200606130931242](https://upyun.shiguangping.com/imgs/20200606130931.png)
 
 
 
@@ -187,7 +187,7 @@ public class MybatisUtils {
 org.apache.ibatis.binding.BindingException: Type interface com.neu.dao.UserMapper is not known to the MapperRegistry.
 ```
 
-![image-20200606131400702](https://images.shiguangping.com/imgs/20200606131400.png)
+![image-20200606131400702](https://upyun.shiguangping.com/imgs/20200606131400.png)
 
 
 
@@ -217,7 +217,7 @@ public void testGetUserList() {
 
 最终的运行结果：
 
-![image-20200606131736904](https://images.shiguangping.com/imgs/20200606131736.png)
+![image-20200606131736904](https://upyun.shiguangping.com/imgs/20200606131736.png)
 
 使用完SqlSession对象之后，要关闭，这里我的测试代码中忘记写了（sqlSession.close();）
 
@@ -225,7 +225,7 @@ public void testGetUserList() {
 
 *测试运行结果时，报了一个错误，错误信息是找不到UserMapper.xml，这里涉及一个Maven的注意事项，maven正常只能直接读取resources内的文件，而我把UserMapper.xml写在了src/main/java/com/neu/dao里面了：*
 
-![image-20200606132408867](https://images.shiguangping.com/imgs/20200606132408.png)
+![image-20200606132408867](https://upyun.shiguangping.com/imgs/20200606132408.png)
 
 *解决办法是需要在Maven的pom.xml文件中配置build信息：*
 

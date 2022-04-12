@@ -37,11 +37,11 @@ vim harbor.yml
 
 将`hostname`修改为宿主机IP：
 
-![image-20201130224414488](https://images.shiguangping.com//imgs/20201130224414.png)
+![image-20201130224414488](https://upyun.shiguangping.com//imgs/20201130224414.png)
 
 如果当前docker容器中已经存在Redis容器，则需要在harbor.yml中配置Redis，否则安装时会出错，提示已经存在Redis容器。*
 
-![image-20201101151002963](https://images.shiguangping.com//imgs/20201101151003.png)
+![image-20201101151002963](https://upyun.shiguangping.com//imgs/20201101151003.png)
 
 *（Redis主机地址不要使用localhost，如果访问不了可能会导致`harbor-jobservice`等服务无法启动。）*
 
@@ -59,7 +59,7 @@ sh install.sh
 
 安装成功后，使用浏览器访问`localhost:7888`：
 
-![image-20201101151221741](https://images.shiguangping.com//imgs/20201101151221.png)
+![image-20201101151221741](https://upyun.shiguangping.com//imgs/20201101151221.png)
 
 默认的用户名：`admin`，密码：`Harbor12345`。
 

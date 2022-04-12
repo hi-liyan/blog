@@ -144,7 +144,7 @@ docker -v
 yum list installed | grep docker
 ```
 
-![image-20201129124331166](https://images.shiguangping.com//imgs/20201129124331.png)
+![image-20201129124331166](https://upyun.shiguangping.com//imgs/20201129124331.png)
 
 移除Docker
 

@@ -34,7 +34,7 @@ b = b + 1; //error
 
 *图为eclipse中四段代码的演示*
 
-<img src="https://images.shiguangping.com/imgs/20200423002624.png" width="400px"/>
+<img src="https://upyun.shiguangping.com/imgs/20200423002624.png" width="400px"/>
 
 这四段代码，前三段代码都没有问题，最后一段代码编译器会报错:`cannot convert from int to byte`
 
@@ -44,7 +44,7 @@ b = b + 1; //error
 
 *这里(b+1)，会先把b自动转换成int类型再进行+1运算。*
 
-<img src="https://images.shiguangping.com/imgs/20200422232930.png" width="400px"/>
+<img src="https://upyun.shiguangping.com/imgs/20200422232930.png" width="400px"/>
 
 Java把byte、short类型数据提升到int类型这种情况称为**widening conversion**，把int转为byte、short类型这种情况称为**narrowing conversion**。
 

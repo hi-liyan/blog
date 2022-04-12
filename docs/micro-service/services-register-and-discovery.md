@@ -6,7 +6,7 @@ title: Nacos 服务发现注册与发现组件
 ## 1.1 了解服务注册与发现
 
 
-![image-20210523224838862](https://images.shiguangping.com/imgs/20210523224839.png)
+![image-20210523224838862](https://upyun.shiguangping.com/imgs/20210523224839.png)
 
 假设没有引入服务发现组件，服务A想调用服务B，需要直接调用`http://192.168.0.1:8002/xxx`。如果服务B的地址或者端口变动了，或者服务B宕机了，服务A是不知情的，即便知道了还需要手动去修改调用的地址，这种做法效率非常低，如果服务众多，维护起来相当麻烦。
 
@@ -141,7 +141,7 @@ server:
 
 启动两个服务，在Nacos管理页面查看服务列表。
 
-![image-20210524010122771](https://images.shiguangping.com/imgs/20210524010123.png)
+![image-20210524010122771](https://upyun.shiguangping.com/imgs/20210524010123.png)
 
 
 
@@ -207,13 +207,13 @@ public class TestController {
 
 使用Postman调用服务消费者的测试接口。
 
-![image-20210524010435464](https://images.shiguangping.com/imgs/20210524010435.png)
+![image-20210524010435464](https://upyun.shiguangping.com/imgs/20210524010435.png)
 
 
 
 以上就是服务注册发现的简单示例，将`服务提供者Provider`和`服务消费者Consumer`两个服务注册到Nacos中，消费者使用RestTemplate调用提供者的接口`restTemplate.getForObject("http://service-provider/echo/{string}", String.class, string);`，Nacos通过服务名称`service-provider`返回实例的IP:Port，拼接成完整的URL。
 
-![image-20210524012159943](https://images.shiguangping.com/imgs/20210524012200.png)
+![image-20210524012159943](https://upyun.shiguangping.com/imgs/20210524012200.png)
 
 
 

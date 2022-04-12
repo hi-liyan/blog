@@ -63,7 +63,7 @@ const config = {
         title: '时光瓶',
         logo: {
           alt: 'My Site Logo',
-          src: 'https://images.shiguangping.com/imgs/%E6%A0%91%E5%8F%B6_leaves.png',
+          src: 'https://upyun.shiguangping.com/imgs/%E6%A0%91%E5%8F%B6_leaves.png',
         },
         items: [
           {

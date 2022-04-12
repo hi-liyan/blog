@@ -33,7 +33,7 @@ Jenkins搭建：[https://www.shiguangping.com/posts/docker-install-jenkins.html]
 
 登陆Harbor，创建名为"febs"项目，Jenkins构建好的镜像都放到febs项目下。
 
-![image-20201123234440416](https://images.shiguangping.com//imgs/20201123234440.png)
+![image-20201123234440416](https://upyun.shiguangping.com//imgs/20201123234440.png)
 
 可以创建一个名为`jenkins`的用户，并在项目中添加该用户，专门用于Jenkins登陆并推送镜像使用。
 
@@ -41,7 +41,7 @@ Jenkins搭建：[https://www.shiguangping.com/posts/docker-install-jenkins.html]
 
 打开后端项目，在`febs-cloud`根目录下编写以下脚本：
 
-![image-20201123232417184](https://images.shiguangping.com//imgs/20201123232417.png)
+![image-20201123232417184](https://upyun.shiguangping.com//imgs/20201123232417.png)
 
 pipline脚本：
 
@@ -418,37 +418,37 @@ ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urand
 
 登陆Jenkins，系统管理 -> 凭证管理中添加Gitlab凭证，为了后面Jenkins可以登陆Gitlab并拉取项目代码。（如果系统管理中没有`Manager Credentials`,则需要到插件管理中安装该插件）
 
-![image-20201123232847835](https://images.shiguangping.com//imgs/20201123232847.png)
+![image-20201123232847835](https://upyun.shiguangping.com//imgs/20201123232847.png)
 
 添加凭证：
 
-![image-20201123233159466](https://images.shiguangping.com//imgs/20201123233159.png)
+![image-20201123233159466](https://upyun.shiguangping.com//imgs/20201123233159.png)
 
 *如果要构建的是Gitlab中的私有项目，要确保该账号已经添加到项目中，并有权限拉取代码。*
 
 添加Harbor登陆凭证，用于登陆并推送镜像，配置同上：
 
-![image-20201123234236275](https://images.shiguangping.com//imgs/20201123234236.png)
+![image-20201123234236275](https://upyun.shiguangping.com//imgs/20201123234236.png)
 
 凭证添加完后，回到Jenkins主页面，**新建任务**，输入项目名，选择创建**多分支流水线**：
 
-![image-20201123233625601](https://images.shiguangping.com//imgs/20201123233625.png)
+![image-20201123233625601](https://upyun.shiguangping.com//imgs/20201123233625.png)
 
 在配置中添加**分支源**：
 
-![image-20201123233831854](https://images.shiguangping.com//imgs/20201123233831.png)
+![image-20201123233831854](https://upyun.shiguangping.com//imgs/20201123233831.png)
 
 向下拉，在**Build Configuration**配置项添加Jenkinsfile脚本路径：
 
-![image-20201123233936648](https://images.shiguangping.com//imgs/20201123233936.png)
+![image-20201123233936648](https://upyun.shiguangping.com//imgs/20201123233936.png)
 
 最后，点击保存。这时Jenkins会开始扫描多分支流水线，执行登陆仓库拉取代码，扫描仓库中的每一个分支，寻找Jenkinsfile脚本文件。
 
-![image-20201122105302155](https://images.shiguangping.com//imgs/20201122105302.png)
+![image-20201122105302155](https://upyun.shiguangping.com//imgs/20201122105302.png)
 
 扫描完成之后，回到Jenkins首页，会在面板上看到刚刚添加的`FEBS-Cloud`任务：
 
-![image-20201123235834687](https://images.shiguangping.com//imgs/20201123235834.png)
+![image-20201123235834687](https://upyun.shiguangping.com//imgs/20201123235834.png)
 
 点进去之后选择dev分支，点击左侧`Build with Parameters`，开始构建镜像。构建出现问题，可以查看日志，找到问题发生的步骤以及原因。
 
@@ -456,7 +456,7 @@ ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urand
 
 打开febs-cloud-web项目，编写脚本文件：
 
-![image-20201124000634274](https://images.shiguangping.com//imgs/20201124000634.png)
+![image-20201124000634274](https://upyun.shiguangping.com//imgs/20201124000634.png)
 
 Jenkins脚本：
 
@@ -742,11 +742,11 @@ source /etc/profile
 echo $PATH
 ```
 
-![image-20201124003656181](https://images.shiguangping.com//imgs/20201124003656.png)
+![image-20201124003656181](https://upyun.shiguangping.com//imgs/20201124003656.png)
 
 复制终端输出的环境变量，回到Jenkins，系统管理 -> 系统配置，全局属性中添加环境变量，如下图，将终端复制的环境变量粘贴过来，保存。
 
-![image-20201124003421166](https://images.shiguangping.com//imgs/20201124003421.png)
+![image-20201124003421166](https://upyun.shiguangping.com//imgs/20201124003421.png)
 
 然后，回到前端任务，再次尝试构建。
 
@@ -756,7 +756,7 @@ echo $PATH
 
 前后端分别构建成功后，登陆Harbor，进入febs项目，镜像都被推送到仓库中。至此，整个构建流程结束。
 
-![image-20201124004306614](https://images.shiguangping.com//imgs/20201124004306.png)
+![image-20201124004306614](https://upyun.shiguangping.com//imgs/20201124004306.png)
 
 
 
@@ -776,7 +776,7 @@ docker swarm init
 
 初始化Swarm，当前服务器节点成为管理节点，通过下图命令可以向Swarm中添加工作节点。
 
-![image-20201122194938799](https://images.shiguangping.com//imgs/20201122194938.png)
+![image-20201122194938799](https://upyun.shiguangping.com//imgs/20201122194938.png)
 
 编写前后端docker-compose：
 
@@ -1100,7 +1100,7 @@ FEBS_GATEWAY=febs-gateway-service
 
 通过Portainer创建Networks，如下图：（或者在终端使用docker命令创建网络）
 
-![image-20201122200959957](https://images.shiguangping.com//imgs/20201122201000.png)
+![image-20201122200959957](https://upyun.shiguangping.com//imgs/20201122201000.png)
 
 创建后端服务：
 
@@ -1108,7 +1108,7 @@ FEBS_GATEWAY=febs-gateway-service
 docker stack deploy -c docker-compose.backend.test.yml febs-cloud-backend --with-registry-auth
 ```
 
-![image-20201122201107858](https://images.shiguangping.com//imgs/20201122201107.png)
+![image-20201122201107858](https://upyun.shiguangping.com//imgs/20201122201107.png)
 
 创建前端服务：
 
@@ -1116,7 +1116,7 @@ docker stack deploy -c docker-compose.backend.test.yml febs-cloud-backend --with
 docker stack deploy -c docker-compose.frontend.test.yml febs-cloud-frontend --with-registry-auth
 ```
 
-![image-20201122203443158](https://images.shiguangping.com//imgs/20201122203443.png)
+![image-20201122203443158](https://upyun.shiguangping.com//imgs/20201122203443.png)
 
 ---
 

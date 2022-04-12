@@ -7,7 +7,7 @@ title: 微服务架构 -Spring Cloud Alibaba
 
 微服务是一种用于构建应用的架构方案。微服务架构有别于更为传统的单体式方案，可将应用拆分成多个核心功能。每个功能都被称为一项服务，可以单独构建和部署，这意味着各项服务在工作（和出现故障）时不会相互影响。
 
-![image-20210523205453083](https://images.shiguangping.com/imgs/20210523205453.png)
+![image-20210523205453083](https://upyun.shiguangping.com/imgs/20210523205453.png)
 
 微服务相比于传统单体项目的优势：
 

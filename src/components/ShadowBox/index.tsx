@@ -18,7 +18,7 @@ interface ShadowBoxProps {
  *    width: 宽度
  *
  *   示例：
- *    <ShadowBox img='https://images.shiguangping.com/imgs/20211013095137.png'/>
+ *    <ShadowBox img='https://upyun.shiguangping.com/imgs/20211013095137.png'/>
  *    <ShadowBox title='标题'>Hello World</ShadowBox>
  * </pre>
  */
