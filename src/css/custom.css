@@ -247,9 +247,14 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
   color: #000;
 }
 
-/* html[data-theme="dark"] .hero {
-  background-image: url("/img/hero_main_dark.svg");
-} */
+html[data-theme="dark"] .hero__subtitle {
+  color: white;
+}
+
+html[data-theme="dark"] .hero {
+  /*background-image: url("/img/hero_main_dark.svg");*/
+  background-color: #242526;
+}
 
 html[data-theme="dark"] .bloghome__intro > p {
   color: #dfdfdf;
