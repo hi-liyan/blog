@@ -7,7 +7,7 @@ import React from "react";
 export const CodeDays = () => {
   return (
       <span style={{
-        color: '#ca228d',
+        color: '#4042E2',
         fontWeight: 'bolder'
       }}>
       {calThePastToTodayOptString("2020-08-17")}
