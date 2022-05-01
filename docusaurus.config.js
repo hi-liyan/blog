@@ -150,7 +150,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['dart', 'java', 'groovy'],
+        additionalLanguages: ['dart', 'java', 'groovy', 'rust'],
       },
       metadata: [{name: "keywords", content: "时光瓶, Java学习, 编程, 李炎"}]
     }),

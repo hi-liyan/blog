@@ -1,0 +1,97 @@
+---
+id: 开发环境安装
+title: 1.1 开发环境安装
+keywords: ['Jdk安装', 'Jdk配置环境变量']
+---
+import ImgBox from "../../src/components/ImgBox";
+
+在开始学习 Java 之前，需要先搭建 Java 开发环境。开发环境的搭建比较简单，安装两个软件即可。首先是安装JDK，然后再安装一个IDE。
+
+## 1. 什么是JDK？
+
+在安装 JDK 之前，先来认识下什么是 JDK、JRE、以及JVM。
+
+它们之间的关系是一种包含关系，下面从内到外开始介绍。
+
+### 1.1 JVM
+
+先来说JVM。JVM 即 `Java Virtual Machine`（Java虚拟机）。Java 源代码会通过编译器(javac)编译成以 `.class` 为后缀的符合 Jvm 规范的二进
+制字节码文件，在运行 Java 程序时，实际上是字节码文件被加载进虚拟机内存并运行。
+
+Java 语言的其中一个特性就是实现了**平台无关性**，一次编写，随处运行。Java 之所以能实现平台无关性，就是在语言和机器之前抽象出了Java虚拟机这
+一层，我们只需面向虚拟机编程，无需考虑对应的平台。
+
+其实，我当初学 Java 的时候会有这样的一个疑惑，因为看到很多教程上写着，Java 既是编译型语言，还是解释性语言，因为需要先把 Java 编译成
+字节码文件，运行在虚拟机中，再由虚拟机解释成机器码，最终运行在机器上，这样的运行效率会不会很慢呢？
+
+但其实，现代Java虚拟机技术已经非常成熟，Java 代码的运行效率非常快。Java 这一语言的特性是编译耗时，但是运行效率非常快。
+
+### 1.2 JRE
+
+再来说JRE。JRE，即 `Java Runtime Environment`（Java运行时环境）。包含了 JVM 以及运行时所需要的各种类库。
+
+JRE 中包含了 Java 虚拟机。我们在编写 Java 代码时，会用到很多 Java 提供好的类库，也就是标准库，这些都是在 JRE 中。有了这些库以及 JVM 虚拟机，
+就可以运行一个 Java 程序了。所以，如果我们只需要运行 Java 程序，而不是开发的话，只需要安装 JRE 这个软件即可，无需安装 JDK。
+
+例如，《我的世界》这款游戏，它是使用 Java 语言开发的，如果只需要运行这款游戏，只需要安装 JRE 即可。
+
+### 1.3 JDK
+
+最后说下开发必须的JDK。JDK，即 `Java Development Kit`（Java开发工具包）。它包含了 JRE 以及 Java 开发的常用工具，例如Java编译器(javac)等。
+
+像上面说的运行 Java 程序时，只需要安装 JRE 即可，因为我们运行的这些程序都是已经编译好的程序，只要编译好的程序中包含了全部需要的类库，就可以运行
+在虚拟机中。
+
+但我们在开发过程中，编写的是 Java 源代码，源代码是不能直接运行的，需要通过Java编译器将源代码编译成字节码，然后运行在虚拟机中，这个编译器就在
+JDK中。
+
+所以说，Java 开发首先要安装的就是 JDK。
+
+
+:::tip
+以上概念了解即可，随着后面的学习，会有更深入的认识。
+:::
+
+## 2. 下载和安装
+
+### 2.1 下载 Jdk
+
+安装JDK比较简单，和安装其它软件一样。进入到 Oracle 官方[下载地址](https://www.oracle.com/java/technologies/downloads/)下载对应版本，
+这里下载 jdk-8u331-windows-x64.exe。
+
+下载到本地后双击 .exe 安装包进行安装。
+
+### 2.2 配置环境变量
+
+安装完成后，还需要配置一步环境变量，让操作系统能认识 JDK。
+
+<ImgBox src="https://upyun.shiguangping.com/imgs/image-20210719190038914.png" />
+
+JDK默认安装路径在 `C:\Program Files\Java\jdk1.8.0_291\bin`，复制该路径到系统变量的path中。
+
+Win10 系统配置环境变量的位置在：右键此电脑 -> 属性 -> 高级系统设置 -> 环境变量。
+
+<ImgBox src="https://upyun.shiguangping.com/imgs/image-20210719190432145.png" />
+
+环境变量配置好后，可以在 cmd 或者 powershell 通过命令验证是否配置成功。
+
+打开（重新打开） cmd 或者 powershell，使用 `java -version` 命令，显示 Java 版本号说明环境变量配置成功。（如下图）
+
+<ImgBox src="https://upyun.shiguangping.com/imgs/image-20210719191205664.png" />
+
+
+
+## 3. 安装IDE
+
+IDE（也叫"集成开发环境"），IDE是编写代码的重要工具，一般里面包含了各种开发常用的工具、插件，可以大大提高开发效率。
+
+目前常用的IDE软件有：Jetbrains IDEA，Eclipse等等。
+
+我们这里使用 IDEA，它更加现代化、更加智能，[下载地址](https://www.jetbrains.com/idea/)。
+
+<ImgBox src="https://upyun.shiguangping.com/imgs/image-20210719192807004.png" />
+
+IDEA包含两个版本，终极版和社区版本，前者付费。初学时使用社区版本即可。
+
+**以上都准备好之后，就可以开始接下来的学习了。**
+

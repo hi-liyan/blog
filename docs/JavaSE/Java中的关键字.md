@@ -3,44 +3,18 @@ id: Java中的关键字
 title: 3. Java中的关键字
 ---
 
-1. ### 定义
+被Java语言赋予了特定含义的单词，这些单词已经拥有固定的功能，只能用这些单词来实现某一功能。 比如：声明一个类，使用 **class** ；声明类是公共的，使用 **public** 关键字来修饰class。
 
-   被Java语言赋予了特定含义的单词，这些单词已经拥有固定的功能，只能用这些单词来实现某一功能。
+**Java语言中所有的关键字都是小写的。**
 
-   比如：声明一个类，使用**class**
 
-   ​			声明类是公共的，使用**public**来修饰class
+Java中的关键字：
+- 48个关键字：abstract、assert、boolean、break、byte、case、catch、char、class、continue、default、do、double、else、enum、extends、final、finally、float、for、if、implements、import、int、interface、instanceof、long、native、new、package、private、protected、public、return、short、static、strictfp、super、switch、synchronized、this、throw、throws、transient、try、void、volatile、while。
 
-   **Java语言中所有的关键字都是小写的。**
+- 2个保留字（现在没用以后可能用到作为关键字）：goto、const。
 
-   
+- 3个特殊字面量：true、false、null。
 
-2. ### 保留字
-
-   - goto和const作为保留字存在，目前并不使用
-
-   
-
-3. ### 关键字
-
-   - **用于数据类型的**
-
-     用于数据类型的关键字有 boolean、byte、char、 double、 false、float、int、long、new、short、true、void、instanceof。
-
-   - **用于语句的**
-
-     用于语句的关键字有break、case、 catch、 continue、 default 、do、 else、 for、 if、return、switch、try、 while、 finally、 throw、this、 super。
-
-   - **用于修饰的**
-
-     用于修饰的关键字有 abstract、final、native、private、 protected、public、static、synchronized、
-     　　transient、 volatile。
-
-   - **用于方法、类、接口、包和异常的**
-
-     用于方法、类、接口、包和异常的关键字有 class、 extends、 implements、interface、 package、import、throws。
-
-   - **其它的**
-
-     还有些关键字,如cat、 future、 generic、innerr、 operator、 outer、rest、var等都是Java保留的没有意义的关键字。
-     　　另外，Java还有3个[保留字](https://baike.baidu.com/item/保留字/7674788):true、false、null。它们不是关键字，而是文字。包含Java定义的值。和关键字一样,它们也不可以作为[标识符](https://baike.baidu.com/item/标识符/7105638)使用
+:::tip
+关键字在Java语言中被赋予了特定用处，所以关键字不能被用作标识符使用。
+:::

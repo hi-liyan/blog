@@ -29,8 +29,7 @@ module.exports = {
           '1. 搭建开发环境': [
             'JavaSE/开发环境安装',
             'JavaSE/集成开发环境',
-            'JavaSE/Java程序的入口',
-            'JavaSE/第一个Java程序'
+            'JavaSE/helloworld'
           ]
         },
         'JavaSE/Java注释的格式',
@@ -335,6 +334,15 @@ module.exports = {
             'frontend/flutter-note'
           ]
         }
+      ]
+    },
+
+    // Rust
+    {
+      type: 'category',
+      label: 'Rust',
+      items: [
+        'rust/rust-note'
       ]
     },
 

@@ -2,8 +2,14 @@
 id: 集成开发环境
 title: 1.2 集成开发环境
 ---
+import ImgBox from "../../src/components/ImgBox";
 
-## 用STS新建一个Java文件
+:::tip 😄
+这里大部分内容是我在培训时写的笔记，所以，初期使用的IDE是 Eclipse。
+本篇内容只作为了解扩展。
+:::
+
+## 认识IDE
 
 **首先来介绍下什么是IDE（集成开发环境）：**
 
@@ -11,7 +17,6 @@ title: 1.2 集成开发环境
 
 IDE通常包括[编程语言编辑器](https://zh.wikipedia.org/wiki/文本编辑器)、[自动构建](https://zh.wikipedia.org/wiki/自动构建)工具、通常还包括[调试器](https://zh.wikipedia.org/wiki/除錯器)。有些IDE包含[编译器](https://zh.wikipedia.org/wiki/編譯器)／[解释器](https://zh.wikipedia.org/wiki/直譯器)，如微软的[Microsoft Visual Studio](https://zh.wikipedia.org/wiki/Microsoft_Visual_Studio)，有些则不包含，如[Eclipse](https://zh.wikipedia.org/wiki/Eclipse)、[SharpDevelop](https://zh.wikipedia.org/wiki/SharpDevelop)等，这些IDE是通过调用第三方编译器来实现代码的编译工作的。有时IDE还会包含[版本控制](https://zh.wikipedia.org/wiki/版本控制)系统和一些可以设计[图形用户界面](https://zh.wikipedia.org/wiki/圖形用戶界面)的工具。许多支持[面向对象](https://zh.wikipedia.org/wiki/物件導向)的现代化IDE还包括了类别浏览器、对象查看器、对象结构图。虽然当前有一些IDE支持多种编程语言（例如[Eclipse](https://zh.wikipedia.org/wiki/Eclipse)、[NetBeans](https://zh.wikipedia.org/wiki/NetBeans)、[Microsoft Visual Studio](https://zh.wikipedia.org/wiki/Microsoft_Visual_Studio)），但是一般而言，IDE主要还是针对特定的编程语言而量身打造（例如[Visual Basic](https://zh.wikipedia.org/wiki/Visual_Basic)）。
 
----
 
 Java常用的开发工具有：[eclipse](https://www.eclipse.org/)、[IDEA](https://www.jetbrains.com/idea/)、[Spring Tool Suite](https://spring.io/tools)(sts)等。
 
@@ -21,21 +26,21 @@ eclipse本身也是一款开源的开发工具，完全免费。
 
 IDEA是jetbrains公司开发的一款Java开发工具，深受企业级开发者喜爱，但它是付费的。
 
----
+## 使用STS新建一个Java文件
 
 ***安装开发工具之前，一定要安装JDK并配置好环境变量！！！***
 
 打开安装好的sts工具，双击工具图标后会出现：
 
-![](https://upyun.shiguangping.com/imgs/20200501194558.png)
+<ImgBox src="https://upyun.shiguangping.com/imgs/20200501194558.png" />
 
 然后会出现对话框，`选择工作空间文件夹`。工作空间的路径可以默认也可以自定义。
 
-![](https://upyun.shiguangping.com/imgs/20200501194448.png)
+<ImgBox src="https://upyun.shiguangping.com/imgs/20200501194448.png" />
 
 选择好工作空间后，点击`Launch`，进入工具的工作页面：
 
-![](https://upyun.shiguangping.com/imgs/20200501194919.png)
+<ImgBox src="https://upyun.shiguangping.com/imgs/20200501194919.png" />
 
 ### 新建Java文件流程：
 
