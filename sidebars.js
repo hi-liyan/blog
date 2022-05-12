@@ -28,6 +28,7 @@ module.exports = {
         {
           '1. 搭建开发环境': [
             'JavaSE/开发环境安装',
+            'JavaSE/jdk',
             'JavaSE/集成开发环境',
             'JavaSE/helloworld'
           ]
@@ -35,16 +36,7 @@ module.exports = {
         'JavaSE/Java注释的格式',
         'JavaSE/Java中的关键字',
         'JavaSE/Java中的标识符',
-        {
-          '5. 变量': [
-            'JavaSE/变量',
-            'JavaSE/创建变量',
-            'JavaSE/使用变量',
-            'JavaSE/变量的作用域',
-            'JavaSE/变量的初始值',
-            'JavaSE/变量的分类',
-          ]
-        },
+        'JavaSE/变量',
         'JavaSE/常量',
         {
           '7. 数据类型': [
