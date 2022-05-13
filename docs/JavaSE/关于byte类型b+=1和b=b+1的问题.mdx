@@ -8,6 +8,9 @@ import ImgBox from "../../src/components/ImgBox";
 
 <ImgBox src="https://upyun.shiguangping.com//imgs/20220512234622.png" />
 
+原因是，Java编译器在处理 `+=` 时，会自动进行强转（窄化处理），这属于一个Java的语法糖。
+
+下面是反编译的字节码指令：
 
 ```
 $ javap -v -l Hello

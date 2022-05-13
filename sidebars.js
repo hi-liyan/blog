@@ -49,7 +49,6 @@ module.exports = {
         'JavaSE/运算符',
         {
           '10. 流程控制': [
-            'JavaSE/顺序结构',
             'JavaSE/条件语句',
             'JavaSE/循环语句',
             'JavaSE/算n以内的质数',
@@ -58,9 +57,7 @@ module.exports = {
         {
           '11. 数组': [
             'JavaSE/数组',
-            'JavaSE/一维数组的应用',
-            'JavaSE/增强型for循环',
-            'JavaSE/冒泡排序',
+            'JavaSE/数组元素排序',
             'JavaSE/二维数组',
           ]
         },
