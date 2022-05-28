@@ -545,6 +545,7 @@ html[data-theme="dark"] .footer__read_count {
 }
 
 .pagination-nav__link {
+  height: auto;
   /* border: none; */
   margin: 2em 0;
   /*background: linear-gradient(*/
