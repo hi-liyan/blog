@@ -3,87 +3,35 @@ id: Java方法
 title: 12. Java方法
 ---
 
-一个 Java 方法是为了执行某个操作的一些语句的组合,为了实现特定的某种功能。举个例子来说，当你调用 System.out.println 方法时，系统实际上会执行很多语句才能在控制台上输出信息。
+方法（在某些语言中也叫做函数，在面向对象中被称为方法）是为了实现某种特定功能的语句组合。
 
-现在你将学习怎么创建你自己的方法，他们可以有返回值也可以没有返回值，可以有参数，也可以没有参数，重载方法要使用相同的方法名称，并在程序设计中利用抽象的方法。
+## 定义方法
 
-## 创建方法
-
-我们用下面的例子来解释方法的语法：
+基本的方法声明由访问修饰符、方法返回值类型、方法名、以及参数列表组成。
 
 ```java
-public static int funcName(int a, int b) {
-  // body
+public static void main(String[] args) {
+    Hello hello = new Hello();
+    int sum = hello.plus(10, 15);
+}
+
+/**
+ * 计算两个整数的和
+ * @param a
+ * @param b
+ * @return
+ */
+public int plus(int a, int b) {
+    return a + b;
 }
 ```
 
-在这里
+其中，`public`是访问修饰符，`int`是方法的返回值类型，`plus`是方法名，`(int a, int b)`是方法的参数列表，后面跟的花括号就是方法体。在调用`plus`方法时，会执行方法体中的代码，最后使用`return`关键字返回方法的返回值。
 
-- public static：修饰符
-- int：返回值类型
-- funcName：方法名称*（函数名称）*
-- a，b：形式参数
-- int a,int b：参数列表*（小括号里的内容叫参数列表）*
-
-方法也包含过程或函数。
-
-- 过程：他们不返回值
-- 函数：他们返回值
-
-方法的定义包含方法头和方法体。如下所示：
-
-```java
-modifier returnType nameOfMethod (Parameter List) {
- // method body
-}
-```
-
-以上的语法包括
-
-- modifier：他定义了方法的访问类型，它是可选的。
-- returnType：方法是可能返回一个值的*（无返回值的方法这里是void，有返回值的填写返回值的数据类型）*。
-- nameOfMethod：这是方法的名称。
-- Parameter List：参数列表，它是参数的次序，类型，以及参数个数的集合。这些都是可选的，当然方法也可以没有参数。
-- 方法体：方法体定义了这个方法是用来做什么的。
-
-
-
-### 示例
-
-该方法接受两个参数n1和n2返回两者之间的最小值。
-
-```java
-/** the snippet returns the minimum between two numbers */
-public static int minFunction(int n1, int n2) {
-   int min;
-   if (n1 > n2)
-      min = n2;
-   else
-      min = n1;
-
-   return min; 
-}
-```
 
 ## 方法调用
 
-要想使用一个方法，该方法必须要被调用。方法调用有两种方式，一种是有返回值的，一种是没有返回值的。
-
-```java
-public class Demo{
-  public static void main(String[] args){
-    print();//静态方法中可直接调用其他静态方法
-    Demo d = new Demo();
-    d.add(2,3);//调用非静态方法需要先实例化类的对象，在通过对象名.方法名的形式调用；调用含参方法，调用时需要传入和方法列表数据类型相同的参数。
-  }
-  public static void print(){
-    System.out.println("这是print方法");
-  }
-  public int add(int a,int b){
-    return a+b;
-  }
-}
-```
+使用方法名调用方法。
 
 
 
