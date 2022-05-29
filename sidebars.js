@@ -61,13 +61,14 @@ module.exports = {
             'JavaSE/二维数组',
           ]
         },
-        'JavaSE/Java方法',
         {
-          '13. 面向对象': [
+          '12. 面向对象': [
             'JavaSE/Java面向对象',
             'JavaSE/类和对象',
             'JavaSE/构造方法',
+            'JavaSE/成员方法',
             'JavaSE/Java封装',
+            'JavaSE/实现动态数组',
             'JavaSE/static关键字',
             'JavaSE/Java继承',
             'JavaSE/final关键字',

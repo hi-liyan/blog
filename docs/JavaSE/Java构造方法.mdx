@@ -1,0 +1,90 @@
+---
+id: 构造方法
+title: 12.3 构造方法
+---
+import ImgBox from "../../src/components/ImgBox";
+
+**构造方法**也叫"构造函数"、"构造器"，英文名是：**Constructor**。它用来构造类的实例对象。
+
+## 默认的构造方法
+
+如果没有显式声明构造方法的话，Java编译器就会编译时默认创建一个无参的构造方法。就像下面这样：
+
+源代码：
+<ImgBox src="https://upyun.shiguangping.com//imgs/20220529105329.png" />
+
+字节码反编译：
+<ImgBox src="https://upyun.shiguangping.com//imgs/20220529105526.png" />
+
+## 有参构造方法
+
+除了出参数的构造方法之外，还可以定义有参数的构造方法。
+
+需要注意的是，如果我们定义了一个有参构造方法，那么编译器就不会自动再创建一个无参构造方法。如果需要无参构造方法，需要我们显式地创建无参构造方法。
+
+```java
+package com.shiguangping;
+
+/**
+ * @author liyan
+ * @since 2022/5/29 10:17
+ */
+public class Cat {
+
+    // 昵称
+    String nickname;
+    // 年龄
+    int age;
+    // 性别
+    String sex;
+
+    // 无参构造方法
+    public Cat() {}
+
+    // 有参构造方法
+    public Cat(String nickname) {
+        this.nickname = nickname;
+    }
+
+    // 有参构造方法
+    public Cat(String nickname, int age, String sex) {
+        this.nickname = nickname;
+        this.age = age;
+        this.sex = sex;
+    }
+
+    // 方法：吃东西
+    public void eat() {
+        System.out.println(nickname + "在吃东西。");
+    }
+}
+```
+
+## 方法重载
+
+定义方法时，多个方法的方法名相同，但参数列表不同的形式叫做**方法重载**。
+
+```java
+public void eat() {
+    System.out.println(nickname + "在吃东西。");
+}
+
+public void eat(String food) {
+    System.out.println(nickname + "在吃" + food);
+}
+```
+
+在方法调用时，根据传参不同来确定要调用哪个重载方法。
+
+## 构造方法的使用
+
+开头提到过，构造方法是用来创建类的对象实例的。构造方法会在创建实例对象时被调用，也就是在 `new Cat()` 执行时会调用 `Cat()` 这个构造方法。所以说，我们可以把用来初始化的代码放到构造函数中，例如初始化Cat的昵称。
+
+```java
+// 通过无参构造方法创建实例对象
+Cat cat1 = new Cat();
+
+// 通过有参构造方法创建实例对象
+Cat cat2 = new Cat("花花");
+```
+
