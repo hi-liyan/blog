@@ -69,10 +69,10 @@ const config = {
           {
             type: 'doc',
             docId: 'hello',
-            position: 'right',
+            position: 'left',
             label: '手记',
           },
-          {to: '/blog', label: '博客', position: 'right'},
+          {to: '/blog', label: '博客', position: 'left'},
           // {to: '/movies-record', label: '观影记录', position: 'right'},
           {
             href: 'https://gitee.com/ennriaaa',

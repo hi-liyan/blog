@@ -1,133 +1,48 @@
 ---
 id: Java接口
-title: 13.10 Java接口
+title: 13.8 Java接口
 ---
 
-### 接口的特点：
+## 接口定义
 
-1. 接口的概念和类差不多，但是接口中的方法都是抽象方法，即没有方法体。
-
-2. 接口中一般不定义属性，如果在接口中定义属性，则该属性必须是公共的、静态的、最终的
-
-3. 接口中的方法都是抽象方法，所以实现该接口的类必须重写接口中所有的抽象方法。
-
-### 示例：
+接口主要用于定义功能、规范。声明接口使用 interface 关键字。
 
 ```java
-public interface Demo01 {
-	public static final int a = 2;
-  int b = 0;// 不加修饰符时，默认为public static fianl
+public interface Collection {
+
 }
 ```
 
-接口中的方法都是抽象方法，实现接口的类必须实现这些抽象方法。
+接口的作用是用来定义功能，所以，接口中的方法只有方法声明，没有方法实现，这样的方法叫做抽象方法。
 
 ```java
-public interface Demo01 {
-	public static final int a = 2;
-	public void test();//抽象方法
-}
+public interface Collection {
+	// 默认是public
+	void add(Object elem);
 
-```
-
-
-
-Demo01接口:
-
-```java
-package com.neu.interface_demo;
-
-/**
- * @author liyan
- * Demo01接口
- */
-public interface Demo01 {
-	public static final int a = 2;
-
-	int b = 0;// 抽象方法的成员属性默认是final
-
-	public void test();// 抽象方法
+	Object get(int index);
 }
 ```
 
-Demo01_Implements类 implements Demo01接口:
+接口中定义的抽象方法可以省略 public 关键字，默认是公共的；接口中定义的成员属性默认是常量，不允许定义变量；在JDK1.8中，引入了有方法实现的静态方法（static）和默认方法（default）。
+
+## 实现接口
+
+在类中使用 implements 关键字实现接口，并且要实现接口中所有的抽象方法。
 
 ```java
-package com.neu.interface_demo;
-
-/**
- * @author liyan
- * Demo01_Implements类 implements Demo01接口
- */
-public class Demo01_Implements implements Demo01 {
+public class List implements Collection {
 
 	@Override
-	public void test() {
-		System.out.println("重写接口中的方法");
+	public void add(Object elem) {
+		// 方法实现
 	}
 
-	public static void main(String[] args) {
-		// 接口对象指向实现类的实例，向上转型
-		Demo01 d01 = new Demo01_Implements();
-		System.out.println("接口中属性a的值：" + d01.a);
-		d01.test();
-
-		// 实例化Demo01_Implements对象
-		Demo01_Implements d02 = new Demo01_Implements();
-		System.out.println("接口中属性b的值：" + d02.b);
+	@Override
+	public Object get(int index) {
+		// 方法实现
 	}
 }
 ```
 
-
-
-### 默认方法&静态方法（JDK1.8以后）
-
-默认方法和静态方法带方法体，实现接口的类可以不去实现它。
-
-#### 示例：
-
-```java
-public interface IDemo{
-  void method1();
-  void method2();
-  
-  default void method3(){
-    System.out.println("我是默认方法");
-  }
-  static void method4(){
-    System.out.println("我是静态方法");
-  }
-}
-```
-
-默认方法和静态方法可以带方法体。
-
-在实现类重写接口中的默认方法时，调用接口中的默认方法：
-
-```java
-public class Demo implements IDemo{
-  @override
-	public void method3(){
-  	IDemo.super.method();//要以接口名.super.方法名()的形式调用接口的默认方法
-	}
-}
-```
-
-在实现类中无法重写接口中的静态方法，可以通过`接口名.方法名`的方式调用。
-
-
-
-### 接口的继承
-
-接口之间也是可以继承的，并且接口可以多继承。
-
-#### 示例：
-
-```java
-public interface ISon extends IFather1,IFather2{
-}
-```
-
-一个类如果要实现ISon，则它需要实现ISon继承的所有抽象方法。
-
+一个类可以同时实现多个接口。

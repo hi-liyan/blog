@@ -68,15 +68,13 @@ module.exports = {
                         'JavaSE/构造方法',
                         'JavaSE/成员方法',
                         'JavaSE/Java封装',
-                        'JavaSE/实现动态数组',
                         'JavaSE/static关键字',
                         'JavaSE/Java继承',
                         'JavaSE/final关键字',
                         'JavaSE/单例模式',
                         'JavaSE/Java多态',
-                        'JavaSE/instanceof关键字',
-                        'JavaSE/Java抽象类',
                         'JavaSE/Java接口',
+                        'JavaSE/Java抽象类',
                         'JavaSE/Java内部类',
                         'JavaSE/static关键字和final关键字小结',
                         'JavaSE/Java中的访问修饰符',
@@ -306,7 +304,8 @@ module.exports = {
                 {
                     'HTML/CSS/JS': [
                         'frontend/css-note',
-                        'frontend/flex-layout'
+                        'frontend/flex-layout',
+                        'frontend/JS数组遍历'
                     ]
                 },
                 {

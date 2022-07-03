@@ -13,10 +13,15 @@
 }
 
 /* 外部字体 */
-/*@font-face {*/
-/*  font-family: TengXiang;*/
-/*  src: url(https://upyun.shiguangping.com/fonts/TengXiangMingSongJian-W4-2.woff);*/
-/*}*/
+@font-face {
+  font-family: 'ExternalFont';
+  src: url('https://upyun.shiguangping.com/fonts/MaShanZheng-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'ExternalFontEnglish';
+  src: url('https://upyun.shiguangping.com/fonts/PTSans-Regular.ttf');
+}
 
 :root {
   /*--ifm-color-primary: #ca228d;*/
@@ -43,11 +48,11 @@
   --ifm-color-primary-lighter: #6667e8;
   --ifm-color-primary-lightest: #8c8ded;
   --ifm-code-font-size: 95%;
-  --ifm-font-family-base: "TengXiang", "Raleway", "PingFang SC", "Microsoft Yahei",
+  --ifm-font-family-base: "ExternalFontEnglish", "ExternalFont", "Raleway", "PingFang SC", "Microsoft Yahei",
   sans-serif;
   /* --ifm-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", monospace; */
-  --ifm-heading-font-family: "TengXiang", "Raleway", "PingFang SC", "Microsoft Yahei",
+  --ifm-heading-font-family: "ExternalFontEnglish", "ExternalFont", "Raleway", "PingFang SC", "Microsoft Yahei",
   sans-serif;
   /* --content-font-family: "Raleway", "Kai", "楷体", "Kaiti", serif; */
 

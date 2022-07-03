@@ -1,0 +1,122 @@
+---
+id: JS数组遍历
+title: JS 数组遍历
+---
+Javascript中数组遍历中常见方法：
+
+### for 循环
+```javascript
+const arr = [1, 2, 3];
+
+for (let i = 0; i < arr.length; i++) {
+    console.log(arr[i]);
+}
+```
+
+### forEach 方法
+forEach方法的参数是一个回调方法，回调方法中有三个参数，分别是当前遍历的元素、当前遍历的索引，数组本身。
+```javascript
+const arr = [1, 2, 3];
+
+arr.forEach(function (elem, index, arr) {
+    console.log(elem, index, arr);
+});
+```
+
+### map 方法
+map方法会返回一个新数组，新数组元素是每次回调方法的返回值。
+
+```javascript
+const arr = [1, 2, 3];
+
+const result = arr.map(function (elem) {
+    elem += 1;
+    return elem;
+});
+```
+
+### filter 方法
+filter方法用来过滤数组，filter会返回一个新数组，新数组元素是每次回调方法为 return true的元素。
+
+```javascript
+const arr = [1, 2, 3];
+
+const result = arr.filter(function (elem) {
+    return elem % 2 === 0;
+});
+```
+
+### some 方法
+some方法返回一个布尔值，只要回调中有return true，some方法最终就会返回true。
+
+```javascript
+const arr = [1, 2, 3];
+
+const result = arr.some(function (value) {
+    return value === 2;
+});
+```
+
+### every 方法
+every方法返回一个布尔值，只有所有的回调都return true，every方法最终才会返回true。
+
+```javascript
+const arr = [1, 2, 3];
+
+const result = arr.every(function(value) {
+    return value === 2;
+});
+```
+
+### reduce 方法
+
+```javascript
+const arr = [1, 2, 3];
+
+const result = arr.reduce(function(prev, curr, index, arr) {
+    return Math.max(prev, curr);
+}, 0);
+```
+
+### find 方法
+find方法返回回调return true时的元素。
+
+```javascript
+const arr = [1, 2, 3];
+
+const result = arr.find(function(elem) {
+    return elem === 2;
+});
+```
+
+### findIndex 方法
+findIndex方法返回回调return true时的索引。
+
+```javascript
+const result = arr.findIndex(function(elem) {
+    return elem === 2;
+});
+``` 
+
+### for...of
+遍历数组元素。
+```javascript
+for (let elem of arr) {
+    console.log(elem);
+}
+```
+
+遍历数组索引。
+```javascript
+for (let index of arr.keys()) {
+    console.log(index);
+}
+```
+
+遍历数组的索引和元素。
+```javascript
+for (let [index, elem] of arr.entries()) {
+    console.log(index, elem);
+}
+```
+
