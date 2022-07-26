@@ -15,8 +15,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-beta.21",
-    "@docusaurus/preset-classic": "^2.0.0-beta.21",
+    "@docusaurus/core": "^2.0.0-rc.1",
+    "@docusaurus/preset-classic": "^2.0.0-rc.1",
     "@easyops-cn/docusaurus-search-local": "^0.23.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
@@ -28,15 +28,15 @@
     "ityped": "^1.0.3",
     "prism-react-renderer": "^1.2.1",
     "qs": "^6.10.2",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-query": "^3.34.7",
     "rebass": "^4.0.7",
     "sass": "^1.49.11",
     "url-loader": "^4.1.1"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "2.0.0-beta.21",
+    "@docusaurus/module-type-aliases": "2.0.0-rc.1",
     "@tsconfig/docusaurus": "^1.0.4",
     "@types/qs": "^6.9.7",
     "typescript": "^4.5.2"
