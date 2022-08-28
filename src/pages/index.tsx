@@ -2,39 +2,30 @@ import React from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import StringPrinter from "../components/StringPrinter";
 import Link from '@docusaurus/Link';
-import Programmer from "../../static/img/programmer.svg";
+// @ts-ignore
+import logo from '@site/static/img/头像.jpg';
 
 import styles from './index.module.css';
-import styled from "@emotion/styled";
-import Button from "../components/Button";
+import HomepageFeatures from "@site/src/components/HomepageFeatures";
 
-const HomepageMain = () => {
+function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
-  // 首页自动打字效果文案
-  const contents = [
-    "Hi, Welcome to Shiguangping.",
-    "请 把 我 流 放 到 最 美 的 时 光 里 。"
-  ]
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <Row>
-          <div>
-            <Programmer style={{width: '50vw',height: '50vh'}}>111</Programmer>
+      <header className={clsx(styles.heroBanner)}>
+        <div className="container">
+          <img src={logo} style={{width: 280, borderRadius: '50%'}} />
+          <h1 className="hero__title">{siteConfig.title}</h1>
+          <p className="hero__subtitle">{siteConfig.tagline}</p>
+          <div className={styles.buttons}>
+            <Link
+                className="button button--secondary button--lg"
+                to="/docs/hello">
+              从这里开始 →
+            </Link>
           </div>
-          <Column>
-            <div style={{marginBottom: '30px'}}>
-              <Link to='/docs/hello'><Button>从这里开始.</Button></Link>
-            </div>
-            <p className="hero__subtitle">{siteConfig.tagline}</p>
-            {/*<StringPrinter contents={contents}/>*/}
-          </Column>
-        </Row>
-      </div>
-
-    </header>
+        </div>
+      </header>
   );
 }
 
@@ -45,28 +36,10 @@ export default function Home() {
     <Layout
       title={siteConfig.title}
       description="李炎的博客。">
-      <HomepageMain/>
-      {/*<main>*/}
-      {/*  <HomepageFeatures />*/}
-      {/*</main>*/}
+      <HomepageHeader />
+      <main>
+        <HomepageFeatures />
+      </main>
     </Layout>
   );
 }
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-`;
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 50vh;
-`;
-
