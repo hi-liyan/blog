@@ -14,7 +14,7 @@ host="82.157.71.111"
 username="root"
 
 # Remote Path
-r_path="/www/wwwroot/www.shiguangping.com"
+r_path="/www/wwwroot/surcode.cn"
 
 # Local Path
 b_path=$(pwd)
