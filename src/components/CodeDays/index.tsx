@@ -1,6 +1,5 @@
 import {calThePastToTodayOptString} from "@site/src/utils/date-util";
 import React from "react";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 /**
  * 从事开发工作至今天数
