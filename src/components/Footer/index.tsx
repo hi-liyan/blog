@@ -5,7 +5,7 @@ const Footer = () => {
     const {siteConfig} = useDocusaurusContext();
     return (
         <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-            <div>Copyright © 2018-{new Date().getFullYear()} <a href={siteConfig.url}>Liyan</a> All rights reserved.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://beian.miit.gov.cn/" target="_blank">辽ICP备16006134号-3</a>
+            <div>Copyright © 2018-{new Date().getFullYear()} <a href={siteConfig.url}>Liyan</a> All rights reserved.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://beian.miit.gov.cn/" target="_blank">辽ICP备16006134号-4</a>
             </div>
             <div><a href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral" target="_blank">本网站由
                 <img
