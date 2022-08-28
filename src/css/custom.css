@@ -149,6 +149,10 @@ a:hover {
   top: 6px;
 } */
 
+.navbar {
+  height: auto;
+}
+
 .navbar__items {
   font-size: larger;
   font-weight: bold;
