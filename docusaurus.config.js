@@ -106,7 +106,7 @@ const config = {
       colorMode: {
         respectPrefersColorScheme: true
       },
-      metadata: [{name: "keywords", content: "Java开发, Java学习, 编程, SpringBoot, 李炎"}]
+      metadata: [{name: "keywords", content: "Java开发, Java学习, 编程, springboot, 李炎"}]
     }),
 };
 

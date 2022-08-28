@@ -70,7 +70,7 @@ Version: 1.0-SNAPSHOT
               <scope>test</scope>
           </dependency>
 
-          <!--SpringMVC-->
+          <!--springmvc-->
           <dependency>
               <groupId>org.springframework</groupId>
               <artifactId>spring-webmvc</artifactId>
@@ -165,7 +165,7 @@ Version: 1.0-SNAPSHOT
                               http://www.springframework.org/schema/mvc
                               http://www.springframework.org/schema/mvc/spring-mvc.xsd">
    
-     <!-- SpringMVC -->
+     <!-- springmvc -->
      <mvc:annotation-driven/>
      <mvc:default-servlet-handler/>
      <!-- 组件扫描：会扫描Spring注解，被注解的Bean将会注册到Spring容器中 -->

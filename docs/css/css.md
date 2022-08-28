@@ -1,6 +1,6 @@
 ---
-id: css-note
-title: CSS 层叠样式表
+id: CSS
+title: CSS
 ---
 
 ## CSS 思维导图

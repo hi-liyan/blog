@@ -1,6 +1,6 @@
 ---
-id: dart-lang-note
-title: Dart 语法
+id: Dart
+title: Dart
 ---
 
 

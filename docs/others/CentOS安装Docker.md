@@ -1,6 +1,6 @@
 ---
-id: docker-install
-title: CentOS 安装 Docker
+id: CentOS安装Docker
+title: CentOS安装Docker
 ---
 
 ## 1. 使用官方安装脚本自动安装
