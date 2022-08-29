@@ -97,6 +97,7 @@ a:hover {
 
 .navbar__title {
   font-weight: 900;
+  display: contents;
 }
 
 .navbar__logo {
