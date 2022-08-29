@@ -276,7 +276,8 @@ module.exports = {
         },
         {
             JavaScript: [
-                'javascript/JS数组遍历'
+                "javascript/JS数组遍历",
+                "javascript/Promise"
             ]
         },
         {
