@@ -92,8 +92,8 @@ const config = {
             position: 'right',
           },
           {
-            href: 'https://git.surcode.cn/',
-            label: 'Git',
+            href: 'https://github.com/ennriaaa',
+            label: 'Github',
             position: 'right'
           }
         ],

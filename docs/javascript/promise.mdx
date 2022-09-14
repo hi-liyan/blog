@@ -2,3 +2,19 @@
 id: Promise
 title: ES6 Promise
 ---
+
+居家办公期间也不能闲着，正好看看ES6中新增的异步处理方式 Promise。
+
+之前 JavaScript 在处理异步时，一般是使用回调函数的方式进行处理。例如下面这样，方法中把加法操作放到 setTimeout 中异步执行，之后通过回调的方式将执行结果传出来。
+
+```javascript
+function plus(value, success) {
+    setTimeout(function() {
+        success(value + 1);
+    } , 0);
+}
+
+plus(10, function(res) {
+    console.log(res);
+});
+```
