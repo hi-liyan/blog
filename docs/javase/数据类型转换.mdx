@@ -58,21 +58,21 @@ if the expression is a constant expression of type byte, short, char, or int: A 
 
 如果将整数字面值128赋值给变量a，编译器会直接报错。因为128超过了byte的存储范围，编译器会提示它变量a是byte类型，而你提供的是int类型。
 
-<ImgBox src="https://upyun.shiguangping.com//imgs/20220512231758.png" />
+<ImgBox src="https://upyun1.surcode.cn/imgs/20220512231758.png" />
 
 如果将一个值在byte取值范围内int类型变量赋值byte类型变量，这种情况下同样也会编译报错。因为在编译阶段无法得知变量a的值是多少，所以将int类型变量赋值给byte类型会报错。
 
-<ImgBox src="https://upyun.shiguangping.com//imgs/20220512232608.png" />
+<ImgBox src="https://upyun1.surcode.cn/imgs/20220512232608.png" />
 
 <br/>
 
 整数字面值还有这样一种情况，因为整数字面值默认是int类型，这个字面值明显已经超过的int类型的长度，所以，编译器会提示这个整数太大了。
 
-<ImgBox src="https://upyun.shiguangping.com//imgs/20220512232916.png" />
+<ImgBox src="https://upyun1.surcode.cn/imgs/20220512232916.png" />
 
 这里需要在整数后面加上一个`L`或者`l`来告诉Java编译器，这个字面值是long类型的。
 
-<ImgBox src="https://upyun.shiguangping.com//imgs/20220512233217.png" />
+<ImgBox src="https://upyun1.surcode.cn/imgs/20220512233217.png" />
 
 
 通过上面的介绍，看下面这几行代码，能理解吗？

@@ -5,13 +5,13 @@ title: 8. 结果集映射
 
 实体类属性名与数据库字段名不一致的情况：
 
-![image-20200614092823733](https://upyun.shiguangping.com/imgs/20200614092823.png)
+![image-20200614092823733](https://upyun1.surcode.cn/imgs/20200614092823.png)
 
 例如，做查询操作时，会出现这种情况：
 
 *数据库中表示密码的字段是pwd，而实体类中的属性名是pass，查询时，返回的pass则为null*
 
-![image-20200614093021455](https://upyun.shiguangping.com/imgs/20200614093021.png)
+![image-20200614093021455](https://upyun1.surcode.cn/imgs/20200614093021.png)
 
 造成这种情况的原因是，设定的返回的resultType是User类型，执行完查询语句后将查询结果返回成User类型，而数据库的查询结果pwd字段在封装成User类型时，在User实体类中找不到pwd属性，所有查询结果pass=null
 
@@ -21,11 +21,11 @@ title: 8. 结果集映射
 
 - sql语句中给字段添加别名，让它能找到实体类的对应属性
 
-  ![image-20200614093642012](https://upyun.shiguangping.com/imgs/20200614093642.png)
+  ![image-20200614093642012](https://upyun1.surcode.cn/imgs/20200614093642.png)
 
 上面这种解决办法不是好的，所以mybatis给出了一个更好的解决办法，**resultMap：结果集映射**
 
-![image-20200614095623228](https://upyun.shiguangping.com/imgs/20200614095623.png)
+![image-20200614095623228](https://upyun1.surcode.cn/imgs/20200614095623.png)
 
 ResultMap 的设计思想是，对简单的语句做到零配置，对于复杂一点的语句，只需要描述语句之间的关系就行了。
 

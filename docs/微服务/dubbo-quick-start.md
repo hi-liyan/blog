@@ -99,7 +99,7 @@ Apache Dubbo 是一款高性能的面向接口代理的RPC框架。
 
    启动`dubbo-provider`项目，并打开Nacos控制台，可以看到服务已经注册到Nacos中。
 
-   ![image-20210629230357591](https://upyun.shiguangping.com/imgs/20210629230358.png)
+   ![image-20210629230357591](https://upyun1.surcode.cn/imgs/20210629230358.png)
 
 5. 创建服务消费者项目`dubbo-consumer`，并添加如上依赖。
 
@@ -147,7 +147,7 @@ Apache Dubbo 是一款高性能的面向接口代理的RPC框架。
 
    使用Postman测试`dubbo-consumer`的test接口。观察返回值，说明已经成功调用了`dubbo-provider`服务。
 
-   ![image-20210629231928172](https://upyun.shiguangping.com/imgs/20210629231928.png)
+   ![image-20210629231928172](https://upyun1.surcode.cn/imgs/20210629231928.png)
 
 
 

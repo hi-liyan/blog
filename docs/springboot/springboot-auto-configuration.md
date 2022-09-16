@@ -21,7 +21,7 @@ title: SpringBoot 自动配置实现原理
 
 # 自动配置原理概述
 
-![image-20210419232036104](https://upyun.shiguangping.com/imgs/20210419232036.png)
+![image-20210419232036104](https://upyun1.surcode.cn/imgs/20210419232036.png)
 
 图中描述了Spring Boot自动配置实现涉及的几个核心的功能及其相互之间的关系，包括`@EnableAutoConfiguration`注解、`spring.factories`文件、该文件中描述的`XxxAutoConfiguration`类、`@Conditional`注解以及`Starters`。
 
@@ -137,7 +137,7 @@ public class SpringLearnApplication {
 
 在Spring Boot早期版本中并没有`@SpringBootConfiguration`注解，版本升级后新增了`@SpringBootConfiguration`注解并在其内组合了`@Configuration`。`@EnableAutoConfiguration`注解组合了`@AutoConfigurationPackage`。
 
-![image-20210420090423298](https://upyun.shiguangping.com/imgs/20210420090423.png)
+![image-20210420090423298](https://upyun1.surcode.cn/imgs/20210420090423.png)
 
 如图所示，`@SpringBootApplication`包含了如下几个核心功能：
 
@@ -279,7 +279,7 @@ public interface ImportSelector {
 
 
 
-![image-20210426224039223](https://upyun.shiguangping.com/imgs/20210426224039.png)
+![image-20210426224039223](https://upyun1.surcode.cn/imgs/20210426224039.png)
 
 在`AutoConfigurationImportSelector`类中就实现了这四个接口。
 
@@ -307,7 +307,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 
 ### AutoConfigurationImportSelector功能概述
 
-![image-20210420105809752](https://upyun.shiguangping.com/imgs/20210420105809.png)
+![image-20210420105809752](https://upyun1.surcode.cn/imgs/20210420105809.png)
 
 当`AutoConfigurationImportSelector`类被`@Import`注解引入后，它的`selectImports()`方法会被调用并执行其具体实现的自动配置逻辑。该方法几乎涵盖了组件自动配置的所有处理逻辑实现。
 
@@ -478,11 +478,11 @@ final class AutoConfigurationMetadataLoader {
 
 在上面的代码中，`AutoConfigurationMetadataLoader`调用`loadMetadata(ClassLoader classLoader)`方法，获取默认PATH指定的文件（即所有自动配置项目`xxx.autoconfigure`下的`META-INF/spring-autoconfigure-metadata.properties`文件），然后将读取到的配置文件的url（配置文件的绝对路径）存储到Enumeration数据结构中。
 
-![image-20210421195752748](https://upyun.shiguangping.com/imgs/20210421195752.png)
+![image-20210421195752748](https://upyun1.surcode.cn/imgs/20210421195752.png)
 
 *（图：loadMetadata()方法实现）*
 
-![image-20210421194921673](https://upyun.shiguangping.com/imgs/20210421194921.png)
+![image-20210421194921673](https://upyun1.surcode.cn/imgs/20210421194921.png)
 
 *（图：实例化`new UrlResource()`内构造方法打断点，查看当前url的值。这里要注意打断点的顺序，要在执行到loadMetadata()方法后打断点）*
 
@@ -506,7 +506,7 @@ org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration.AutoConfigur
 
 可以打开`spring-boot-autoconfigure-2.4.5.jar`中的`META-INF/spring-autoconfigure-metadata.properties`配置文件来查看Spring Boot官方的配置。
 
-![image-20210421201108410](https://upyun.shiguangping.com/imgs/20210421201108.png)
+![image-20210421201108410](https://upyun1.surcode.cn/imgs/20210421201108.png)
 
 
 
@@ -621,7 +621,7 @@ private static Map<String, List<String>> loadSpringFactories(ClassLoader classLo
 
 简单描述该过程就是：`SpringFactoriesLoader`加载器家在指定`ClassLoader`下面的所有`META-INF/spring.factories`文件，并将文件解析内容存于`Map<String, List<String>>`内。然后，通过`loadFactoryName`传递过来的class的名称`(EnableAutoConfiguration类的全限定名)`从Map中获得该类的配置列表。
 
-![image-20210422101532282](https://upyun.shiguangping.com/imgs/20210422101532.png)
+![image-20210422101532282](https://upyun1.surcode.cn/imgs/20210422101532.png)
 
 *（spring-boot-autoconfigure-2.4.5.jar中的spring.factories文件的部分内容）*
 

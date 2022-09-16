@@ -21,6 +21,8 @@ module.exports = {
             id: "hello",
             label: "你好"
         },
+        "javase",
+        "修改final常量的值",
         {
             JavaSE: [
                 {

@@ -122,7 +122,7 @@ export default {
 
 ### 非父子组件间通信：
 
-![img](https://upyun.shiguangping.com/imgs/20200920164317.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200920164317.jpg)
 
 如果我们不需要类似Vuex这样的库来处理组件之间的数据通信，就可以考虑Vue中的 `事件总线` ，即 `EventBus`来通信。
 
@@ -156,7 +156,7 @@ Vue.prototype.$EventBus = new Vue()
 
 **二、发送事件**
 
-![img](https://upyun.shiguangping.com/imgs/20200920164616.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200920164616.jpg)
 
 假设你有两个Vue页面需要通信： A 和 B ，A页面 在按钮上面绑定了点击事件，发送一则消息，想通知 B页面。
 
@@ -182,7 +182,7 @@ export default {
 
 **三、接收事件**
 
-![img](https://upyun.shiguangping.com/imgs/20200920164707.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200920164707.jpg)
 
 ```vue
 <!-- IncrementCount.vue -->
@@ -222,7 +222,7 @@ EventBus.$on(channel: string, callback(payload1,…))
 
 **移除事件监听者**
 
-![img](https://upyun.shiguangping.com/imgs/20200920164847.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200920164847.jpg)
 
 ```javascript
 import { eventBus } from './event-bus.js'

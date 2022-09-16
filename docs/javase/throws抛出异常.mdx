@@ -85,17 +85,17 @@ public static int test1() throws Exception {
 
 当我们直接调用test()方法时，编译器不会提示我们去try-catch该方法可能抛出异常；但当我们调用test1()时，编译器会编译报错，提醒我们去try-catch该方法可能抛出的异常，这是为什么呢？
 
-![](https://upyun.shiguangping.com/imgs/20200501153840.png)
+![](https://upyun1.surcode.cn/imgs/20200501153840.png)
 
-![](https://upyun.shiguangping.com/imgs/20200501152945.png)
+![](https://upyun1.surcode.cn/imgs/20200501152945.png)
 
 *原因是：test()中抛出的ArithmeticException, InputMismatchException属于UncheckedException异常，编译器不会要求我们必须处理这种异常；而test1()直接抛出Exception，Exception类属于父类，包含CheckedException，编译器会要求我们必须处理这些异常。*
 
 我们可以通过给方法添加文档注释的方法，提醒调用者，该方法可能会抛出异常：
 
-<ImgBox src="https://upyun.shiguangping.com/imgs/20200501154240.png" width="450px" />
+<ImgBox src="https://upyun1.surcode.cn/imgs/20200501154240.png" width="450px" />
 
 当调用该方法时，会弹出提示框：
 
-<ImgBox src="https://upyun.shiguangping.com/imgs/20200501154337.png" width="450px" />
+<ImgBox src="https://upyun1.surcode.cn/imgs/20200501154337.png" width="450px" />
 

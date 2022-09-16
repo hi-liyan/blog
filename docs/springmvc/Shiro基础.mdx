@@ -15,7 +15,7 @@ Apache Shiro 是 Java 的一个安全框架。功能强大，使用简单的Java
 
 Shiro 包含 10 个内容，如下图：
 
-![img](https://upyun.shiguangping.com/imgs/20200730123137.png)
+![img](https://upyun1.surcode.cn/imgs/20200730123137.png)
 
 1. Authentication：身份认证/登录，验证用户是不是拥有相应的身份。
 2. Authorization：授权，即权限验证，验证某个已认证的用户是否拥有某个权限；即判断用户是否能做事情，常见的如：验证某个用户是否拥有某个角色。或者细粒度的验证某个用户对某个资源是否具有某个权限。
@@ -32,7 +32,7 @@ Shiro 包含 10 个内容，如下图：
 
 Shiro 运行原理图1（应用程序角度）如下：
 
-![img](https://upyun.shiguangping.com/imgs/20200730123209.png)
+![img](https://upyun1.surcode.cn/imgs/20200730123209.png)
 
 1. Subject：主体，代表了当前“用户”。这个用户不一定是一个具体的人，与当前应用交互的任何东西都是 Subject，如网络爬虫，机器人等。所有 Subject 都绑定到 SecurityManager，与 Subject 的所有交互都会委托给 SecurityManager。我们可以把 Subject 认为是一个门面，SecurityManager 才是实际的执行者。
 2. SecurityManager：安全管理器。即所有与安全有关的操作都会与 SecurityManager 交互，且它管理着所有 Subject。可以看出它是 Shiro 的核心，它负责与后边介绍的其他组件进行交互，如果学习过 SpringMVC，我们可以把它看成 DispatcherServlet 前端控制器。
@@ -40,7 +40,7 @@ Shiro 运行原理图1（应用程序角度）如下：
 
 Shiro 运行原理图2（Shiro 内部架构角度）如下：
 
-![img](https://upyun.shiguangping.com/imgs/20200730123230.png)
+![img](https://upyun1.surcode.cn/imgs/20200730123230.png)
 
 1. Subject：主体，可以看到主体可以是任何与应用交互的“用户”。
 2. SecurityManager：相当于 SpringMVC 中的 DispatcherServlet 或者 Struts2 中的 FilterDispatcher。它是 Shiro 的核心，所有具体的交互都通过 SecurityManager 进行控制。它管理着所有 Subject、且负责进行认证和授权、及会话、缓存的管理。
@@ -194,7 +194,7 @@ someKey 的值：aValue
 
 在项目的**后端代码**中，我们可以通过 Subject 对象检测出当前登录用户的认证状态和授权信息，以下是 Subject 对象认证和授权相关的方法列表：
 
-![img](https://upyun.shiguangping.com/imgs/20200730135540.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200730135540.jpg)
 
 如果开发者不想使用代码进行用户进行授权校验等操作，那么可以使用注解代替。
 
@@ -241,7 +241,7 @@ public String delete() {
 
 Shiro 为我们提供了如下 Realm:
 
-![img](https://upyun.shiguangping.com/imgs/20200730135608.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200730135608.jpg)
 
 其中，最基础的是 Realm 接口，CachingRealm 负责缓存处理，AuthenticationRealm 负责认证，AuthorizingRealm负责授权，通常自定义的 realm 继承 **AuthorizingRealm**。
 

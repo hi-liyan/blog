@@ -204,7 +204,7 @@ Version: 1.0-SNAPSHOT
 
 3. 工程名右键，点击“添加框架支持”。
 
-   ![image-20210227205740320](https://upyun.shiguangping.com/imgs/20210227205740.png)
+   ![image-20210227205740320](https://upyun1.surcode.cn/imgs/20210227205740.png)
 
    添加Web框架支持，项目会自动创建web目录。
 
@@ -248,7 +248,7 @@ Version: 1.0-SNAPSHOT
 
 4. 将依赖添加到WEB-INF下的lib目录中，项目通过Tomcat启动后，会到该目录下读取所需依赖。如果没有添加，在运行时可能会报NoSuchXXX的错误。
 
-   ![image-20210227210243918](https://upyun.shiguangping.com/imgs/20210227210243.png)
+   ![image-20210227210243918](https://upyun1.surcode.cn/imgs/20210227210243.png)
 
 ## 写代码
 
@@ -393,4 +393,4 @@ Version: 1.0-SNAPSHOT
 
 启动Tomcat测试。
 
-![image-20210227205435275](https://upyun.shiguangping.com/imgs/20210227205435.png)
+![image-20210227205435275](https://upyun1.surcode.cn/imgs/20210227205435.png)

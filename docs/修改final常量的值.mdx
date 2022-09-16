@@ -1,0 +1,42 @@
+---
+id: 修改final常量的值
+title: 🍬修改final常量的值
+---
+写手记的时候突然想到这么个有趣儿的问题，Java 中使用 **final** 关键字声明的变量叫做常量，因为它不允许再次被赋值。
+
+我记得以前学 Java 时，有人说过 Java 的常量不是真正意义上的常量，当时我还不理解这句话是什么意思，直到今天才恍然大悟。
+
+---
+
+其实，在声明变量时，使用 **final** 关键字本质上是告诉 Java 编译器，这个变量初始化后不允许被修改。当尝试修改这个变量时，编译器会报错，这一切都是编译器在"搞鬼"，发生在编译时期。
+
+如果说 Java 是一个纯粹的静态语言的话，那么这个特殊的变量就是真正的常量了，只要编译时不允许修改，那就真的不能修改了。
+
+但是 Java 可以通过**反射**，在运行时对这个"常量"做一些手脚。（ps.编译时不让改，我就在运行时修改）
+
+下面是我写的一个小栗子：
+
+```java
+public class Sugar {
+    // 要修改的变量
+    final int target = 10;
+
+    public static void main(String[] args) throws Exception {
+        Sugar sugar = new Sugar();
+
+        Class<? extends Sugar> clazz = sugar.getClass();
+        Field targetField = clazz.getDeclaredField("target");
+        // 打印修改前的值
+        int oldVal = targetField.getInt(sugar);
+        System.out.println("old value: " + oldVal); // 10
+        // 修改值
+        targetField.setAccessible(true);
+        targetField.set(sugar, 20);
+        // 打印修改后的值
+        int newVal = targetField.getInt(sugar);
+        System.out.println("new value: " + newVal); // 20
+    }
+}
+```
+
+其实这么做没有什么实际意义。😄

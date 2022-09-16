@@ -84,21 +84,21 @@ title: 2. IoC理论推导
 
 ==这里就会有一个问题：如果Dao层中有多个实现类需要操作的话，需要怎么办？==
 
-![image-20200606171027933](https://upyun.shiguangping.com/imgs/20200606171027.png)
+![image-20200606171027933](https://upyun1.surcode.cn/imgs/20200606171027.png)
 
 下图是之前的做法，UserDao对象指向不同的实现类（子类）实例，来调用不同实现类的重写方法：
 
-![image-20200606175006210](https://upyun.shiguangping.com/imgs/20200606175006.png)
+![image-20200606175006210](https://upyun1.surcode.cn/imgs/20200606175006.png)
 
 这里就会遇到一个很大的问题，==那就是如果再增加需求，就需要再次修改业务层的代码，如果项目很大的话，就需要修改很多的代码，这明显不是一个好的程序。==
 
 所以，需要换一个思路来解决这个问题：
 
-![image-20200606180230453](https://upyun.shiguangping.com/imgs/20200606180230.png)
+![image-20200606180230453](https://upyun1.surcode.cn/imgs/20200606180230.png)
 
 这样，用户可以自己去选择调用哪个，而不需要在业务层上做修改：
 
-![image-20200606182806020](https://upyun.shiguangping.com/imgs/20200606182806.png)
+![image-20200606182806020](https://upyun1.surcode.cn/imgs/20200606182806.png)
 
 
 
@@ -111,7 +111,7 @@ title: 2. IoC理论推导
 
 这种思想，从本质上解决了问题，程序猿不用再去管理对象的创建了，大大降低了系统的耦合性，可以更加专注在业务的实现上，这就是IoC的原型。
 
-![image-20200607114153684](https://upyun.shiguangping.com/imgs/20200607114153.png)
+![image-20200607114153684](https://upyun1.surcode.cn/imgs/20200607114153.png)
 
 
 
@@ -135,10 +135,10 @@ title: 2. IoC理论推导
 
 #### 1. 在resources中创建beans.xml文件：
 
-![image-20200607135840404](https://upyun.shiguangping.com/imgs/20200607135840.png)
+![image-20200607135840404](https://upyun1.surcode.cn/imgs/20200607135840.png)
 
 
 
 #### 2. 测试：
 
-![image-20200607140216754](https://upyun.shiguangping.com/imgs/20200607140216.png)
+![image-20200607140216754](https://upyun1.surcode.cn/imgs/20200607140216.png)

@@ -60,7 +60,7 @@ tar -zxvf frp_0.34.0_linux_amd64.tar.gz
 
 **进入目录：**
 
-![image-20201006125017260](https://upyun.shiguangping.com/imgs/20201006125017.png)
+![image-20201006125017260](https://upyun1.surcode.cn/imgs/20201006125017.png)
 
 目录中主要文件：
 

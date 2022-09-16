@@ -13,7 +13,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 你好，我是Redis，一个叫Antirez的男人把我带到了这个世界上。
 
-![img](https://upyun.shiguangping.com/imgs/20200926111910.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926111910.jpg)
 
 说起我的诞生，跟关系数据库MySQL还挺有渊源的。
 
@@ -27,7 +27,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 应用程序们从MySQL查询到的数据，在我这里登记一下，后面再需要用到的时候，就先找我要，我这里没有再找MySQL要。
 
-![img](https://upyun.shiguangping.com/imgs/20200926111939.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926111939.jpg)
 
 为了方便使用，我支持好几种数据结构的存储：
 
@@ -51,7 +51,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 不久，我想到了一个办法：给缓存内容设置一个超时时间，具体设置多长交给应用程序们去设置，我要做的就是把过期了的内容从我里面删除掉，及时腾出空间就行了。
 
-![img](https://upyun.shiguangping.com/imgs/20200926112001.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926112001.jpg)
 
 超时时间有了，我该在什么时候去干这个清理的活呢？
 
@@ -59,7 +59,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 我清理的时候也不能一口气把所有过期的都给删除掉，我这里面存了大量的数据，要全面扫一遍的话那不知道要花多久时间，会严重影响我接待新的客户请求的！
 
-![img](https://upyun.shiguangping.com/imgs/20200926112049.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926112049.jpg)
 
 时间紧任务重，我只好随机选择一部分来清理，能缓解内存压力就行了。
 
@@ -73,7 +73,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 可是，还是有部分键值，既逃脱了我的随机选择算法，又一直没有被查询，导致它们一直逍遥法外！而于此同时，可以使用的内存空间却越来越少。
 
-![img](https://upyun.shiguangping.com/imgs/20200926112113.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926112113.jpg)
 
 而且就算退一步讲，我能够把过期的数据都删除掉，那万一过期时间设置的很长，还没等到我去清理，内存就吃满了，一样要吃枣药丸，所以我还得想个办法。
 
@@ -96,17 +96,17 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 我的日子过的还挺舒坦，不过MySQL大哥就没我这么舒坦了，有时候遇到些烦人的请求，查询的数据不存在，MySQL就要白忙活一场！不仅如此，因为不存在，我也没法缓存啊，导致同样的请求来了每次都要去让MySQL白忙活一场。我作为缓存的价值就没得到体现啦！这就是人们常说的缓存穿透。
 
-![img](https://upyun.shiguangping.com/imgs/20200926112255.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926112255.jpg)
 
 这一来二去，MySQL大哥忍不住了：“唉，兄弟，能不能帮忙想个办法，把那些明知道不会有结果的查询请求给我挡一下”
 
 这时我想到了我的另外一个好朋友：布隆过滤器
 
-![img](https://upyun.shiguangping.com/imgs/20200926112306.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926112306.jpg)
 
 我这位朋友别的本事没有，就擅长从超大的数据集中快速告诉你查找的数据存不存在（悄悄告诉你，我的这位朋友有一点不靠谱，它告诉你存在的话不能全信，其实有可能是不存在的，不过它他要是告诉你不存在的话，那就一定不存在）。
 
-![img](https://upyun.shiguangping.com/imgs/20200926112319.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926112319.jpg)
 
 我把这位朋友介绍给了应用程序，不存在的数据就不必去叨扰MySQL了，轻松帮忙解决了缓存穿透的问题。
 
@@ -118,7 +118,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 一阵忙活之后，MySQL怒气冲冲的找到了我，“兄弟，咋回事啊，怎么一下子来的这么猛”
 
-![img](https://upyun.shiguangping.com/imgs/20200926112334.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926112334.jpg)
 
 我查看了日志，赶紧解释到：“大哥，实在不好意思，刚刚有一个热点数据到了过期时间，被我删掉了，不巧的是随后就有对这个数据的大量查询请求来了，我这里已经删了，所以请求都发到你那里来了”
 
@@ -134,7 +134,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 “这一次比上一次更不巧，这一次是一大批数据几乎同时过了有效期，然后又发生了很多对这些数据的请求，所以比起上一次这规模更大了”
 
-![img](https://upyun.shiguangping.com/imgs/20200926112345.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926112345.jpg)
 
 MySQL大哥听了眉头一皱，“那你倒是想个办法啊，三天两头折磨我，这谁顶得住啊？”
 
@@ -146,6 +146,6 @@ MySQL大哥听了眉头一皱，“那你倒是想个办法啊，三天两头折
 
 我们终于又过上了舒适的日子···
 
-![img](https://upyun.shiguangping.com/imgs/20200926112423.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926112423.jpg)
 
 

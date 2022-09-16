@@ -160,9 +160,9 @@ title: RockerMQ 快速开始
 
    使用Postman调用`mq-producer`中定义的测试接口，观察消费者是否能监听到生产者发送的消息。
 
-   ![image-20210630001912066](https://upyun.shiguangping.com/imgs/20210630001912.png)
+   ![image-20210630001912066](https://upyun1.surcode.cn/imgs/20210630001912.png)
 
    消费者收到消息并打印日志。
 
-   ![image-20210630002022328](https://upyun.shiguangping.com/imgs/20210630002022.png)
+   ![image-20210630002022328](https://upyun1.surcode.cn/imgs/20210630002022.png)
 
