@@ -21,8 +21,9 @@ module.exports = {
             id: "hello",
             label: "你好"
         },
-        "javase",
-        "修改final常量的值",
+        "Java/javase",
+        "Java/修改final常量的值",
+        "Java/关于byte b+=1和b=b+1的问题",
         {
             JavaSE: [
                 {
@@ -41,8 +42,7 @@ module.exports = {
                 {
                     "7. 数据类型": [
                         "javase/数据类型",
-                        "javase/数据类型转换",
-                        "javase/关于byte b+=1和b=b+1的问题"
+                        "javase/数据类型转换"
                     ]
                 },
                 "javase/进制",
@@ -300,6 +300,7 @@ module.exports = {
                 "flutter/Flutter"
             ]
         },
+        "apps/rpush",
         {
             type: "category",
             label: "其它",

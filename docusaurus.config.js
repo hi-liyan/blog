@@ -17,8 +17,8 @@ const config = {
   organizationName: 'liyan', // Usually your GitHub org/user name.
   projectName: 'shiguangping-blog', // Usually your repo name.
   i18n: {
-    defaultLocale: 'zh-Hans',
-    locales: ['zh-Hans'],
+    defaultLocale: 'zh-cn',
+    locales: ['zh-cn'],
   },
 
   plugins: [
