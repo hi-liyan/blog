@@ -92,7 +92,7 @@ const config = {
             position: 'right',
           },
           {
-            href: 'https://github.com/ennriaaa',
+            href: 'https://github.com/hi-liyan',
             label: 'Github',
             position: 'right'
           }
