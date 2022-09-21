@@ -3,7 +3,7 @@ id: spring-cross
 title: Spring 跨域请求问题
 ---
 
-![image-20210114155026514](https://images.shiguangping.com//imgs/20210114155033.png)
+![image-20210114155026514](https://upyun1.surcode.cn/imgs/20210114155033.png)
 
 跨域请求问题。
 

@@ -1,0 +1,114 @@
+---
+id: 拦截器实现登录验证
+title: 11.1 拦截器实现登录验证
+---
+
+问题描述：
+
+一个登录案例，登录到后台页面，对于现在写的代码，我们没有登录的情况下，直接访问后台页面是可以访问的，但这在实际情况下是不可以直接访问后台页面的，而是需要登录。
+
+所以，这种情况可以给现有代码添加拦截器。
+
+
+
+#### 实现步骤：
+
+现有的登录的Controller：
+
+```java
+@Controller
+public class LoginController {
+
+  @Autowired
+  private UserDao userDao;
+
+  /**
+     * 访问登录页面
+     * @return
+     */
+  @RequestMapping("/loginPage")
+  public String getLoginPage() {
+    return "login";
+  }
+
+  /**
+     * 点击登录按钮，调用该方法。
+     * 用户名密码验证成功会在session中添加一个userLoginInfo属性，拦截器通过验证该属性，决定是否放行
+     * @param user
+     * @param model
+     * @param session
+     * @return
+     */
+  @RequestMapping("loginMethod")
+  public String login(User user, Model model, HttpSession session) {
+    boolean loginValidate = userDao.loginValidate(user);
+    if (loginValidate) {
+      //登录成功，在session域中存储属性userLoginInfo
+      session.setAttribute("userLoginInfo",user.getUsername());
+      model.addAttribute("msg", "登录成功，欢迎：" + user.getUsername());
+      return "main";
+    } else {
+      model.addAttribute("msg", "登录失败，检查用户名或密码");
+      return "forward:/index.jsp";
+    }
+  }
+
+  /**
+     * 直接访问后台页面
+     * @return
+     */
+  @RequestMapping("/main")
+  public String main() {
+    return "main";
+  }
+}
+```
+
+
+
+添加拦截器：
+
+```java
+public class MyInterceptor implements HandlerInterceptor {
+  @Override
+  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    //验证session中userLoginInfo属性，不为空，说明用户已经登录，放行对后台页面的访问
+    if (request.getSession().getAttribute("userLoginInfo") != null) {
+      return true;
+    }
+    //否则会提示无权限，并转发到index页面
+    request.setAttribute("msg", "【无权限，请登录】");
+    request.getRequestDispatcher("/index.jsp").forward(request, response);
+    return false;
+  }
+}
+```
+
+
+
+Spring配置拦截器：
+
+```xml
+<mvc:interceptors>
+  <mvc:interceptor>
+    <!-- /** 包括这个请求下面的所有请求都会被拦截 -->
+    <mvc:mapping path="/main/**"/>
+    <bean class="com.neu.config.MyInterceptor"/>
+  </mvc:interceptor>
+</mvc:interceptors>
+```
+
+只对`/main`进行拦截，拦截对后台页面的访问
+
+
+
+![image-20200714005406391](https://upyun1.surcode.cn/imgs/20200714005406.png)
+
+直接访问`/main`页面会跳转到index页面，并提示无权限。
+
+只有通过登录之后，session中有`userLoginInfo`属性，拦截器才会放行。
+
+
+
+***代码功能不一定很符合实际的逻辑，只为了展示下拦截器的使用***
+

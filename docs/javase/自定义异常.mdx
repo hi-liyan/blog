@@ -1,0 +1,58 @@
+---
+id: 自定义异常
+title: 14.4 自定义异常
+---
+
+- 使用Java内置的异常类可以描述在编程时出现的大部分异常情况；
+- 也可以通过继承 `Exception` 或者 `RuntimeException` 等异常类自定义异常，用于描述系统中特定业务产生的异常；
+- 所谓自定义异常，就是定义一个类，去继承 Throwable 类或者它的子类。
+
+
+
+### 示例：
+
+如上面的示例代码，如果酒店年龄超出这种异常被频繁使用，我们可以通过定义`HotelAgeException`类来继承`Exception`类。
+
+```java
+/**
+ * @author liyan
+ * class HotelAgeException extends Exception
+ */
+public class HotelAgeException extends Exception {
+	// 通过无参构造器调用父类的含参构造，传入异常描述
+	public HotelAgeException() {
+		super("18岁以下，80岁以上的住客必须由亲友陪同入住");
+	}
+}
+```
+
+```java
+import java.util.Scanner;
+
+public class TryDemo4 {
+	public static void main(String[] args) {
+		try {
+			testAge1();
+		} 
+    //捕获酒店年龄异常
+    catch (HotelAgeException e) {
+			System.out.println(e.getMessage());// 打印异常描述信息
+			System.out.println("酒店前台工作人员不允许办理入住登记");
+		} catch (Exception e) {// 捕获其它类型异常
+			e.printStackTrace();
+		}
+	}
+	//方法：判断入住者年龄，抛出年龄异常
+	public static void testAge1() throws HotelAgeException {
+
+		System.out.print("请输入年龄：");
+		int age = new Scanner(System.in).nextInt();
+		if (age < 18 || age > 80) {
+			throw new HotelAgeException();//抛出定义的HotelAgeException类型异常
+		} else {
+			System.out.println("欢迎入住本酒店");
+		}
+	}
+}
+```
+

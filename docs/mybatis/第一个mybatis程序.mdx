@@ -1,0 +1,260 @@
+---
+id: 第一个Mybatis程序
+title: 2. 第一个Mybatis程序
+---
+
+思路：搭建环境-->导入MyBatis-->编写代码-->测试
+
+
+
+#### 1. 创建数据库：
+
+```mysql
+mysql> create database mybatistest;
+
+mysql> use mybatistest;
+
+mysql> create table user(
+    -> id int primary key auto_increment,
+    -> name varchar(32),
+    -> pwd varchar(32)
+    -> );
+```
+
+
+
+#### 2. 在IDEA上新建项目：
+
+1. 新建一个普通的Maven项目，删除src目录，作为父工程
+
+2. 在父工程的pom.xml中添加需要的依赖坐标
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <project xmlns="http://maven.apache.org/POM/4.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+       <modelVersion>4.0.0</modelVersion>
+       <!--父工程-->
+       <groupId>org.example</groupId>
+       <artifactId>MybatisStudy</artifactId>
+       <version>1.0-SNAPSHOT</version>
+   
+       <!--导入依赖-->
+       <dependencies>
+           <!--数据库驱动-->
+           <dependency>
+               <groupId>mysql</groupId>
+               <artifactId>mysql-connector-java</artifactId>
+               <version>8.0.20</version>
+           </dependency>
+           <!--mybatis-->
+           <dependency>
+               <groupId>org.mybatis</groupId>
+               <artifactId>mybatis</artifactId>
+               <version>3.5.5</version>
+           </dependency>
+           <!--junit-->
+           <dependency>
+               <groupId>junit</groupId>
+               <artifactId>junit</artifactId>
+               <version>4.12</version>
+           </dependency>
+       </dependencies>
+   </project>
+   ```
+
+
+
+#### 3. 创建一个子模块
+
+![image-20200606101237597](https://upyun1.surcode.cn/imgs/20200606101237.png)
+
+- 配置MyBatis核心配置文件：mybatis-config.xml
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8" ?>
+  <!DOCTYPE configuration
+          PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  <!--configuration核心配置文件-->
+  <configuration>
+      <!--environments环境配置，可以配置多套环境-->
+      <environments default="development">
+  
+          <environment id="development">
+              <transactionManager type="JDBC"/>
+              <dataSource type="POOLED">
+                  <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                  <property name="url" value="jdbc:mysql://localhost:3306/mybatistest"/>
+                  <property name="username" value="root"/>
+                  <property name="password" value="123456"/>
+              </dataSource>
+          </environment>
+      </environments>
+  </configuration>
+  ```
+
+
+
+#### 4. 编写工具类
+
+```java
+package com.neu.utils;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * SqlSessionFactory --> sqlSession
+ * 1. 获取SqlSessionFactory对象
+ * 2. 通过SqlSessionFactory对象获取SqlSession对象
+ *
+ * @author liyan
+ */
+public class MybatisUtils {
+    private static SqlSessionFactory sqlSessionFactory;
+
+    /**
+     * 从 XML 文件中构建 SqlSessionFactory 的实例非常简单，建议使用类路径下的资源文件进行配置。
+     * 但也可以使用任意的输入流（InputStream）实例，比如用文件路径字符串或 file:// URL 构造的输入流。
+     * MyBatis 包含一个名叫 Resources 的工具类，它包含一些实用方法，使得从类路径或其它位置加载资源文件更加容易。
+     */
+    static {
+        String resource = "mybatis-config.xml";
+        InputStream inputStream = null;
+        try {
+            inputStream = Resources.getResourceAsStream(resource);
+            sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(inputStream!=null){
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 既然有了 SqlSessionFactory，顾名思义，我们可以从中获得 SqlSession 的实例。
+     * SqlSession 提供了在数据库执行 SQL 命令所需的所有方法。
+     * 你可以通过 SqlSession 实例来直接执行已映射的 SQL 语句
+     *
+     * @return sqlSession
+     */
+    public static SqlSession getSqlSession() {
+        return sqlSessionFactory.openSession();
+    }
+}
+```
+
+
+
+#### 5. 编写代码
+
+创建User实体类：
+
+![image-20200606125807764](https://upyun1.surcode.cn/imgs/20200606125807.png)
+
+
+
+定义UserMapper(UserDao)接口：
+
+这里把UserDao接口的名字写成UserMapper了，在Mybatis里面主要体现的是映射的关系
+
+![image-20200606130355911](https://upyun1.surcode.cn/imgs/20200606130355.png)
+
+
+
+创建UserMapper.xml配置文件：
+
+![image-20200606130931242](https://upyun1.surcode.cn/imgs/20200606130931.png)
+
+
+
+*注意：每创建一个UserMapper.xml文件，都要在mybatis的主配置文件中注册，否则在运行程序时会报一下错误，未知的Mapper注册：*
+
+```
+org.apache.ibatis.binding.BindingException: Type interface com.neu.dao.UserMapper is not known to the MapperRegistry.
+```
+
+![image-20200606131400702](https://upyun1.surcode.cn/imgs/20200606131400.png)
+
+
+
+#### 6. 测试代码：
+
+执行UserMapper中的方法的步骤：
+
+```java
+@Test
+public void testGetUserList() {
+  //通过工具类获取SqlSession对象
+  SqlSession sqlSession = MybatisUtils.getSqlSession();
+  //得到接口对象mapper
+  UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+  //通过接口对象mapper执行接口中的方法（实际上是映射到xml中）
+  List<User> userList = mapper.getUserList();
+
+  for (User user : userList) {
+    System.out.println(user);
+  }
+  //关闭SqlSession
+  sqlSession.close();
+}
+```
+
+
+
+最终的运行结果：
+
+![image-20200606131736904](https://upyun1.surcode.cn/imgs/20200606131736.png)
+
+使用完SqlSession对象之后，要关闭，这里我的测试代码中忘记写了（sqlSession.close();）
+
+
+
+*测试运行结果时，报了一个错误，错误信息是找不到UserMapper.xml，这里涉及一个Maven的注意事项，maven正常只能直接读取resources内的文件，而我把UserMapper.xml写在了src/main/java/com/neu/dao里面了：*
+
+![image-20200606132408867](https://upyun1.surcode.cn/imgs/20200606132408.png)
+
+*解决办法是需要在Maven的pom.xml文件中配置build信息：*
+
+（尝试了只在父工程的pom.xml文件中添加也可以）
+
+```xml
+<!--把下面的build放到pom.xml的project标签中-->
+<!--在build中配置resources，来防止资源导出失败的问题-->
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+```
+
+**再次运行时，得到上面的运行结果，第一个Mybatis程序完成~**
+

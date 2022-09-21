@@ -1,0 +1,90 @@
+---
+id: MySQL数据库
+title: MySQL数据库
+---
+
+## 什么是数据库？
+数据库一个以某种有组织的方式存储数据的集合。
+
+## DBMS 数据库管理系统
+DBMS (Database Manage System)，数据库管理系统。用来管理数据库的。
+
+常见的数据库管理系统有：MySQL、Oracle、PostgreSQL等等。
+
+
+
+## Mysql
+Mysql是一个开源的、高性能的关系型数据库。
+
+
+
+## 数据库中的要素
+表：数据库中可以创建多个表，每个表通常被用来存储一类数据；
+
+列：表中的字段 Field；
+
+数据类型：表中的字段都要明确指定数据类型，用来约束存储的数据。例如数字类型的字段，不能用来存储字符串。
+
+行：表中的数据是按行存储的；
+
+主键：可以把表中的某一字段或者多个字段设置为主键，主键可以唯一标识某一条数据。所以，被设置主键的列必须具有唯一性；
+
+
+
+## 什么是SQL
+SQL (Structured Query Language) 结构化查询语言。SQL是一种专门用来与数据库通信的语言。
+
+SQL语言中按用来（功能）可分为：
+
+DDL（DataDefinitionLanguage）：数据定义语言，用来定义数据库对象：库、表、列等；
+DML（DataManipulationLanguage）：数据操作语言，用来定义数据库记录（数据）；
+DQL（DataQueryLanguage）：数据查询语言，用来查询记录（数据）；
+DCL（DataControlLanguage）：数据控制语言，用来定义访问权限和安全级别。
+
+
+## 使用数据库
+### 连接
+MySQL 属于 客户端-服务端型的DBMS（数据库管理系统），连接DBMS可以使用各种客户端工具，例如图形化的客户端工具 Navicat、DataGrip ，或者通过JDBC操作数据库等等。
+
+连接数据库时，需要知道DBMS 的 host地址、端口号、用户名、密码。
+
+（MySQL默认的端口号是3306）
+
+
+
+### 展示所有的数据库
+
+
+### 选择数据库
+使用use关键字选择要操作的数据库。
+
+```sql
+use 数据库名;
+```
+
+### 展示数据库中所有的表
+```sql
+show tables;
+```
+
+### 展示表中所有列
+
+```sql
+show columns from 表名;
+```
+
+### 创建表
+
+```sql
+create table t_class (
+    id bigint primary key auto_increment comment '主键Id',
+    name varchar(20) not null comment '班级名称'
+);
+```
+
+primary key 主键
+auto_increment 自增
+not null 不为空
+null 可以为空
+unique 唯一
+

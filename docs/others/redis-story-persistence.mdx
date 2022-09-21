@@ -11,7 +11,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 我是**Redis**，一个叫**Antirez**的男人把我带到了这个世界上。
 
-![img](https://images.shiguangping.com/imgs/20200926112705.jpg)
+![img](https://upyun1.surcode.cn/imgs/20200926112705.jpg)
 
 “快醒醒！快醒醒！”，隐隐约约，我听到有人在叫我。
 
@@ -31,7 +31,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 “那也可以在硬盘上保存一下啊，遇到这种情况全部从头再来建立缓存，这不浪费时间嘛！”
 
-![img](https://images.shiguangping.com/imgs/20200926112819.png)
+![img](https://upyun1.surcode.cn/imgs/20200926112819.png)
 
 我点了点头，“让我琢磨一下，看看怎么做这个持久化”。
 
@@ -43,7 +43,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 为了节约空间，我定义了一个二进制的格式，把数据一条一条码在一起，生成了一个RDB文件。
 
-![img](https://images.shiguangping.com/imgs/20200926112831.png)
+![img](https://upyun1.surcode.cn/imgs/20200926112831.png)
 
 不过我的数据量有点大，要是全部备份一次得花不少时间，所以不能太频繁的去做这事，要不然我不用干正事了，光花时间去备份了。
 
@@ -63,7 +63,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 有了备份文件，下次我再遇到崩溃退出，甚至服务器断电罢工了，只要我的备份文件还在，我就能在启动的时候读取，快速恢复之前的状态啦！
 
-![img](https://images.shiguangping.com/imgs/20200926112914.png)
+![img](https://upyun1.surcode.cn/imgs/20200926112914.png)
 
 ## MySQL:binlog
 
@@ -75,7 +75,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 “你看啊，你这个周期性去备份，周期还是分钟级别的，你可知道咱们这服务每秒钟都要响应多少请求，像你这样不得丢失多少数据？”，MySQL语重心长的说到。
 
-![img](https://images.shiguangping.com/imgs/20200926113004.png)
+![img](https://upyun1.surcode.cn/imgs/20200926113004.png)
 
 我一下有些气短了，“可是，这个备份一次要遍历全部数据，开销还是挺大的，不适合高频执行啊”
 
@@ -100,13 +100,13 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 回来以后，我决定照葫芦画瓢，学着MySQL大哥的样子，把我执行的所有写入命令都记录下来，专门写入了一个文件，并给这种持久化方式也取了一个名字：**AOF（Append Only File）**。
 
-![img](https://images.shiguangping.com/imgs/20200926113040.png)
+![img](https://upyun1.surcode.cn/imgs/20200926113040.png)
 
 不过我遇到了RDB方案同样的问题，我该多久写一次文件呢？
 
 我肯定不能每执行一条写入命令就记录到文件中，那会严重拖垮我的性能！我决定准备一个缓冲区，然后把要记录的命令先临时保存在这里，然后再择机写入文件，我把这个临时缓冲区叫做**aof_buf**。
 
-![img](https://images.shiguangping.com/imgs/20200926113055.png)
+![img](https://upyun1.surcode.cn/imgs/20200926113055.png)
 
 说干就干，我试了一下，竟然发现数据没有写入到文件中去。多方打听才知道，原来操作系统也有个缓存区，我写的数据被他缓存起来了，没有给我写入到文件中去，这不是坑爹呢嘛！
 
@@ -126,7 +126,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 我得想个办法把文件给**压缩**一下，我把这个过程叫做**AOF重写**。
 
-![img](https://images.shiguangping.com/imgs/20200926113127.png)
+![img](https://upyun1.surcode.cn/imgs/20200926113127.png)
 
 一开始，我打算去分析原来的AOF文件，然后将其中的冗余指令去掉，来给AOF文件瘦瘦身，不过我很快放弃了这个想法，这工作量实在太大了，分析起来也颇为麻烦，浪费很多精力跟时间。
 
@@ -146,7 +146,7 @@ AOF文件重写的思路我是有了，不过这件事干起来还是很耗时�
 
 谨慎如我，发现这样做之后，子进程在重写期间，我要是修改了数据，就会出现和重写的内容不一致的情况！MySQL大哥肯定会挑刺儿，我还得把这个漏洞给补上。
 
-![img](https://images.shiguangping.com/imgs/20200926113153.png)
+![img](https://upyun1.surcode.cn/imgs/20200926113153.png)
 
 于是，我在之前的**aof_buf**之外，又准备了一个缓冲区：**AOF重写缓冲区**。
 
@@ -154,7 +154,7 @@ AOF文件重写的思路我是有了，不过这件事干起来还是很耗时�
 
 最后再重命名新的AOF文件，替换掉原来的那个臃肿不堪的大文件，终于大功告成！
 
-![img](https://images.shiguangping.com/imgs/20200926113208.png)
+![img](https://upyun1.surcode.cn/imgs/20200926113208.png)
 
 再三确定我的思路没有问题之后，我带着新的方案再次找到了MySQL大哥，我都做到这份儿上了，这一次，想必他应该无话可说了吧？
 

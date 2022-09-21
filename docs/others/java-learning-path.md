@@ -5,9 +5,9 @@ title: 零基础如何入门Java？
 
 最近刷知乎，总能看到有小伙伴在问**0基础如何学Java？**，**转行学Java该怎么学？**，**Java学到什么程度可以找工作？** 这类的问题，所以我想就我的经验来谈一谈。
 
-![image-20210623233529524](https://images.shiguangping.com/imgs/20210623233529.png)
+![image-20210623233529524](https://upyun1.surcode.cn/imgs/20210623233529.png)
 
-![image-20210623233704249](https://images.shiguangping.com/imgs/20210623233704.png)
+![image-20210623233704249](https://upyun1.surcode.cn/imgs/20210623233704.png)
 
 先说下Java的学习路线：
 
@@ -51,7 +51,7 @@ Java SE -> 数据库（Mysql） -> 前端（Html、Css、JavaScript） -> Java E
 
 所以，在学习的时候，一定要规划好学习的进度。学习路线可以让小伙伴知道学Java该学什么，但是把握进度还要看自己。
 
-![image-20210626163956884](https://images.shiguangping.com/imgs/20210626163956.png)
+![image-20210626163956884](https://upyun1.surcode.cn/imgs/20210626163956.png)
 
 一般JavaSE的视频教程在十几到几十个小时不等，在选择教程时尽量先多点几个进去听一听，货比三家嘛。找一个声音听着不错的老师，这样学起来起码能事半功倍，有的视频看一会儿就不想看了，这种肯定不会有益学习。
 

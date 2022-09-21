@@ -1,0 +1,242 @@
+---
+id: static关键字
+title: 13.3 static关键字
+---
+import ImgBox from "../../src/components/ImgBox";
+
+### static修饰成员属性
+
+static关键字修饰的成员属性，属于类属性（静态属性），它和成员属性的区别在于：
+
+1. 加载时机不同，Jvm在加载类时会先加载static成员；
+2. 类对象共享；
+3. 生命周期不同，成员属性的声明周期跟随实例对象，而静态属性的生命周期跟随这个类（类被加载时开始，虚拟机停止时结束）。
+
+**示例：**
+
+```java
+public class Cat {
+	// 成员属性：昵称、年龄、体重、品种
+	// 封装step1：修改属性的可见性---private，限定属性只能在类内使用
+	private String name; // 昵称，默认值为null
+	private int mouth; // 年龄，默认值为0
+	private double weight; // 体重，默认值为0.0
+	private String species; // 品种
+
+	//此时price没有static修饰符
+	public int price;// 价格
+  
+		/********此处省略下面代码********/
+	}
+```
+
+```java
+package com.imooc.animal;
+
+public class Test {
+	public static void main(String[] args) {
+		Cat oneCat = new Cat();
+		oneCat.setName("花花");
+		oneCat.price = 2000;
+
+		Cat twoCat = new Cat();
+		twoCat.setName("凡凡");
+		twoCat.price = 150;
+
+		System.out.println(oneCat.getName() + "的售价为：" + oneCat.price);
+		System.out.println(twoCat.getName() + "的售价为：" + twoCat.price);
+	}
+}
+```
+
+两个对象分别赋值后对price分别打印：
+
+```
+花花的售价为：2000
+凡凡的售价为：150
+```
+
+使用static修饰price：
+
+```java
+// static:静态 静态成员、类成员
+public static int price;// 价格
+```
+
+打印输出结果为：
+
+```
+花花的售价为：150
+凡凡的售价为：150
+```
+
+***类属性，共享同一个内存空间***。
+
+类属性通过`对象名.属性名`的方式调用时，IDE工具会有警告，*（用静态的方式去调用）*
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/20200426222802.png" width="450px" />
+
+这也是类属性的另一种体现，所以Java推荐通过`类名.属性名`的方式调用，静态的调用方式。
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/20200426222954.png" width="450px" />
+
+此时，工具的警告消失。
+
+所以，静态成员属性的调用方式有：
+
+- 类名.属性名
+- 对象名.属性名
+- this.属性名
+
+
+
+***注意：static不能修饰方法内的局部变量，也不能用来修饰class。***
+
+
+
+### static修饰成员方法
+
+static修饰方法，则该方式变为静态方法，
+
+同类属性一样，静态方法可以使用`对象名.方法名()`的方式调用，也可以使用`类名.方法名()`的方式调用。
+
+静态方法的调用方式有：
+
+- 对象名.方法名()
+- 类名.方法名()
+- 同一个类的其他方法可以通过 方法名() 直接调用
+
+```java
+//静态方法中不能直接调用同一个类中的非静态成员，只能直接调用同一个类中的静态成员
+public static void run() {
+		Cat temp = new Cat();
+		temp.eat();
+		this.name = "小胖"; //error
+		name = "小胖"; //error
+		price = 1500; //ok  因为price是静态成员
+		System.out.println("小猫快跑");
+	}
+```
+
+*这里要注意：在静态方法中不能直接调用同一个类中的非静态成员（非静态的属性或方法），只能直接调用同一个类中的静态成员（静态属性或静态方法），或者通过`对象名.属性名`、`对象名.方法名()`的形式调用；静态方法中也不能使用this。*
+
+
+
+## 代码块
+
+##### 普通代码块：*（写在方法里）*
+
+```java
+public void run(String name) {
+		{// 普通代码块
+			System.out.println("我是普通代码块1");
+		}
+		System.out.println(name + "快跑");
+		{
+			System.out.println("我是普通代码块2");
+		}
+	}
+```
+
+按顺序从上到下执行：
+
+```
+我是普通代码块1
+花花快跑
+我是普通代码块2
+```
+
+
+
+##### 构造代码块：*（写在类里）*
+
+*创建对象是调用，优先于构造方法执行*
+
+```java
+	{// 构造代码块
+		System.out.println("我是构造代码块1");
+	}
+
+	// 构造方法
+	public Cat() {
+		System.out.println("我是无参构造方法，我是宠物猫~");
+	}
+```
+
+和与构造方法的相对位置无关：
+
+```
+我是构造代码块1
+我是无参构造方法，我是宠物猫~
+```
+
+即便写在构造方法下面，也会优先调用。
+
+```java
+	{// 构造代码块1
+		System.out.println("我是构造代码块1");
+	}
+
+	// 构造方法
+	public Cat() {
+		System.out.println("我是无参构造方法，我是宠物猫~");
+	}
+
+	{// 构造代码块2
+		System.out.println("我是构造代码块2");
+	}
+```
+
+运行结果：
+
+```
+我是构造代码块1
+我是构造代码块2
+我是无参构造方法，我是宠物猫~
+```
+
+多个构造代码块也会从上向下顺序执行。
+
+
+
+##### 静态代码块
+
+当构造代码块被static修饰，则会升级为静态代码块
+
+*类加载时被调用，优先于构造代码块*
+
+```java
+	{// 构造代码块1
+		System.out.println("我是构造代码块1");
+	}
+
+	// 构造方法
+	public Cat() {
+		System.out.println("我是无参构造方法，我是宠物猫~");
+	}
+
+	static {// 构造代码块2 --> 静态代码块
+		System.out.println("我是构造代码块2，变成静态代码块");
+	}
+```
+
+运行结果：
+
+```
+我是构造代码块2，变成静态代码块
+我是构造代码块1
+我是无参构造方法，我是宠物猫~
+```
+
+多个静态代码块也会从上向下顺序执行。
+
+
+
+***静态代码块只有在类加载时执行一次***
+
+***构造代码块实例化一次执行一次***
+
+***构造方法也是实例化一次执行一次***
+
+***在静态代码块中不能直接调用同一个类中的非静态成员（非静态的属性或方法），只能直接调用同一个类中的静态成员（静态属性或静态方法），或者通过`对象名.属性名`、`对象名.方法名()`的形式调用；静态方法中也不能使用this。***
+

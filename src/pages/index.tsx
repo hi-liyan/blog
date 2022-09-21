@@ -2,26 +2,30 @@ import React from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import StringPrinter from "../components/StringPrinter";
 import Link from '@docusaurus/Link';
+// @ts-ignore
+import logo from '@site/static/img/头像.jpg';
 
 import styles from './index.module.css';
+import HomepageFeatures from "@site/src/components/HomepageFeatures";
 
-const HomepageMain = () => {
+function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
-  // 首页自动打字效果文案
-  const contents = [
-    "Hi, Welcome to Shiguangping.",
-    "请 把 我 流 放 到 最 美 的 时 光 里 。"
-  ]
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <Link to='/docs/hello'><h1 className="hero__title">{siteConfig.title}</h1></Link>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
-      </div>
-      <StringPrinter contents={contents}/>
-    </header>
+      <header className={clsx(styles.heroBanner)}>
+        <div className="container">
+          <img className="homepageLogo" src={logo} />
+          <h1 className="hero__title">{siteConfig.title}</h1>
+          <p className="hero__subtitle">{siteConfig.tagline}</p>
+          <div className={styles.buttons}>
+            <Link
+                className="button button--secondary button--lg"
+                to="/docs/hello">
+              从这里开始 →
+            </Link>
+          </div>
+        </div>
+      </header>
   );
 }
 
@@ -32,11 +36,10 @@ export default function Home() {
     <Layout
       title={siteConfig.title}
       description="李炎的博客。">
-      <HomepageMain/>
-      {/*<main>*/}
-      {/*  <HomepageFeatures />*/}
-      {/*</main>*/}
+      <HomepageHeader />
+      <main>
+        <HomepageFeatures />
+      </main>
     </Layout>
   );
 }
-

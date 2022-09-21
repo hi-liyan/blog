@@ -16,7 +16,7 @@ const StringPrinter = ({contents}: StringPrinterProps) => {
     init(myElement, {showCursor: false, strings: contents})
   }, []);
 
-    return <div id="myElement" style={{color:'#fff'}}></div>
+    return <div id="myElement" style={{color:'#000'}}></div>
 }
 
 export default StringPrinter;

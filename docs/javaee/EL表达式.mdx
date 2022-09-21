@@ -1,0 +1,114 @@
+---
+id: EL表达式
+title: EL表达式
+---
+
+### 概念：
+
+EL：Expression Language 表达式语言
+
+
+
+### 作用：
+
+替换和简化JSP页面中Java代码的编写
+
+
+
+### 语法：
+
+```jsp
+${表达式}
+```
+
+EL表达式的结果会输出到页面上
+
+
+
+### 注意：
+
+- JSP默认支持EL表达式
+
+- 如果要忽略EL表达式，设置JSP中page的属性，isELIgnored="true"，则EL表达式会原样输出到页面上。
+
+- ```jsp 
+  \${表达式}   忽略单个的EL表达式
+  ```
+
+  
+
+### EL表达式使用：
+
+运算符：
+
+- 算术运算符：+  -  *  /(div)  %(mod)
+
+- 比较运算符：>  <  >=  <=  ==  !=
+
+- 逻辑运算符：&&(and)  ||(or)  !(not)
+
+- 空运算符：empty，用于判断字符串、集合、数组对象是否为null或长度是否为0
+
+  ```jsp
+  ${empty list}   list为null或长度为0，则返回true
+  ${not empty str}	表示判断字符串、集合、数组对象是否不为null并且长度大于0
+  ```
+
+  
+
+
+
+获取值：
+
+EL表达式只能从域对象中获取值
+
+- ${域名城.键名}：从指定域中获取指定键的值
+
+  域名称：
+
+  ```
+  	pageScope --> pageContext域
+  
+  ​	requestScope --> request域
+  
+  ​	sessionScope -->session
+  
+  ​	applicationScope -->application(ServletContext)
+  ```
+
+  
+
+- ${键名}：表示依次从最小的域中查找是否有该键对应的值，直到找到为止。
+
+- 获取对象、List集合、Map集合的值
+
+  - 对象：${域名称.键名.属性名}，本质上回去调用对象的getter/setter方法
+
+  - List集合：${域名称.键名[index]}
+
+  - Map集合：
+
+    - ${域名称.键名.key}
+    - ${域名称.键名["key"]}
+
+    
+
+### 隐式对象：
+
+el表达式中有11个隐式对象：
+
+- pageScope
+
+- requestScope
+
+- sessionScope
+
+- applicationScope
+
+- pageContext：
+
+  - 获取jsp中其它8个内置对象
+
+  - ```jsp
+    ${pageContext.request.contextPath} 动态获取虚拟目录
+    ```

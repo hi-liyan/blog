@@ -1,0 +1,312 @@
+---
+id: Java泛型
+title: 18. Java泛型
+---
+
+首先看一下下面这段代码，这是一个int类型的栈结构，只能存储Int类型数据，通过这端代码来引入泛型的概念：
+
+```java
+package com.ly.why;
+
+/**
+ * 栈
+ * @author liyan
+ */
+public class StackInt {
+    private int maxSize;
+    private int[] items;
+    private int top;
+
+    /**
+     * 构造器：设置栈大小
+     * @param maxSize
+     */
+    public StackInt(int maxSize) {
+        this.maxSize = maxSize;
+        this.items = new int[maxSize];
+        this.top = -1;
+    }
+
+    /**
+     * 通过top指针判断数组是否存满
+     * @return
+     */
+    public boolean isFull() {
+        return this.top == this.maxSize-1;
+    }
+
+    /**
+     * 通过top指针判断数组是否为空
+     * @return
+     */
+    public boolean isNull() {
+        return this.top <= -1;
+    }
+
+    /**
+     * 存入数据
+     * @param value
+     * @return
+     */
+    public boolean push(int value) {
+        if(this.isFull()){
+            return false;
+        }
+        this.items[++this.top] = value;
+        return true;
+    }
+
+    /**
+     * 弹出数据
+     * @return
+     */
+    public int pop() {
+        if(this.isNull()){
+            throw new RuntimeException("当前栈中无数据");
+        }
+        int value = this.items[this.top];
+        --this.top;
+        return value;
+    }
+}
+```
+
+代码有点儿长，这是一个栈，里面实例化了一个数组，用来存储数据的容器，栈结构的特点是**后进先出**,最后一个存入的数据会第一个被取出来。
+
+这个自定义的`StackInt`容器在实例化时内部会实例化一个int类型数组，所以在存入数据时，只能存入int类型数据，而不能存其它类型的数据。这种直接写死的容器很不方便，我如果想存入String类型的数据难道需要改代码或者再定义一个String类型的栈吗？
+
+解决方式其一，可以在实例化数组时，实例化一个Object类型的数据，因为Object类是一切Java类的父类（超类），如果栈内部定义一个Object类型的数组，那就可以存入任意类型的数据，取出数据只需正确地将Object类型强制转换成原有类型即可。但是这种方法其实很不理想，因为如果使用Object类型，就会出现很多问题，例如Object类在转换数据时会出现很多拆箱装箱，并且还会存在类型安全等问题。
+
+解决方式其二：`泛型`，泛型其实之前就算没有真正了解过，但是肯定用过，比如这么写：
+
+```java
+Map<String,String> initParams = new HashMap();
+```
+
+泛型其实就是一种数据类型的约定，约定好我要存入什么类型的数据。
+
+那么如何把上面代码示例自定义的栈容器引入泛型呢？使之可以存入任意类型：
+
+```java
+package com.ly.why;
+
+import java.lang.reflect.Array;
+
+/**
+ * 栈
+ *
+ * @author liyan
+ * 泛型是一种类型的约定
+ */
+public class StackT<T> {
+    private int maxSize;
+    private T[] items;
+    private int top;
+
+    /**
+     * 构造器：设置栈大小
+     *
+     * @param maxSize
+     */
+    public StackT(int maxSize, Class<T> clazz) {
+        this.maxSize = maxSize;
+        /**
+         * 泛型擦除问题：涉及编译时和运行时
+         * new是发生在运行时的，T在运行时就已经被擦除了，JVM不知道T什么，所以无法直接new T
+         */
+//        this.items = new T[maxSize];
+        this.items = this.createArray(clazz);
+        this.top = -1;
+    }
+
+    public boolean isFull() {
+        return this.top == this.maxSize - 1;
+    }
+
+    public boolean isNull() {
+        return this.top <= -1;
+    }
+
+    public boolean push(T value) {
+        if (this.isFull()) {
+            return false;
+        }
+        this.items[++this.top] = value;
+        return true;
+    }
+
+    public T pop() {
+        if (this.isNull()) {
+            throw new RuntimeException("当前栈中无数据");
+        }
+        T value = this.items[top];
+        --top;
+        return value;
+    }
+
+    private T[] createArray(Class<T> clazz) {
+        T[] array = (T[]) Array.newInstance(clazz, this.maxSize);
+        return array;
+    }
+
+    /**
+     * 泛型方法
+     * @param clazz
+     * @param <T>
+     * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    public <T> T test(Class<T> clazz) throws IllegalAccessException, InstantiationException {
+        return clazz.newInstance();
+    }
+}
+```
+
+**其实，泛型也可以理解为是一种将数据类型参数化的形式，一种参数传递，把数据类型当做一种参数传递给类或者方法。**
+
+**使用泛型的好处：**
+
+1. 与普通的 Object 代替一切类型这样简单粗暴而言，泛型使得数据的类别可以像参数一样由外部传递进来。它提供了一种扩展能力。它更符合面向抽象开发的软件编程宗旨。
+2. 当具体的类型确定后，泛型又提供了一种类型检测的机制，只有相匹配的数据才能正常的赋值，否则编译器就不通过。所以说，它是一种类型安全检测机制，一定程度上提高了软件的安全性防止出现低级的失误。
+3. 泛型提高了程序代码的可读性，不必要等到运行的时候才去强制转换，在定义或者实例化阶段，因为 `StackT<String>`这种类型显化的效果，程序员能够一目了然猜测出代码要操作的数据类型。
+
+
+
+### 泛型的定义和使用：
+
+泛型按照使用情况一般分为三种：
+
+- 泛型类
+- 泛型方法
+- 泛型接口
+
+#### 泛型类：
+
+```java
+public class StackT<T> {
+  private T[] item;
+}
+```
+
+`<T>`被称作类型参数，指代一切类型，可以理解成像方法的形参一样，将数据类型作为一种参数传递过来。T是一种习惯性写法，可以用任意字符代替。
+
+但出于规范的目的，Java 还是建议我们用单个大写字母来代表类型参数。常见的如：
+
+1. T 代表一般的任何类。
+2. E 代表 Element 的意思，或者 Exception 异常的意思。
+3. K 代表 Key 的意思。
+4. V 代表 Value 的意思，通常与 K 一起配合使用。
+5. S 代表 Subtype 的意思，文章后面部分会讲解示意。
+
+如果一个类被 `<T>`的形式定义，那么它就被称为是泛型类。
+
+那么对于泛型类怎么样使用呢？
+
+```java
+public class StackT<T> {
+  private T[] item;
+}
+
+StackT<String> s = new StackT();
+// 那么item属性即：
+String[] item;
+```
+
+泛型类还可以接收多个泛型参数：
+
+```java
+public class MultiType <E,T>{
+	E value1;
+	T value2;
+```
+
+
+
+#### 泛型方法：
+
+泛型方法与泛型类类似，但是`<T>`的位置有所不同，不是定义在方法名后面的：
+
+```java
+public <T> void method(T t){
+  System.out.println(t);
+}
+```
+
+类型参数`<T>`定义在访问修饰符后面，泛型方法的返回值这样写：
+
+```java
+public <T> T method(T t){
+  return null;
+}
+```
+
+
+
+#### 泛型接口：
+
+泛型接口和泛型类差不多
+
+```java
+public interface Iterable<T> {
+}
+```
+
+
+
+### 泛型通配符：
+
+- `<?>` 无界通配符
+- `<? extends Number>`上边界通配符，只能传入Number及其子类的，父类不可以
+- `<? super Integer`下边界通配符，只能传入Integer及其父类的，子类的不可以
+
+
+
+```java
+public static void mothod(StackT<? extends Number> stackT) {
+  System.out.println(stackT.pop());
+}
+```
+
+这段代码中，方法参数对于传入的带泛型类型的数据参数做了范围限制。
+
+
+
+### 泛型擦除
+
+泛型也就是`<T>`这种形式，只是发生在编译期间，在编译期间知道`<T>`是什么类型，当编译完成，`<T>`就会根据传入的数据类型替换成真实的数据类型，到JVM解释运行时，处理的都是真实的数据类型，而不是`<T>`。这个该如何理解呢？
+
+```java
+public class MainTest {
+    public static void main(String[] args) {
+        Demo<String> demo = new Demo<String>("Hello World");
+        String s = demo.get();
+    }
+}
+
+class Demo<T> {
+    private T t;
+
+    public Demo(T t) {
+        this.t = t;
+    }
+
+    public T get() {
+        return t;
+    }
+}
+```
+
+我的理解：
+
+`Demo<String> demo = new Demo<String>("Hello World");`
+
+- 在new Demo()之前，也就是编译期，我们可以知道`Demo<T>`中`<T>`的信息，知道`<T>`是指String类型。当编译完成之后，通俗地理解，实际Demo中所有的T已经被替换成了真实数据类型`String`而不再是`<T>`。
+- 当new Demo()时，也就是运行时期，Demo当中的成员变量方法都是`String`类型，而不是T类型。也就是说，当Java在运行时期，泛型已经被擦除，JVM不会知道T是什么，也不认识T。
+
+---
+
+当初学Java时，对一些Java的基础概念，尤其是偏抽象的概念不是那么好理解，因为我们不知道这些概念应该在哪些场景下使用，在写自己的代码时，也不知道该如何写泛型。
+
+但是当我们看到别人的代码中使用泛型时，知道这里应用的是泛型，学会这些概念首先对看懂别人的代码是很有帮助的，看了别人的代码，学习别人的编码思路，漫漫地就能写出自己的代码了。
+

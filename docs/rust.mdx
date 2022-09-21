@@ -1,0 +1,146 @@
+---
+id: Rust
+title: Rust
+---
+
+>跟着Rust官方[中文文档](https://rustwiki.org/zh-CN/book/title-page.html)学习。
+
+## 1. Hello World
+
+学习任何一门语言，都是从`Hello World`开始。
+
+```rust
+fn main() {
+    println!("Hello Rust!!!");
+}
+```
+---
+## 2.Cargo
+
+首先，了解下Cargo。Cargo是一个包管理系统，也是项目管理系统，也是一个构建工具。感觉和Maven或者是npm差不多。
+
+通过官方安装Rust的安装方式，默认会安装cargo。
+
+### 2.1 使用Cargo创建项目
+
+安装Rust，默认会安装Cargo，在终端通过命令，查看Cargo是否安装成功。
+
+```bash
+cargo --version
+```
+
+在终端使用Cargo命令创建Rust项目。（创建名为 hello-rust 的项目）
+
+```bash
+cargo new hello-rust
+```
+
+创建好的项目结构如下：
+```
+hello-rust
+ |
+ |-src
+    |- main.rs
+ |-.gitignore
+ |-Cargo.lock
+ |-Cargo.toml
+```
+
+- src: 源代码都在这里编写
+- .gitignore 配置git忽略的文件
+- Cargo.lock 记录依赖版本的（不要手动更改）
+- Cargo.toml Cargo项目的描述文件，类似Maven中的pom.xml或者npm项目的package.json，在里面配置项目的元信息，引入的依赖库等
+
+### 2.2 Cargo的常用命令
+
+1. 创建项目
+
+```bash
+cargo new xxx
+```
+
+2. 构建项目
+```bash
+cargo build
+```
+
+3. 构建并运行
+```bash
+cargo run
+```
+
+4. 检查错误（构建项目而不生成二进制文件）
+```bash
+cargo check
+```
+
+---
+
+## 3. 变量和可变性
+
+### 3.1 变量
+
+Rust是一门静态类型语言，也就是所谓的强类型编程语言。变量在声明时确定数据类型后，不可以被赋予其它数据类型的值。
+
+Rust支持类型推断，在声明变量时，可以显式指定变量的数据类型，也可以隐式推断数据类型，编译器会根据变量的初始值推断出变量的数据类型。
+
+```rust
+// 显式声明数据类型
+let s1: String = String::from("Hello");
+// 根据初始值推断类型
+let s2 = String::from("Rust");
+```
+
+在Rust语言中，声明变量使用 `let` 关键字。但Rust中声明的变量默认是不可变的，也就是 `Immutable`。这一点很有意思。
+
+具体如下示例所示，先声明一个变量s，然后再将字符串字面值赋值给变量s，这时候就会报错。因为声明的变量默认是不可变的。
+
+```rust
+fn main() {
+    let s = "Hello Rust";
+    // cannot assign twice to immutable variable `s`
+    s = "Hello Java";
+}
+```
+
+要想使变量可变，需要在变量名的前面加上 `mut` 关键字。
+
+```rust
+fn main() {
+    let mut s = "Hello Rust";
+    s = "Hello Java";
+}
+```
+
+:::tip
+变量名的命名方式，使用小写字母。多个单词使用下划线连接。
+:::
+
+### 3.2 常量
+
+声明常量使用 `const` 关键字。声明常量时必须显式地指定数据类型。常量和不可变变量类似，但是在用法上有区别。
+
+常量不能被改变，所以不能使用 `mut` 关键字。常量可以在任意作用域中声明，包括全局作用域。常量的值只能是常量表达式，而不能是一个函数的返回值。
+
+---
+## 4. 数据类型
+
+Rust中的数据类型分为两大类：标量类型和复合类型。
+
+标量（scalar）类型表示单个值。Rust中有四种基本的标量类型：整型、浮点型、字符型、布尔型。
+
+Rust中的整型：
+
+|长度|有符号|无符号|类比Java中的数据类型|
+|---|---|---|---|
+|8bit|i8|u8|byte|
+|16bit|i16|u16|short|
+|32bit|i32|u32|int|
+|64bit|i64|u64|long|
+|128bit|i128|u128|-|
+|arch|isize|usize|-|
+
+有符号表示包含负数，无符号只表示正数。Java中的整型都包含负数。
+
+Rust中的浮点型：
+|长度|

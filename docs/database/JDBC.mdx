@@ -1,0 +1,69 @@
+---
+id: JDBC
+title: JDBC
+---
+import ImgBox from "../../src/components/ImgBox";
+
+## 什么是JDBC？
+
+JDBC (Java Database Connectivity)是Java提供的一套用来连接和操作关系型数据库的接口。各个数据库厂商根据JDBC接口做针对自家数据库的具体实现，开发人员使用Java操作数据库时，只需要面向JDBC即可，无需关注具体的数据库。
+
+## 引入依赖
+
+JDBC以及数据库驱动需要我们自行添加到项目中，下面提供了MySQL数据库驱动的Maven依赖。
+
+```xml
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.29</version>
+</dependency>
+```
+
+
+
+## 快速开始
+
+使用JDBC连接和操作数据库主要分下面几步：
+
+1. ~~加载Driver类 `class.forName("com.mysql.cj.jdbc.Driver");`~~（当前数据库驱动版本可以省略这一步）；
+2. 获取数据库连接对象 `Connection`；
+3. 准备要执行的义sql；
+4. 获取SQL执行器对象 `Statement`；
+5. 通过执行器对象调用方法执行SQL，获得结果；
+6. 释放资源；
+
+具体代码如下：
+
+```java
+public class Demo {
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/school_db";
+    private static final String DB_USER = "root";
+    private static final String DB_PASS = "123456";
+
+    public static void main(String[] args) {
+        try {
+            // 1.加载Driver类
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // 2.获取连接对象
+            Connection connect = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+            // 3.准备sql语句
+            String sql = "update account set balance = 1000 where name='张三'";
+            // 4.获取SQL执行器对象
+            Statement stmt = connect.createStatement();
+            // 5.执行SQL
+            int count = stmt.executeUpdate(sql);
+            System.out.println(count);
+            // 6.释放资源
+            stmt.close();
+            conn.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/20200614084854.png" />

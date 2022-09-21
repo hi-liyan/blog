@@ -1,0 +1,116 @@
+---
+id: Mybatis框架
+title: 1. Mybatis框架
+---
+
+### 什么是框架？
+
+**软件框架**（software framework），通常指的是为了实现某个业界标准或完成特定基本任务的[软件组件](https://zh.wikipedia.org/wiki/軟件組件)规范，也指为了实现某个软件组件规范时，提供规范所要求之基础功能的软件产品。
+
+框架的功能类似于基础设施，与具体的软件应用无关，但是提供并实现最为基础的软件架构和体系。[软件开发者](https://zh.wikipedia.org/wiki/軟體開發者)通常依据特定的框架实现更为复杂的商业运用和业务逻辑。这样的软件应用可以在支持同一种框架的软件系统中运行。
+
+简而言之，框架就是制定一套规范或者规则（思想），大家（程序员）在该规范或者规则（思想）下工作。或者说使用别人搭好的舞台来做编剧和表演。
+
+
+
+### 三层架构 3-tier architecture：
+
+​	User Interface layer 表现层（界面层）：用于展示数据的，例如：SpringMVC框架
+
+​	Business Logic Layer 业务层（业务逻辑层）：处理业务需求的
+
+​	Data access layer 持久层（数据访问层）：是和数据库交互的，例如：MyBatis框架
+
+![](https://upyun1.surcode.cn/imgs/20200520082156.png)
+
+### 持久化（行为）：
+
+数据持久化：
+
+- 持久化就是将程序的数据在持久状态黑瞬时状态转化的过程
+- 内存：**断电即失**
+- 数据库(JDBC)，io文件都属于持久化数据的方式
+
+
+
+**为什么需要持久化？**
+
+- 有一些对象，不能让他丢失，所以需要持久化
+- 内存太贵了-。-
+
+
+
+### 持久层（概念）：
+
+Dao层、Service层、Controller层...
+
+- 完成持久化工作的代码块
+- 层的界限是十分明显的
+
+
+
+### 持久层解决方案：
+
+- JDBC技术：
+  - Connection
+  - PareparedStatement
+  - ResultSet
+
+- Spring的JdbcTemplate，Spring中对JDBC的简单封装
+
+- Apache的DBUtils，和JdbcTemplate很像，也是对JDBC的简单封装
+
+​	*以上这些都不是框架：*
+
+​		*JDBC是规范，Sun提供接口，厂商提供接口实现。*
+
+​		*Spring的JdbcTemplate、Apache的DBUtils都只是工具类。*
+
+
+
+### MyBatis的概述：
+
+MyBatis 是一款优秀的持久层框架，由Java语言编写，
+
+它支持自定义 SQL、存储过程以及高级映射
+
+MyBatis 免除了几乎所有的 JDBC 代码以及设置参数和获取结果集的工作
+
+MyBatis 可以通过简单的 XML 或注解来配置和映射原始类型、接口和 Java POJO（Plain Old Java Objects，普通老式 Java 对象）为数据库中的记录。
+
+MyBatis 本是[apache](https://baike.baidu.com/item/apache/6265)的一个开源项目[iBatis](https://baike.baidu.com/item/iBatis), 2010年这个项目由apache software foundation 迁移到了google code，并且改名为MyBatis 。
+
+2013年11月迁移到Github
+
+
+
+它内部封装了jdbc，使开发者只需要关注sql语句本身，而不需要花费精力去处理接在驱动、创建连接、创建Statement等繁杂的过程。
+
+​	它使用了ORM思想实现了结果集的封装。
+
+​	ORM：
+
+​		Object Relational Mapping 对象关系映射
+
+​		就是把数据库表和实体类及实体类的属性对应起来，让我们操作实例类就实现操作数据库表。
+
+
+
+### 获取MyBatis：
+
+- Maven仓库
+
+  ```xml
+  <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+  <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>3.5.5</version>
+  </dependency>
+  ```
+
+  
+
+- GitHub：https://github.com/mybatis/mybatis-3
+
+  

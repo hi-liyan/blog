@@ -1,0 +1,116 @@
+---
+id: try-catch-finally
+title: 14.1 try-catch-finally
+---
+
+捕获异常：
+
+- try -> 执行可能产生异常的代码
+- catch -> 捕获异常
+- finally -> 无论是否发生异常代码总能执行
+
+*注意：try块后可接零个或多个catch块，如果没有catch块，则必须跟一个finally块。*
+
+### 示例：
+
+```java
+package com.imooc.test;
+
+import java.util.Scanner;
+
+public class TryDemo1 {
+	public static void main(String[] args) {
+		// 定义两个整数，接收用户键盘输入，输出两数之商
+		System.out.println(">>>运算开始");
+		try {
+			System.out.print("输入第一个整数：");
+			int a = new Scanner(System.in).nextInt();
+			System.out.print("输入第二个整数：");
+			int b = new Scanner(System.in).nextInt();
+			System.out.println("a和b的商是：" + (a / b));
+		} catch (Exception e) {
+			System.out.println("程序出现异常，捕获到：" + e);
+		}finally{
+      System.out.println(">>>运算结束");
+    }
+	}
+}
+```
+
+运行：
+
+```
+>>>运算开始
+输入第一个整数：12
+输入第二个整数：0
+程序出现异常，捕获到：java.lang.ArithmeticException: / by zero
+>>>运算结束
+```
+
+`try`块中放入可能会出现异常的代码，如果try中的代码在运行时出现异常，则会有`catch`块捕获，catch中声明了一个Exception 对象e，由e来捕获这个异常。
+
+`finally`块，无论catch块是否捕获到异常，finally中的代码都会执行。
+
+
+
+### 使用多重catch块结构处理异常
+
+根据异常的类型不同使用多重catch块，但是不能有两个相同异常的catch块。
+
+```java
+package com.imooc.test;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class TryDemo1 {
+	public static void main(String[] args) {
+		// 定义两个整数，接收用户键盘输入，输出两数之商
+		System.out.println(">>>运算开始");
+		try {
+			System.out.print("输入第一个整数：");
+			int a = new Scanner(System.in).nextInt();
+			System.out.print("输入第二个整数：");
+			int b = new Scanner(System.in).nextInt();
+			System.out.println("a和b的商是：" + (a / b));
+		} 
+    //捕获运算异常
+    catch (ArithmeticException e) {
+			System.out.println("出错啦！除数不能为0");
+		} 
+    //捕获输入格式错误异常
+    catch (InputMismatchException e) {
+			System.out.println("出错啦！输入必须是整数");
+		}
+    //最后可以通过父类Exception捕获其它异常                                                                                                                                       
+    catch(Exception e){
+      System.out.println("出错啦，捕获到：" + e);
+    }
+    finally {
+			System.out.println(">>>运算结束");
+		}
+	}
+}
+```
+
+运行：
+
+```
+>>>运算开始
+输入第一个整数：21
+输入第二个整数：0
+出错啦！除数不能为0
+>>>运算结束
+```
+
+```
+>>>运算开始
+输入第一个整数：a
+出错啦！输入必须是整数
+>>>运算结束
+```
+
+*如何在捕获异常后不让程序继续运行`finally`块中的语句？*
+
+*可以在`catch`块中加入`System.exit(1)`语句，终止当前Java虚拟机，则程序不会继续往下执行。*
+

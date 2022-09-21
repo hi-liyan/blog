@@ -1,0 +1,566 @@
+---
+id: java-io
+title: 20. Java I/O流
+---
+
+# 认识“流”
+
+>流是内存和存储设备之间传输数据的通道。
+
+
+
+**流的分类**
+
+- 按方向：
+    - 输入流：将*存储设备*中的内容读入到*内存*中；
+    - 输出流：将*内存*中的内容写入到*存储设备*中。
+
+
+
+- 按单位：
+    - 字节流：以字节为单位，可以读写所有数据；
+    - 字符流：以字符为单位，只能读写文本数据。
+
+
+
+- 按功能：
+    - 节点流：具有实际传输数据的读写功能；
+    - 过滤流：在节点流的基础上增强功能。
+
+---
+
+
+
+# 字节流
+
+字节流的父类（抽象类）：
+
+- InputStream：字节输入流
+    - 主要方法：`read()`及其重载方法
+- OutputStream：字节输出流
+    - 主要方法：`write()`及其重载方法
+
+
+
+## 文件字节流
+
+文件字节流（实现类）：
+
+- FileInputStream：
+    - `public int read(byte[] b)`，从流中读取多个字节，将读到内容存入数组b中，返回实际读到的字节数；如果达到文件的尾部，则返回-1。
+- FileOutputStream：
+    - `public void write(byte[] b)`，一次写多个字节，将数组b中所有字节，写入输出流。
+
+
+
+文件输入流基本用法：
+
+```java
+// 1. 创建文件输入流
+FileInputStream fileInputStream = new FileInputStream("/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/111.txt");
+// 2. 读取文件
+// 创建缓冲区
+byte[] buf = new byte[3];
+// 将字节读到缓冲区
+int count = 0;
+while ((count = fileInputStream.read(buf)) != -1) {
+  System.out.println(new String(buf, 0, count));
+}
+// 3. 关闭流
+fileInputStream.close();
+```
+
+
+
+文件输出流基本用法。
+
+```java
+// 1. 创建FileOutputStream对象
+FileOutputStream fileOutputStream = new FileOutputStream("/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/111.txt");
+// 2. 写入文件
+String s = "Hello World";
+fileOutputStream.write(s.getBytes());
+// 3. 关闭流
+fileOutputStream.close();
+```
+
+
+
+小栗子：通过文件输入输出流复制一张图片。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 创建文件输入流
+FileInputStream fis = new FileInputStream(basePath + "001.jpg");
+// 创建文件输出流
+FileOutputStream fos = new FileOutputStream(basePath + "002.jpg");
+
+// 创建缓冲区
+byte[] buf = new byte[1024];
+
+// 边读边写
+int count = 0;
+while ((count = fis.read(buf)) != -1) {
+  fos.write(buf, 0, count);
+}
+
+// 关闭流
+fis.close();
+fos.close();
+```
+
+
+
+## 字节缓冲流
+
+缓存流（实现类）：
+
+- BufferedInputStream
+- BufferedOutputStream
+
+
+
+作用：
+
+- 提高I/O效率，减少访问磁盘次数；
+- 数据存储在缓冲区中，flush是将缓冲区的内容写入文件中，也可以直接close。
+
+
+
+缓冲输入流基本用法。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 1. 创建BufferedInputStream对象，传入一个节点流（BufferedInputStream继承自过滤流，过滤流的作用就是用来增强节点流的）
+BufferedInputStream bis = new BufferedInputStream(new FileInputStream(basePath + "111.txt"));
+
+// 2. 读取文件
+int data = 0;
+while ((data = bis.read()) != -1) {
+  System.out.println((char) data);
+}
+
+// 3. 关闭流（内部调用节点流的close）
+bis.close();
+```
+
+缓冲流继承自过滤流，过滤流是用来增强节点流的。
+
+缓冲流在内部实现了一个缓冲区，当我们调用缓冲流的`read()`方法时，其内部实际不是从磁盘一个一个字节读取，而是读取多个字节到缓冲区（默认缓冲区大小是8K），然后我们再从缓冲区一个一个字节读取。这样做大大降低了对磁盘的访问次数，从而提高I/O效率。
+
+
+
+缓冲输出流基本用法。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 1. 创建BufferedOutputStream对象
+BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(basePath + "111.txt"));
+
+// 2. 写入文件
+String s = "HelloWorld";
+
+bos.write(s.getBytes()); // 写入到缓冲区
+bos.flush(); // 刷新到硬盘
+
+// 3. 关闭流（会调用其flush方法）
+bos.close();
+```
+
+
+
+## 对象流
+
+对象流：
+
+- ObjectInputStream
+- ObjectOutputStream
+
+
+
+作用：
+
+- 增强了缓冲区功能；
+- 增强了读写8种基本数据类型和字符串功能；
+- 增强了读写对象的功能：
+    - `readObject()`，从流中读取一个对象（反序列化）
+    - `writeObject(Object obj)`，向流中写入一个对象（序列化）
+
+*使用流传输对象的过程称之为序列化、反序列化。*
+
+
+
+对象流基本用法。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 1. 创建ObjectOutputStream对象
+ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(basePath + "111.txt"));
+
+Student student = new Student("001", "张三", 20);
+// 2. 序列化
+oos.writeObject(student);
+
+// 3. 关闭流
+oos.close();
+
+// 4. 创建ObjectInputStream对象
+ObjectInputStream ois = new ObjectInputStream(new FileInputStream(basePath + "111.txt"));
+
+// 5. 反序列化
+Student stu = (Student) ois.readObject();
+System.out.println(stu); // Student{id='001', name='张三', age=20}
+
+// 6. 关闭流
+ois.close();
+```
+
+注意事项：
+
+- 要序列化的类要实现序列化接口`Serializable`；
+- 要序列化的类中的对象属性也要实现序列化接口`Serializable`；
+- `private static final long serialVersionUID = 1L;`序列化类中`serialVersionUID`常量是为了保证序列化和反序列化的类是同一个类；
+- 使用`transient`关键字修饰的属性，该属性不参与序列化；
+- 静态属性不参与序列化。
+
+---
+
+
+
+# 字符流
+
+字符编码：
+
+- ISO-8859-1，收录除ASCII外，还包括西欧、希腊语、泰语、阿拉伯语、希伯来语对应的文字符号；
+- UTF-8，针对Unicode码表的可变长度字符编码；
+- GB2312，简体中文
+- GBK，简体中文、扩充
+- BIG5台湾，繁体中文
+
+
+
+字符流的父类（抽象类）：
+
+- Reader：字符输入流
+    - `public int read()`
+    - `public int read(char[] c)`
+    - `public int read(char[] b, int off, int len)`
+- Writer：字符输出流
+    - `public void write(int n)`
+    - `public void write(String str)`
+    - `public void write(char[] c)`
+
+
+
+## 文件字符流
+
+- FileReader
+
+  `public int read(char[] c)` 从流中读取多个字符，将读到的内容存入c数组，返回实际读到的字符数；如果达到文件的尾部，则返回-1。
+
+- FileWriter
+
+  `public void write(String str)` 一次写多个字符，将数组中所有字符写入到输出流。
+
+
+
+文件字符输入流基本使用。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 1. 创建FileReader对象
+FileReader fr = new FileReader(basePath + "111.txt");
+
+// 2. 读取文件
+int data = 0;
+while ((data = fr.read()) != -1) {
+  System.out.println((char) data);
+}
+
+// 3. 关闭流
+fr.close();
+```
+
+
+
+文件字符输出流基本使用。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 1. 创建FileWriter对象
+FileWriter fw = new FileWriter(basePath + "111.txt");
+
+// 2. 写入文件
+String s = "好好学习";
+
+fw.write(s);
+fw.flush();
+
+// 3. 关闭流
+fw.close();
+```
+
+
+
+## 字符缓冲流
+
+缓冲流：BufferedReader/BufferedWriter
+
+- 高效读写
+- 支持输入换行符
+- 可一次写一行、读一行
+
+
+
+字符缓冲输入流基本使用。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 创建BufferedReader对象
+BufferedReader br = new BufferedReader(new FileReader(basePath + "111.txt"));
+
+// 读取文件
+String line = null;
+while ((line = br.readLine()) != null) {
+  System.out.println(line);
+}
+
+// 关闭流
+br.close();
+```
+
+
+
+字符缓冲输出流基本使用。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 创建BufferedWriter对象
+BufferedWriter bw = new BufferedWriter(new FileWriter(basePath + "222.txt"));
+
+// 写文件
+for (int i = 0; i < 10; i++) {
+  bw.write("好好学习，天天向上");
+  bw.newLine();
+  bw.flush();
+}
+
+// 关闭流
+bw.close();
+```
+
+
+
+## 打印流
+
+PrintWriter
+
+打印流基本用法。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 创建PrintWriter对象
+PrintWriter pw = new PrintWriter(basePath + "333.txt");
+
+// 打印
+pw.println(97);
+pw.println(true);
+pw.println(3.14);
+pw.println('a');
+
+// 关闭流
+pw.close();
+```
+
+---
+
+
+
+# 转换流
+
+桥转换流：InputStreamReader/OutputStreamWriter
+
+- 前者可将字节流转换为字符流，后者可将字符流转换为字节流；
+- 可设置字符的编码方式。
+
+
+
+InputStreamReader基本使用。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 创建InputStreamReader对象
+InputStreamReader isr = new InputStreamReader(new FileInputStream(basePath + "222.txt"), "UTF-8");
+
+// 写文件
+int data = 0;
+while ((data = isr.read())!= -1){
+  System.out.println((char) data);
+}
+
+// 关闭流
+isr.close();
+```
+
+
+
+OutputStreamWriter基本使用。
+
+```java
+String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+// 创建OutputStreamWriter对象
+OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(basePath + "444.txt"), "UTF-8");
+
+// 写文件
+for (int i = 0; i < 10; i++) {
+  osw.write("好好学习，天天向上\r\n");
+  osw.flush();
+}
+
+// 关闭流
+osw.close();
+```
+
+---
+
+
+
+# File 类
+
+代表物理磁盘中的一个文件或者文件夹。
+
+
+
+## 常用方法
+
+| 方法              | 作用                             |
+| ----------------- | -------------------------------- |
+| createNewFile()   | 创建一个新文件                   |
+| mkdir()           | 创建一个新目录                   |
+| delete()          | 删除文件或目录                   |
+| exists()          | 判断File对象所代表的对象是否存在 |
+| getAbsolutePath() | 获取文件的绝对路径               |
+| getName()         | 取得名字                         |
+| getParent()       | 获取文件/ 目录所在的目录         |
+| isDirectory()     | 是否是目录                       |
+| isFile()          | 是否是文件                       |
+| length()          | 获得文件的长度                   |
+| listFiles()       | 列出目录中的所有内容             |
+| renameTo()        | 修改文件名为                     |
+
+
+
+## FileFilter 接口
+
+```java
+@FunctionalInterface
+public interface FileFilter {
+
+    /**
+     * Tests whether or not the specified abstract pathname should be
+     * included in a pathname list.
+     *
+     * @param  pathname  The abstract pathname to be tested
+     * @return  <code>true</code> if and only if <code>pathname</code>
+     *          should be included
+     */
+    boolean accept(File pathname);
+}
+```
+
+当调用File类中的`listFiles()`方法时，支持传入FileFilter接口实现类，对获取文件进行过滤，只有满足条件的文件才会被`listFiles()`方法返回。
+
+
+
+## 递归遍历
+
+递归遍历文件夹，打印所有文件路径。
+
+```java
+package com.shiguangping.day1;
+
+import java.io.File;
+
+/**
+ * @author liyan
+ */
+public class StreamTest {
+
+    private static final String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+    public static void main(String[] args) {
+
+        File file = new File(basePath + "doc");
+
+        listDir(file);
+    }
+
+    private static void listDir(File dir) {
+        File[] files = dir.listFiles();
+
+        if (files != null && files.length > 0) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    listDir(file);
+                } else {
+                    System.out.println(file.getAbsolutePath());
+                }
+            }
+        }
+    }
+
+}
+```
+
+
+
+递归删除目录。
+
+```java
+package com.shiguangping.day1;
+
+import java.io.File;
+
+/**
+ * @author liyan
+ */
+public class StreamTest {
+
+    private static final String basePath = "/Users/liyan/Documents/workspace/JavaStudy/javase-study/src/com/shiguangping/day1/";
+
+    public static void main(String[] args) {
+
+        File file = new File(basePath + "doc");
+
+        delDir(file);
+    }
+
+    private static void delDir(File dir) {
+        File[] files = dir.listFiles();
+
+        if (files != null && files.length > 0) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    delDir(file);
+                } else {
+                    System.out.println("当前" + file.getAbsolutePath() + "文件删除：" + file.delete());
+                }
+            }
+            System.out.println("当前" + dir.getAbsolutePath() + "目录删除：" + dir.delete());
+        }
+    }
+
+}
+```
+

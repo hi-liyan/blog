@@ -1,0 +1,61 @@
+---
+id: Filter
+title: Filter
+---
+
+![img](https://upyun1.surcode.cn/imgs/20200607205743.png)
+
+
+
+在网上找到一个对过滤器作用的总结：
+
+**过滤一些敏感的字符串【规定不能出现敏感字符串】、避免中文乱码【规定Web资源都使用UTF-8编码】、权限验证【规定只有带Session或Cookie的浏览器，才能访问web资源】等等等，过滤器的作用非常大，只要发挥想象就可以有意想不到的效果**
+
+**也就是说：当需要限制用户访问某些资源时、在处理请求时提前处理某些资源、服务器响应的内容对其进行处理再返回、我们就是用过滤器来完成的！**
+
+
+
+### Filter过滤器的使用：
+
+Filter和Servlet非常像，使用方式也类似，Servlet是实现Servlet接口，而Filter是实现Filter接口。
+
+![image-20200607210503358](https://upyun1.surcode.cn/imgs/20200607210503.png)
+
+
+
+功能代码写完之后就需要配置过滤器，配置过滤器的过程和Servlet相似，可以通过web.xml配置文件和注解两种方式配置。
+
+- 配置web.xml：
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+           version="4.0">
+  
+      <filter>
+          <filter-name>CharacterEncodingFilter</filter-name>
+          <filter-class>com.neu.filter.CharacterEncodingFilter</filter-class>
+      </filter>
+      <filter-mapping>
+        	<!--/servlet/*表示所有经过/server的请求和响应都要经过这个过滤器
+  						如果只配置成/*，则表示所有的请求和响应都要经过这个过滤器	
+  				-->
+          <filter-name>CharacterEncodingFilter</filter-name>
+          <url-pattern>/servlet/*</url-pattern>
+      </filter-mapping>
+  </web-app>
+  ```
+
+  ***最关键的就是url-pattern路径的配置，它决定了哪些请求和响应要经过过滤器***
+
+- 注解方式：
+
+  ![image-20200607213852675](https://upyun1.surcode.cn/imgs/20200607213852.png)
+
+
+
+测试：
+
+![image-20200607214325234](https://upyun1.surcode.cn/imgs/20200607214325.png)

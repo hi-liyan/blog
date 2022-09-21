@@ -1,0 +1,282 @@
+---
+id: List集合
+title: 17.1 List集合
+---
+import ImgBox from "../../src/components/ImgBox";
+
+List是元素有序并且可以重复的集合，称为序列。
+
+List是一个接口。
+
+List可以精确的控制每个元素的插入位置，或删除某个位置的元素
+
+List的两个主要实现类是ArrayList和LinkedList。
+
+
+
+## ArrayList
+
+- ArrayList底层是由数组实现的；
+- 长度动态增长，以满足应用程序的需求；
+- 在列表尾部插入或删除数组非常有效，如果在中间插入数据，会进行大量的数组复制，影响性能；
+- 更适合查找和更新元素
+- ArrayList中的元素可以为null
+
+
+
+### 常用方法：
+
+```java
+/*List常用方法*/
+ArrayList arr = new ArrayList();
+arr.add("Hello World"); //增：将制定元素增加到列表末尾
+arr.set(0,"你好"); //改：用指定元素替换此列表中指定位置的元素
+arr.get(0); //查：返回此列表中指定位置的元素
+arr.remove(0); //删：删除列表中指定位置的元素
+arr.size(); //返回列表长度
+arr.isEmpty(); //如果列表没有元素，返回true
+```
+
+
+
+### 示例：
+
+```java
+package com.imooc.set;
+//需要导包java.util
+import java.util.ArrayList;
+import java.util.List;
+
+public class ListDemo1 {
+	public static void main(String[] args) {
+		// 用ArrayList存储编程语言的名称，并输出
+		List list = new ArrayList();// 小贴士：向上转型，接口对象指向实现类的实例
+		// 调用add()方法添加元素
+		list.add("Java");
+		list.add("C");
+		list.add("C++");
+		list.add("Go");
+		list.add("Swift");
+		// 打印输出元素个数
+		System.out.println("列表中元素的个数为：" + list.size());//调用size()
+	}
+}
+```
+
+运行结果：
+
+```
+列表中元素的个数为：5
+```
+
+
+
+遍历打印列表元素：
+
+```java
+package com.imooc.set;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ListDemo1 {
+	public static void main(String[] args) {
+		// 用ArrayList存储编程语言的名称，并输出
+		List list = new ArrayList();// 小贴士：向上转型，接口对象指向实现类的实例
+		// 调用add()方法添加元素
+		list.add("Java");
+		list.add("C");
+		list.add("C++");
+		list.add("Go");
+		list.add("Swift");
+		// 打印输出元素个数
+		System.out.println("列表中元素的个数为：" + list.size());
+
+		// 遍历输出列表的元素
+		for (Object object : list) {
+			System.out.print(object + " ");
+		}
+		System.out.println("\n=========================");
+		for (int i = 0; i < list.size(); i++) {
+			System.out.print(list.get(i) + " ");// get()方法取值
+		}
+		System.out.println("\n=========================");
+		// 移除列表中的"C++"
+		list.remove("C++");
+		System.out.print("移除\"C++\"后的列表元素为：");
+		for (Object object : list) {
+			System.out.print(object + " ");
+		}
+	}
+}
+```
+
+运行结果：
+
+```
+列表中元素的个数为：5
+Java C C++ Go Swift 
+=========================
+Java C C++ Go Swift 
+=========================
+移除"C++"后的列表元素为：Java C Go Swift 
+```
+
+
+
+### 小练习：公告的管理
+
+#### 定义一个公告类Notice：
+
+```java
+package com.imooc.set;
+
+import java.util.Date;
+
+public class Notice {
+	// 公告类属性
+	private int id;// 编号
+	private String title;// 标题
+	private String creator;// 创建人
+	private Date createTime;// 创建时间
+
+	// 构造方法
+	public Notice() {
+
+	}
+	//带参构造，创建公告对象时完成对成员属性赋值
+	public Notice(int id, String title, String creator, Date createTime) {
+		setId(id);
+		setTitle(title);
+		setCreator(creator);
+		setCreateTime(createTime);
+	}
+
+	// get/set方法,对成员属性赋值取值
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+}
+```
+
+#### 在测试类供完成公告的添加、删除、修改和显示：
+
+```java
+package com.imooc.set;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class NoticeTest {
+	public static void main(String[] args) {
+		// 创建Notice对象，生成三条公告
+		Notice notice1 = new Notice(1, "欢迎来到慕课网！", "管理员", new Date());
+		Notice notice2 = new Notice(2, "请同学们按时提交作业！", "老师", new Date());
+		Notice notice3 = new Notice(3, "考勤通知！", "老师", new Date());
+
+		// 添加公告
+		List noticeList = new ArrayList();
+		noticeList.add(notice1);
+		noticeList.add(notice2);
+		noticeList.add(notice3);
+
+		// 遍历列表，打印公告
+		System.out.println("公告的内容为：");
+		for (int i = 0; i < noticeList.size(); i++) {
+			Notice n = (Notice) noticeList.get(i);// get()方法的返回值是Object类对象，所以需要向下转型成Notice类型
+			System.out.println(i + 1 + ":" + n.getTitle());
+		}
+		System.out.println("=======================================");
+
+		// 在第一条公告后面添加一条新公告
+		Notice notice4 = new Notice(4, "在线编辑器可以使用啦！", "管理员", new Date());
+		noticeList.add(1, notice4);
+
+		// 遍历列表，打印公告
+		System.out.println("添加公告后的内容为：");
+		for (int i = 0; i < noticeList.size(); i++) {
+			Notice n = (Notice) noticeList.get(i);// get()方法的返回值是Object类对象，所以需要向下转型成Notice类型
+			System.out.println(i + 1 + ":" + n.getTitle());
+		}
+		System.out.println("=======================================");
+		// 删除"请同学们按时提交作业！"公告
+		noticeList.remove(notice2);
+
+		// 遍历列表，打印公告
+		System.out.println("删除公告后的内容为：");
+		for (int i = 0; i < noticeList.size(); i++) {
+			Notice n = (Notice) noticeList.get(i);// get()方法的返回值是Object类对象，所以需要向下转型成Notice类型
+			System.out.println(i + 1 + ":" + n.getTitle());
+		}
+		System.out.println("=======================================");
+
+		// 将第二天公告改为"Java在线编辑器可以使用啦！"
+		notice4.setTitle("Java在线编辑器可以使用啦！");
+		noticeList.set(1, notice4);// 此处可以不用set()，如果用一个新对象去替换列表指定位置的元素，则使用set()
+
+		// 遍历列表，打印公告
+		System.out.println("修改后的公告内容为：");
+		for (int i = 0; i < noticeList.size(); i++) {
+			Notice n = (Notice) noticeList.get(i);// get()方法的返回值是Object类对象，所以需要向下转型成Notice类型
+			System.out.println(i + 1 + ":" + n.getTitle());
+		}
+		System.out.println("=======================================");
+	}
+}
+```
+
+运行结果：
+
+```
+公告的内容为：
+1:欢迎来到慕课网！
+2:请同学们按时提交作业！
+3:考勤通知！
+=======================================
+添加公告后的内容为：
+1:欢迎来到慕课网！
+2:在线编辑器可以使用啦！
+3:请同学们按时提交作业！
+4:考勤通知！
+=======================================
+删除公告后的内容为：
+1:欢迎来到慕课网！
+2:在线编辑器可以使用啦！
+3:考勤通知！
+=======================================
+修改后的公告内容为：
+1:欢迎来到慕课网！
+2:Java在线编辑器可以使用啦！
+3:考勤通知！
+=======================================
+```
+

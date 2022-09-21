@@ -1,0 +1,170 @@
+---
+id: Spring声明式事务
+title: 18. Spring声明式事务
+---
+
+#### 回顾事务：
+
+- 事务：要么都成功，要么都失败
+- 事务在项目开发中十分重要，涉及到数据的一致性问题
+- 确保数据完整性和一致性
+
+
+
+事务的ACID的原则：
+
+- A：原子性
+- C：一致性
+- I：隔离性：多个业务操作同一个资源时，防止数据损坏
+- D：持久性：事务一旦提交，无论系统发生什么问题，结果都不会再被影响，被持久化到存储中
+
+
+
+### 事务：
+
+一个使用 MyBatis-Spring 的其中一个主要原因是它允许 MyBatis 参与到 Spring 的事务管理中。而不是给 MyBatis 创建一个新的专用事务管理器，MyBatis-Spring 借助了 Spring 中的 DataSourceTransactionManager 来实现事务管理。
+
+一旦配置好了 Spring 的事务管理器，你就可以在 Spring 中按你平时的方式来配置事务。并且支持 @Transactional 注解和 AOP 风格的配置。在事务处理期间，一个单独的 `SqlSession` 对象将会被创建和使用。当事务完成时，这个 session 会以合适的方式提交或回滚。
+
+事务配置好了以后，MyBatis-Spring 将会透明地管理事务。这样在你的 DAO 类中就不需要额外的代码了。
+
+
+
+Spring中的事务分两类：
+
+- 编程式事务：需要在代码中进行事务管理
+- 声明式事务：AOP
+
+
+
+#### 标准配置：
+
+要开启 Spring 的事务处理功能，在 Spring 的配置文件中创建一个 `DataSourceTransactionManager` 对象：
+
+```xml
+<bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+  <property name="dataSource" ref="dataSource"/>
+</bean>
+```
+
+传入的 `DataSource` 可以是任何能够与 Spring 兼容的 JDBC `DataSource`。包括连接池和通过 JNDI 查找获得的 `DataSource`。
+
+注意：为事务管理器指定的 `DataSource` **必须**和用来创建 `SqlSessionFactoryBean` 的是同一个数据源，否则事务管理器就无法工作了。
+
+
+
+通过AOP织入事务：
+
+```xml
+<!--结合AOP实现事务的织入-->
+<!--配置事务通知-->
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
+  <!--给指定方法配置事务-->
+  <tx:attributes>
+    <tx:method name="add*" propagation="REQUIRED"/>
+    <!--或者使用*通配符匹配所有方法-->
+    <tx:method name="*"/>
+  </tx:attributes>
+</tx:advice>
+
+<!--配置事务切面-->
+<aop:config>
+  <aop:pointcut id="txPointcut" expression="execution(* com.neu.service.UserServiceImpl.*(..))"/>
+  <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+</aop:config>
+<!--启用基于类的代理-->
+<aop:aspectj-autoproxy  proxy-target-class="true"/>
+```
+
+*默认情况下，代理被创建都是基于接口的，但有些情况会出现类型注入错误的问题，那么就开启基于类创建：`<aop:aspectj-autoproxy  proxy-target-class="true"/>`*
+
+
+
+
+
+#### 注解配置：
+
+在 Spring 的配置文件中创建一个 `DataSourceTransactionManager` 对象，之后开启注解支持：
+
+```xml
+<tx:annotation-driven/>
+```
+
+
+
+声明式事务可以直接使用@Transactional注解来配置，看一下`@Transactional`注解都有啥：
+
+```java
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+public @interface Transactional {
+    // 别名为transactionManager，其实这两是同一个。就是事务的名字。
+    @AliasFor("transactionManager")
+	String value() default "";
+    // 事务的传播行为，默认值为REQUIRED
+    Propagation propagation() default Propagation.REQUIRED;
+    // 事务的隔离级别，默认为默认值(也就是使用底层数据库的隔离级别)
+    Isolation isolation() default Isolation.DEFAULT;
+    // 超时时间，默认为 -1，也就是没有超时时间。
+    int timeout() default TransactionDefinition.TIMEOUT_DEFAULT;
+    // 是否只读，默认为false。
+    boolean readOnly() default false;
+    // 会触发事务回滚的异常的字节码数组
+    Class<? extends Throwable>[] rollbackFor() default {};
+    // 不会触发事务回滚的异常的字节码数组
+    Class<? extends Throwable>[] noRollbackFor() default {};
+}
+复制代码
+```
+
+这里直接在实现类上使用，这个注解还可以在接口（一般不在接口上使用）和方法上使用（可见性必须为public，否则会被忽略）。
+
+
+
+#### 事务的隔离级别：
+
+通过org.springframework.transaction.annotation.Isolation 这个枚举类来指定。
+
+```java
+public enum Isolation {
+    // 这是默认值，表示使用底层数据库的默认隔离级别。对于MySQL的InnoDB存储引擎，它是REPEATABLE_READ，其它一般的都是READ_COMMITTED
+    DEFAULT(-1),
+    // 跟没有一样，几乎不使用。
+    READ_UNCOMMITTED(1),
+    // 只能读取另一个事务已提交的事务，能防止脏读。也是一般数据库的默认隔离级别。
+    READ_COMMITTED(2),
+    // 可重复读(在一个事务内多次查询的结果相同，其它事务不可修改该查询条件范围内的数据，相当于加了个读锁)
+    REPEATABLE_READ(4),
+    // 所有的事务依次逐个执行,相当于串行化了，效率太低，一般也不使用。
+    SERIALIZABLE(8);
+}
+```
+
+#### 事务的传播行为：
+
+如果在开始当前事务之前，一个事务上下文已经存在，此时有若干选项可以指定一个事务性方法的执行行为。org.springframework.transaction.annotation.Propagation枚举类中定义了7表示传播行为的枚举值。
+
+```java
+public enum Propagation {
+
+    // 如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。
+    REQUIRED(0),
+    // 如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行。
+    SUPPORTS(1),
+    // 如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常。
+    MANDATORY(2),
+    // 创建一个新的事务，如果当前存在事务，则把当前事务挂起。
+    REQUIRES_NEW(3),
+    // 以非事务方式运行，如果当前存在事务，则把当前事务挂起。
+    NOT_SUPPORTED(4),
+    // 以非事务方式运行，如果当前存在事务，则抛出异常。
+    NEVER(5),
+    // 如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于REQUIRED。
+    NESTED(6);
+}
+```
+
+
+

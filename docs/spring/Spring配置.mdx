@@ -1,0 +1,82 @@
+---
+id: Spring配置
+title: 5. Spring配置
+---
+
+### 别名：alias
+
+**使用alias给Bean添加个别名**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+   <bean id="user" class="com.neu.pojo.User">
+       <property name="name" value="张三"/>
+       <property name="pass" value="123"/>
+   </bean>
+    <alias name="user" alias="u1"/>
+</beans>
+```
+
+测试代码：
+
+```java
+import com.neu.pojo.User;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MyTest {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        User user = (User) context.getBean("u1");//getBean("Bean的别名")
+        System.out.println(user);
+    }
+}
+```
+
+
+
+### Bean的配置：
+
+- id:Bean的唯一标识符，相当于对象名
+- class：Bean对象所对应的类型，使用全限定名
+- name：也是别名，而且name可以同时取多个别名，并且可以通过空格，逗号，分号分割
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="user" class="com.neu.pojo.User">
+        <property name="name" value="张三"/>
+        <property name="pass" value="123"/>
+    </bean>
+
+    <alias name="user" alias="user1"/>
+    
+    <!--
+    id:Bean的唯一标识符，相当于对象名
+    class：Bean对象所对应的类型，使用全限定名
+    name：也是别名，而且name可以同时取多个别名，并且可以通过空格，逗号，分号分割
+    -->
+    <bean id="userT" class="com.neu.pojo.UserT" name="user2,u2 u3;u4">
+        <property name="name" value="李四"/>
+        <property name="pass" value="000"/>
+    </bean>
+</beans>
+```
+
+
+
+### import：
+
+import一般用于团队开发使用，它可以将多个配置文件，导入合并成一个
+
+![image-20200607174139641](https://upyun1.surcode.cn/imgs/20200607174139.png)
+

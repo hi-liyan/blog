@@ -1,0 +1,127 @@
+---
+id: 整合Mybatis
+title: 17. 整合Mybatis
+---
+
+#### 回顾Mybatis使用流程：
+
+1. 导入Mybatis的Maven坐标
+2. 编写实体类
+3. 编写核心配置文件
+4. 编写接口，定义方法
+5. 编写Mapper.xml（记得要在mybatis配置文件中注册）
+6. 测试
+
+
+
+### MyBatis-Spring
+
+官方文档：https://mybatis.org/spring/zh/
+
+MyBatis-Spring 会帮助你将 MyBatis 代码无缝地整合到 Spring 中。它将允许 MyBatis 参与到 Spring 的事务管理之中，创建映射器 mapper 和 `SqlSession` 并注入到 bean 中，以及将 Mybatis 的异常转换为 Spring 的 `DataAccessException`。最终，可以做到应用代码不依赖于 MyBatis，Spring 或 MyBatis-Spring。
+
+
+
+要和 Spring 一起使用 MyBatis，需要在 Spring 应用上下文中定义至少两样东西：一个 `SqlSessionFactory` 和至少一个数据映射器类。
+
+在 MyBatis-Spring 中，可使用 `SqlSessionFactoryBean`来创建 `SqlSessionFactory`。 要配置这个工厂 bean，只需要把下面代码放在 Spring 的 XML 配置文件中：
+
+```xml
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+  <property name="dataSource" ref="dataSource" />
+</bean>
+```
+
+
+
+注意：`SqlSessionFactory` 需要一个 `DataSource`（数据源）。 这可以是任意的 `DataSource`，只需要和配置其它 Spring 数据库连接一样配置它就可以了。
+
+
+
+#### 小结：
+
+- Spring容器中，先创建`dataSource`
+- 在创建`sqlSessionFactory`
+
+有了`sqlSessionFactory`之后，就可以做很多事情了，下面通过不同的方式，来实现执行SQL：
+
+
+
+#### 方式一：
+
+获取`sqlSessionTemplate`
+
+```xml
+<bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSessionTemplate">
+  <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+</bean>
+```
+
+`sqlSessionTemplate`就相当于mybatis中的`sqlSession`，可以`getMapper()`获取获取映射器对象执行接口中的方法。
+
+
+
+#### 方式二：
+
+通过`MapperFactoryBean` 将接口加入到 Spring 中
+
+```xml
+<bean class="org.mybatis.spring.mapper.MapperFactoryBean" id="userMapper">
+  <property name="mapperInterface" value="com.neu.dao.UserMapper"/>
+  <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+</bean>
+```
+
+官方文档说：所指定的映射器类**必须**是一个接口，而不是具体的实现类。
+
+配置好之后，你就可以像 Spring 中普通的 bean 注入方法那样，将映射器注入到你的业务或服务对象中。`MapperFactoryBean` 将会负责 `SqlSession` 的创建和关闭。如果使用了 Spring 的事务功能，那么当事务完成时，session 将会被提交或回滚。最终任何异常都会被转换成 Spring 的 `DataAccessException` 异常。
+
+
+
+测试代码：
+
+```java
+@Autowired
+UserMapper userMapper;
+
+@Test
+public void test() {
+  List<User> users = userMapper.queryAll();
+  System.out.println(users);
+}
+```
+
+
+
+#### 方式三：
+
+通过`MapperScannerConfigurer`配置映射器扫描，将包内的接口都注册到Spring中
+
+```xml
+<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+  <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+  <property name="basePackage" value="com.neu.dao"/>
+</bean>
+```
+
+
+
+测试方法：
+
+```java
+@Autowired
+UserMapper userMapper;
+
+@Test
+public void test() {
+  List<User> users = userMapper.queryAll();
+  System.out.println(users);
+}
+```
+
+同方式二类似，方式二是指定映射器接口，这种方法是直接扫描包。
+
+
+
+**这三种方法都需要`sqlSessionFactory`的支持**
+

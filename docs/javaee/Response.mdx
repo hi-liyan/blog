@@ -1,0 +1,259 @@
+---
+id: Response
+title: Response
+---
+import ImgBox from "../../src/components/ImgBox";
+
+请求消息：客户端发送给服务器端的数据
+
+ - 数据格式：
+   	- 请求行
+   	- 请求头
+   	- 请求空行
+   	- 请求体
+
+相应消息：服务器端发送给客户端的数据
+
+ - 数据格式：
+   	- 响应行
+   	- 响应头
+   	- 响应空行
+   	- 响应体
+
+
+
+### 各部分说明：
+
+**响应行：**
+
+- 格式：HTTP/1.1 200 OK
+
+- HTTP/1.1：协议和版本
+- 200：响应状态码
+- OK：状态码描述
+
+
+
+**响应状态码：**
+
+响应状态码：服务器告诉客户端浏览器本次请求和响应的一个状态
+
+*状态码都是3位数字*
+
+ - 分类：
+   	- 1xx：服务器接收客户端消息，但是没有接收完成，等待一段时间后，发送1xx状态码，询问客户端还要不要发送消息。
+   	- 2xx：本次请求和响应成功，代码状态码：200
+   	- 3xx：重定向。代表：302（重定向），304（访问缓存）
+    - 4xx：客户端错误（请求错误）
+      	- 404（请求路径没有对应的资源）
+      	- 405（页面的请求方式没有对应的doGet()或doPost()方法）
+    - 5xx：服务器端错误。代表：500（服务器内部出现异常）
+
+
+
+**响应头：**
+
+格式：键值对，名称:值
+
+常见的响应头：
+
+- content-type：服务器告诉客户端本次响应体数据格式以及编码格式
+- content-disposition：服务器告诉客户端以什么格式打开响应体数据，常用值：
+  - in-line：默认值，在当前页面打开
+  - attachment; filename = xxx：以附件形式打开响应体。（文件下载）
+
+
+
+**响应体：**
+
+就是真实的传输的数据。
+
+
+
+### Servlet中的Response对象：
+
+Response是用来设置相应消息的：
+
+- 设置相应行
+
+  格式：HTTP/1.1 200 OK
+
+  设置状态码：void setStatus(int sc);方法
+
+  
+
+- 设置响应头
+
+  void setHeader(String name,String value);方法
+
+  
+
+- 设置相应体
+
+  使用流的方式：
+
+  1. 获取输出流
+     - 字符输出流（只能输出字符）：PrintWriter getWriter();
+     - 字节输出流：ServletOutputStream getOutputStream();
+
+  2. 使用输出流，将数据输出到客户端浏览器
+
+
+
+### 重定向：
+
+重定向：资源跳转的方式
+
+**方式一：**
+
+```java
+@Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //设置状态码为302（重定向）
+        response.setStatus(302);
+        //设置响应头				
+  	response.setHeader("location","/response_war_exploded/ResponseDemo2");
+    }
+```
+
+分两步：
+
+1. 设置状态码为302（重定向）
+2. 设置响应头，键为location，值为要跳转的URI地址（URI：虚拟目录+Servlet路径）
+
+
+
+**方式二：**
+
+void sendRedirect(String url);
+
+```java
+response.sendRedirect("/response_war_exploded/ResponseDemo2");
+```
+
+
+
+**重定向和转发的比较：**
+
+重定向的特点：
+
+1. 地址栏发生变化
+2. 重定向可以访问其他站点的资源
+3. 重定向是两次请求
+
+
+
+转发的特点：RequestDispatcher
+
+- 浏览器地址栏路径没有发生变化
+- 只能转发到当前服务器的内部资源
+- 转发的整个流程只有一次请求
+
+
+
+路径的写法：
+
+相对路径：通过相对路径不可以确定唯一资源，有相对位置关系
+
+- 如：*./index.html 当前目录下的index.html资源*
+
+- 不以 / 开头，以 . 开头的路径
+
+  规则：
+
+  - 找到当前资源和目标资源之间的相对位置关系
+    - ./ 当前目录
+    - ../ 后退一级目录
+
+绝对路径：通过绝对路径可以确定唯一的资源
+
+- 如：http://localhost/day15/responseDemo2    /day15/responseDemo2
+- 以 / 开头的路径
+
+
+
+### 案例：文件下载
+
+在web中创建了三个用于下载的文件：
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/20200602214244.png" />
+
+**HTML页面代码：**
+
+写了三个超链接，用于点击下载相应的文件：
+
+*超链接的href属性值，指向downloadServlet并携带请求参数文件名，Servlet通过获取不同的文件名，来实现下载对应的文件。*
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件下载Demo</title>
+</head>
+<body>
+<a href="downloadServlet?filename=文本文档.txt">文本文档.txt下载</a><br>
+<a href="downloadServlet?filename=下载用.zip">下载用.zip下载</a><br>
+<a href="downloadServlet?filename=text.txt">text.txt下载</a><br>
+</body>
+</html>
+```
+
+
+
+DownloadServlet类：
+
+```java
+import util.DownLoadUtils;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+@WebServlet("/downloadServlet")
+public class DownloadServlet extends HttpServlet {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //获取要请求的文件的名称
+        String filename = request.getParameter("filename");
+
+        //获取请求文件的真是路径
+        ServletContext context = this.getServletContext();
+        String realPath = context.getRealPath("/doc/" + filename);
+
+        //获取浏览器的信息，根据浏览器处理文件中文名编码问题
+        String agent = request.getHeader("User-Agent");
+        filename = DownLoadUtils.getFileName(agent, filename);
+
+        //把文件写进输入流
+        FileInputStream fis = new FileInputStream(realPath);
+
+        //设置response响应头
+        String mimeType = context.getMimeType(filename);
+        response.setHeader("content-type", mimeType);
+        response.setHeader("content-disposition", "attachment; filename = " + filename);
+
+        //将输入流的数据写出到字节缓冲区，然后Servlet输出流再从缓冲区中读出
+        ServletOutputStream outputStream = response.getOutputStream();
+        byte[] buff = new byte[1024 * 8];
+        int len = 0;
+        while ((len = fis.read(buff)) != -1) {
+            outputStream.write(buff, 0, len);
+        }
+        //释放输入流资源
+        fis.close();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+}
+```
+

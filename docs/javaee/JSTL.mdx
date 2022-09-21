@@ -1,0 +1,114 @@
+---
+id: JSTL
+title: JSTL
+---
+
+概念：JSTL：JavaServer pages Tag Library （JSP标准标签库）
+
+- 由Apache组织提供的开源的免费的JSP标签库
+
+作用：用于简化和替换JSP页面的java代码
+
+
+
+### 使用步骤：
+
+1. 导入JSTL相关jar包
+
+2. 在JSP页面引入标签库
+
+   ```jsp
+   <%@taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+   ```
+
+3. 使用标签
+
+
+
+### 常用的JSTL标签：
+
+- if：相当于Java代码的if语句
+
+  ```jsp
+  <!--基本用法-->
+  <c:if test="true">
+      <p>if被输出了</p>
+  </c:if>
+  
+  <!--test="条件表达式"-->
+  <c:if test="${requestScope.number%2!=0}">
+      number为奇数
+  </c:if>
+  ```
+
+  *注意：c:if 标签没有else的情况，想要else情况只能再定义一个c:if标签*
+
+
+
+- choose：相当于Java代码的switch语句
+
+  ```jsp
+  <body>
+  <div>
+      <form action="index.jsp" method="get">
+          <input type="text" name="week" placeholder="输入整数值">
+          <input type="submit" value="提交">
+      </form>
+  </div>
+  
+  <%
+      request.setAttribute("week",request.getParameter("week"));
+  %>
+  
+  <c:choose><!--choose相当于switch-->
+      <c:when test="${week==1}">星期一</c:when><!--when相当于case-->
+      <c:when test="${week==2}">星期二</c:when>
+      <c:when test="${week==3}">星期三</c:when>
+      <c:when test="${week==4}">星期四</c:when>
+      <c:when test="${week==5}">星期五</c:when>
+      <c:when test="${week==6}">星期六</c:when>
+      <c:when test="${week==7}">星期日</c:when>
+      <c:otherwise>没有对象项</c:otherwise><!--otherwise相当于default-->
+  </c:choose>
+  </body>
+  ```
+
+  
+
+- foreach：相当于Java代码的for语句
+
+  用法一：完成循环行操作
+
+  ```jsp
+  <!--循环打印0~5-->
+  <c:forEach begin="0" end="5" var="i" step="1">
+      <c:out value="${i}"/><br>
+  </c:forEach>
+  ```
+
+  - begin：开始值
+  - end：结束值
+  - var：临时变量
+  - step：步长
+  - varStatus：循环状态对象(index属性：容器中元素的索引，从0开始；count属性：循环次数，从1开始)
+
+  用法二：遍历容器
+
+  ```jsp
+  <%
+      List<User> list = new ArrayList<>();
+      list.add(new User("沙瑞金", "男"));
+      list.add(new User("田国富", "男"));
+      list.add(new User("高小琴", "女"));
+      request.setAttribute("list", list);
+  %>
+  
+  <c:forEach items="${list}" var="i" varStatus="s">
+      <c:out value="${i}"/><br>
+  </c:forEach>
+  ```
+
+  
+
+  - items：容器对象
+  - var：容器中元素的临时变量

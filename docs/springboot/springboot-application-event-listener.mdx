@@ -1,0 +1,467 @@
+---
+id: springboot-application-event-listener
+title: SpringBoot 事件和事件监听器
+---
+import TipBox from "../../src/components/TipBox";
+
+<TipBox>
+  本手记介绍了 SpringBoot 框架启动时触发的7种应用事件，如何自定义事件、发布事件、定义事件监听器监听这些事件，以及 SpringBoot 监听器模式的实现方法，发布、监听事件的整个流程。
+</TipBox>
+
+## 1. 监听器模式
+
+监听器模式四要素：
+  - 事件
+  - 监听器
+  - 广播器
+  - 触发机制
+
+<br/>
+
+## 2. SpringBoot 中的系统事件
+
+### 2.1 EventObject
+
+`EventObject` 在"java.util"包中，它是所有事件对象的根类。
+
+<br/>
+
+### 2.2 ApplicationEvent
+
+`ApplicationEvent` 在"org.springframework.context"包中，该类是一个抽象类，继承自 `EventObject` 。框架中所有的应用事件都继承自该类，也可以通过继承该类自定义事件。
+
+<br/>
+
+### 2.3 SpringApplicationEvent
+
+`SpringApplicationEvent` 在"org.springframework.boot.context.event"包中，框架在启动时每个阶段触发的事件都继承自该类。
+
+<br/>
+
+### 2.4 框架启动时触发的事件
+
+SpringBoot 框架在启动时会执行两步大的操作：
+  1. SpringApplication实例化；
+  2. 执行run()方法。
+
+`SpringApplication` 实例化时主要是加载框架启动的资源，配置应用上下文初始化器和事件监听器。`run()` 方法主要是沟通 Spring 框架，完成系统上下文创建，这一步也是整个SpringBoot框架核心。
+
+SpringBoot定义了7个应用事件，这7个应用事件在 `run()` 方法执行的各个关键节点触发。我们也可以通过实现 `ApplicationListener<E extends ApplicationEvent>` 接口来自定义应用监听器监听某个事件，实现在框架启动过程中插入一些自定义操作。
+
+<br/>
+
+框架启动时触发的七个应用事件（根据事件触发顺序排序）：
+  1. ApplicationStartingEvent -run() 方法开始执行
+  2. ApplicationEnvironmentPreparedEvent -环境准备完成
+  3. ApplicationContextInitializedEvent -上下文初始化完成
+  4. ApplicationPreparedEvent -应用准备完成
+  5. ApplicationStartedEvent -run() 执行完毕
+  6. ApplicationReadyEvent -框架启动成功，开始运行
+  7. ApplicationFailedEvent -框架启动过程中失败时触发
+
+<br/>
+
+### 2.5 自定义事件
+
+继承 `ApplicationEvent` 类自定义事件。
+
+```java
+/**
+ * 自定义应用事件
+ * @author liyan
+ * @since 2021-10-21 09:54
+ */
+public class CustomApplicationEvent extends ApplicationEvent {
+    public CustomApplicationEvent(Object source) {
+        super(source);
+    }
+}
+```
+
+<br/>
+
+### 2.6 事件发布器
+
+我们可以通过两种方式拿到时间发布器对象，第一种是通过调用 `ApplicationContext` 对象的 `publishEvent()` 方法发布事件，因为 ApplicationContext 继承了 `ApplicationEventPublisher` 接口；第二种是通过实现 `ApplicationEventPublisherAware` 接口获取事件发布器对象 `ApplicationEventPublisher` 发布事件。
+
+下面是通过第二种方式，实现 `ApplicationEventPublisherAware` 接口获取事件发布器对象发布事件。
+
+```java
+/**
+ * 应用事件发布器
+ * @author liyan
+ * @since 2021-10-21 10:03
+ */
+@Component
+public class EventPublisher implements ApplicationEventPublisherAware {
+
+    private static ApplicationEventPublisher publisher;
+
+    /**
+     * 框架启动中会回调该方法，传入ApplicationEventPublisher对象
+     * @param applicationEventPublisher
+     */
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        publisher = applicationEventPublisher;
+    }
+
+    /**
+     * 发布事件方法
+     * @param event
+     */
+    public static void publish(ApplicationEvent event){
+        publisher.publishEvent(event);
+    }
+}
+```
+
+<br/>
+
+## 3. 事件监听器
+
+<TipBox>
+  我们可以自定义事件监听器来监听应用中的各种事件。
+</TipBox>
+
+### 3.1 自定义事件监听器
+
+自定义事件监听器是通过继承 `ApplicationListener<E extends ApplicationEvent>` 类自定义事件监听器，泛型是要监听的事件，重写 `onApplicationEvent()` 方法获取要监听的事件对象，在事件被触发时执行我们要实现的逻辑；
+
+这种方式可以监听所有继承自 `ApplicationEvent` 的事件。
+
+```java
+/**
+ * 自定义事件监听器，监听CustomApplicationEvent事件
+ * @author liyan
+ * @since 2021-10-21 10:06
+ */
+public class CustomApplicationEventListener implements ApplicationListener<CustomApplicationEvent> {
+    @Override
+    public void onApplicationEvent(CustomApplicationEvent event) {
+        System.out.println("自定义事件被触发");
+    }
+}
+```
+
+<br/>
+
+### 3.2 自定义 Run 方法监听器
+
+如果只想监听 Run 方法的生命周期，在框架启动过程中执行一些操作逻辑，可以实现 `SpringApplicationRunListener` 接口，从接口的名字可以看出，它是用来监听 `run()` 方法执行的每个阶段的。该接口定义了多个默认方法，用来监听 run() 方法执行生命周期中的不同阶段，我们想要在哪个阶段操作直接重写对应的方法即可。并且这种方式在一个类中可以监听多个阶段，而上面自定义事件监听器一个事件监听器只能监听一种事件。
+
+注意，实现 `SpringApplicationRunListener` 必须提供一个带参构造函数，用来接收 `SpringApplication` 对象和启动类传来的命令行参数 `args` 。
+
+```java
+/**
+ * 自定义Spring应用Run方法监听器
+ * @author liyan
+ * @since 2021-10-21 13:08
+ */
+public class CustomSpringApplicationRunListener implements SpringApplicationRunListener {
+
+    /**
+     * 必须要提供一个公共的构造方法，接收SpringApplication和String[]
+     *
+     * @param application
+     * @param args
+     */
+    public CustomSpringApplicationRunListener(SpringApplication application, String[] args) {
+        // 可以在构造函数中添加自定义的应用上下文初始化器
+        application.addInitializers(new SecondInitializer());
+    }
+
+    @Override
+    public void starting(ConfigurableBootstrapContext bootstrapContext) {
+        SpringApplicationRunListener.super.starting(bootstrapContext);
+        System.out.println("1. 项目启动开始");
+    }
+
+    @Override
+    public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
+        SpringApplicationRunListener.super.environmentPrepared(bootstrapContext, environment);
+        String ports = environment.getProperty("server.port");
+        System.out.printf("2. 环境准备完成，端口号：%s\n", ports);
+    }
+}
+```
+
+<br/>
+
+### 3.3 注册监听器
+
+监听器的注册和应用上下文初始化器（`ApplicationContextInitializer`）一样，都是在 `SpringApplication` 实例化过程中完成，不能通过添加注解（如 @Component）完成装配。所以，我们可以通过和注册应用上下文初始化器类似的方式来注册监听器。上面也有提到，SpringApplication 实例化阶段主要就是完成了应用上下文初始化器和监听器的加载。
+
+<br/>
+
+方式一：在 `resources/META-INF/spring.factories` 中配置要注册的监听器， SpringApplication 在实例化过程中，会通过 `SpringFactoriesLoader` 来加载 `spring.factories` 要注册监听器类。
+
+`spring.factories`中注册事件监听器的键：`org.springframework.context.ApplicationListener`，值是要注册的监听器的全限定类名，如果有多个，用逗号分隔；
+
+注册 run 方法监听器的键：`org.springframework.boot.SpringApplicationRunListener`，值是自定义的 run 方法监听器全限定类名，如果有多个，用逗号分隔。
+
+```factories
+# 应用监听器
+org.springframework.context.ApplicationListener=\
+  com.shiguangping.study.listener.CustomStartingEventListener,\
+  com.shiguangping.study.listener.CustomApplicationEventListener
+
+# 应用run方法监听器
+org.springframework.boot.SpringApplicationRunListener=com.shiguangping.study.listener.CustomSpringApplicationRunListener
+```
+
+<br/>
+
+方式二：可以在启动类中，通过 SpringApplication 实例对象调用 `addListeners()` 方法添加监听器。这种方式只能添加实现 `ApplicationListener` 接口的事件监听器。在自定义的 Run 方法监听器中也可以注册添加自定义的事件监听器。
+
+```java
+@SpringBootApplication
+public class SpringbootSourceStudyApplication {
+
+    public static void main(String[] args) {
+        SpringApplication application = new SpringApplication(SpringbootSourceStudyApplication.class);
+        // SpringApplication对象调用addListeners()添加监听器
+        application.addListeners(new CustomStartingEventListener(), new CustomApplicationEventListener());
+        application.run(args);
+    }
+}
+```
+
+<br/>
+
+方式三：在 `application.properties` 或者 `application.yaml` 配置文件中注册事件监听器。键：`context.listener.classes`。
+
+```yaml
+context:
+  listener:
+    classes: com.shiguangping.study.listener.CustomApplicationEventListener,com.shiguangping.study.listener.CustomStartingEventListener
+```
+
+<br/>
+
+总结：自定义的 run 方法监听器需要在 `spring.factories` 中配置，事件监听器则和应用上下文初始化器一样，有多种配置方式。
+
+<br/>
+
+## 4. SpringBoot 应用事件触发的流程
+
+1, 先认识下 `run()` 方法整体的执行流程，框架中定义的启动时触发的7个应用事件也是在这个方法里被一一触发的。
+
+```java
+public ConfigurableApplicationContext run(String... args) {
+    StopWatch stopWatch = new StopWatch();
+    // 开始计时
+    stopWatch.start();
+    // 创建引导上下文
+    DefaultBootstrapContext bootstrapContext = createBootstrapContext();
+    ConfigurableApplicationContext context = null;
+    // 配置Headless属性
+    configureHeadlessProperty();
+    // 获得SpringApplicationRunListeners对象（获取流程下面再说）
+    SpringApplicationRunListeners listeners = getRunListeners(args);
+    // 本次重点来了：run()方法生命周期中的第一个应用事件，说明run()方法开始执行主流程（上面都是在做准备）
+    listeners.starting(bootstrapContext, this.mainApplicationClass);
+    try {
+        // 构造应用参数对象
+        ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+        // 准备当前可配置环境对象，整合各种配置参数，为下面启动做准备
+        ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);
+        configureIgnoreBeanInfo(environment);
+        // 打印banner
+        Banner printedBanner = printBanner(environment);
+        // 创建应用上下文对象
+        context = createApplicationContext();
+        context.setApplicationStartup(this.applicationStartup);
+        // 准备上下文
+        prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);
+        // 刷新上下文
+        refreshContext(context);
+        afterRefresh(context, applicationArguments);
+        stopWatch.stop();
+        if (this.logStartupInfo) {
+            new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), stopWatch);
+        }
+        // 触发框架整体启动完毕的事件
+        listeners.started(context);
+        callRunners(context, applicationArguments);
+    }
+    catch (Throwable ex) {
+        handleRunFailure(context, ex, listeners);
+        throw new IllegalStateException(ex);
+    }
+
+    try {
+        // 触发最后一个应用事件，框架启动完成，到这一步说明框架启动时没有发生任何异常，正在运行
+        listeners.running(context);
+    }
+    catch (Throwable ex) {
+        handleRunFailure(context, ex, null);
+        throw new IllegalStateException(ex);
+    }
+    return context;
+}
+```
+
+<br/>
+
+
+### 4.1 SpringApplicationRunListeners
+
+`SpringApplicationRunListeners` 这个类是 `SpringApplicationRunListener` 实现类的一个容器类，内部的成员属性 `List<SpringApplicationRunListener> listeners` 是用来存放所有被加载进来的 run 方法监听器（`SpringApplicationRunListener`）的集合。
+
+ run() 方法内调用 `getRunListeners()` 方法，获取 `SpringApplicationRunListeners` 实例，该内部通过 `SpringFactoriesLoader` 加载 `spring.factories` 中配置的run方法监听器，并获取实例对象，通过 `SpringApplicationRunListeners` 带参构造函数实例化并为其成员属性 `listeners` 赋值。
+
+```java
+private SpringApplicationRunListeners getRunListeners(String[] args) {
+    Class<?>[] types = new Class<?>[] { SpringApplication.class, String[].class };
+    // 通过带参构造函数实例化SpringApplicationRunListeners，并将所有SpringApplicationRunListener实例放到其listeners集合中
+    return new SpringApplicationRunListeners(logger,
+            // 通过SpringFactoriesLoader加载spring.factories中配置的run方法监听器，并获取实例对象
+            getSpringFactoriesInstances(SpringApplicationRunListener.class, types, this, args),
+            this.applicationStartup);
+}
+```
+
+`SpringApplicationRunListeners` 内封装了 run 方法执行各个阶段对应的方法，如（截取了部分代码）：
+
+```java
+// starting
+void starting(ConfigurableBootstrapContext bootstrapContext, Class<?> mainApplicationClass) {
+  doWithListeners("spring.boot.application.starting", (listener) -> listener.starting(bootstrapContext),
+      (step) -> {
+        if (mainApplicationClass != null) {
+          step.tag("mainApplicationClass", mainApplicationClass.getName());
+        }
+      });
+}
+
+// environmentPrepared
+void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
+  doWithListeners("spring.boot.application.environment-prepared",
+      (listener) -> listener.environmentPrepared(bootstrapContext, environment));
+}
+
+// ...
+
+private void doWithListeners(String stepName, Consumer<SpringApplicationRunListener> listenerAction,
+    Consumer<StartupStep> stepAction) {
+  StartupStep step = this.applicationStartup.start(stepName);
+  // 遍历run方法监听器集合（其中包括spring框架自己实现的监听器，第三方组件实现的监听器，以及我们自定义的run方法监听器等等...），
+  // 调用传过来的匿名函数，如(listener) -> listener.starting(bootstrapContext)，匿名函数中调用了run方法监听器中的方法，这样所有的run方法监听器中的starting方法就被调用了
+  this.listeners.forEach(listenerAction);
+  if (stepAction != null) {
+    stepAction.accept(step);
+  }
+  step.end();
+}
+```
+
+我们自己实现 `SpringApplicationRunListener` 接口定义的 run 方法监听器，也是在这里被调用的。
+
+:::tip
+到这里，已经介绍完了 `SpringApplicationRunListener` 的实现逻辑，介绍了它是如何监听 run 方法执行的每一步的。那么上面说的7个应用事件是如何被广播发送的呢？
+:::
+
+<br/>
+
+### 4.2 EventPublishingRunListener
+
+`EventPublishingRunListener` 事件发布 Run 方法监听器，它是 Spring 实现的 Run 方法监听器，实现了 `SpringApplicationRunListener` 接口和 `Ordered` 接口。
+
+点开源代码，会发现代码非常熟悉，和上面我们自定义的 Run 方法监听器没有太大的区别，该 RunListener 的作用是监听 Run 方法执行，广播发送相应的事件。
+
+```java
+// 带参构造函数，初始化
+public EventPublishingRunListener(SpringApplication application, String[] args) {
+  this.application = application;
+  this.args = args;
+  // 实例化SimpleApplicationEventMulticaster，用来广播事件
+  this.initialMulticaster = new SimpleApplicationEventMulticaster();
+  for (ApplicationListener<?> listener : application.getListeners()) {
+    this.initialMulticaster.addApplicationListener(listener);
+  }
+}
+
+@Override
+public int getOrder() {
+  return 0;
+}
+
+// 这里就是上面 SpringApplicationRunListeners 类中遍历 listeners 时调用的。
+@Override
+public void starting(ConfigurableBootstrapContext bootstrapContext) {
+  // 调用广播器中的广播事件方法
+  this.initialMulticaster
+      .multicastEvent(new ApplicationStartingEvent(bootstrapContext, this.application, this.args));
+}
+
+@Override
+public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext,
+    ConfigurableEnvironment environment) {
+  this.initialMulticaster.multicastEvent(
+      new ApplicationEnvironmentPreparedEvent(bootstrapContext, this.application, this.args, environment));
+}
+```
+
+<br/>
+
+### 4.3 SimpleApplicationEventMulticaster
+
+`SimpleApplicationEventMulticaster` 简单应用事件广播器中的 `multicastEvent()` 方法实现。这里会过滤出监听当前事件的监听器集合，然后遍历这些事件监听器，调用其 `onApplicationEvent()` 方法，发送当前事件对象，我们自定义的事件监听器也在这里被触发，到这里整个事件的触发发送，以及监听实现流程已经介绍完了。
+
+这里不过多介绍广播器，以及 `ApplicationEventMulticaster` 接口，有时间再研究。
+
+```java
+@Override
+public void multicastEvent(final ApplicationEvent event, @Nullable ResolvableType eventType) {
+  ResolvableType type = (eventType != null ? eventType : resolveDefaultEventType(event));
+  Executor executor = getTaskExecutor();
+  for (ApplicationListener<?> listener : getApplicationListeners(event, type)) {
+    if (executor != null) {
+      // 内部会调用到doInvokeListener
+      executor.execute(() -> invokeListener(listener, event));
+    }
+    else {
+      invokeListener(listener, event);
+    }
+  }
+}
+
+// ...
+
+@SuppressWarnings({"rawtypes", "unchecked"})
+private void doInvokeListener(ApplicationListener listener, ApplicationEvent event) {
+  try {
+    // 调用事件监听器中的onApplicationEvent方法，发送当前事件对象
+    listener.onApplicationEvent(event);
+  }
+  catch (ClassCastException ex) {
+    String msg = ex.getMessage();
+    if (msg == null || matchesClassCastMessage(msg, event.getClass()) ||
+        (event instanceof PayloadApplicationEvent &&
+            matchesClassCastMessage(msg, ((PayloadApplicationEvent) event).getPayload().getClass()))) {
+      // Possibly a lambda-defined listener which we could not resolve the generic event type for
+      // -> let's suppress the exception.
+      Log loggerToUse = this.lazyLogger;
+      if (loggerToUse == null) {
+        loggerToUse = LogFactory.getLog(getClass());
+        this.lazyLogger = loggerToUse;
+      }
+      if (loggerToUse.isTraceEnabled()) {
+        loggerToUse.trace("Non-matching event type for listener: " + listener, ex);
+      }
+    }
+    else {
+      throw ex;
+    }
+  }
+}
+```
+
+---
+
+<br/>
+
+<TipBox>
+  本手记创建时间：2021-10-21 15:24 本文结束，拜拜。
+</TipBox>

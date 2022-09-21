@@ -1,0 +1,90 @@
+---
+id: Bean的作用域
+title: 7. Bean的作用域
+---
+
+Bean scopes:
+
+- singleton：单例，全局唯一
+- prototype：原型，每一个都是单独的对象
+- request：
+- session：
+- application：
+- websocket：
+
+
+
+| Scope                                                        | Description                                                  |
+| :----------------------------------------------------------- | :----------------------------------------------------------- |
+| [singleton](https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/core.html#beans-factory-scopes-singleton) | (Default) Scopes a single bean definition to a single object instance for each Spring IoC container. |
+| [prototype](https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/core.html#beans-factory-scopes-prototype) | Scopes a single bean definition to any number of object instances. |
+| [request](https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/core.html#beans-factory-scopes-request) | Scopes a single bean definition to the lifecycle of a single HTTP request. That is, each HTTP request has its own instance of a bean created off the back of a single bean definition. Only valid in the context of a web-aware Spring `ApplicationContext`. |
+| [session](https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/core.html#beans-factory-scopes-session) | Scopes a single bean definition to the lifecycle of an HTTP `Session`. Only valid in the context of a web-aware Spring `ApplicationContext`. |
+| [application](https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/core.html#beans-factory-scopes-application) | Scopes a single bean definition to the lifecycle of a `ServletContext`. Only valid in the context of a web-aware Spring `ApplicationContext`. |
+| [websocket](https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/web.html#websocket-stomp-websocket-scope) | Scopes a single bean definition to the lifecycle of a `WebSocket`. Only valid in the context of a web-aware Spring `ApplicationContext`. |
+
+
+
+### 单例：
+
+![singleton](https://upyun1.surcode.cn/imgs/20200608184342.png)
+
+```xml
+<bean id="user" class="com.neu.pojo.User" p:name="张三" p:age="28" scope="singleton"/>
+```
+
+***Spring的Bean默认是单例的***
+
+```java
+   @Test
+    public void test2(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("userbean.xml");
+        User user = context.getBean("user",User.class);
+        User use2 = context.getBean("user",User.class);
+
+        System.out.println(user==use2);
+    }
+//结果是true
+```
+
+
+
+
+
+### 原型：
+
+![prototype](https://upyun1.surcode.cn/imgs/20200608184748.png)
+
+```xml
+<bean id="user" class="com.neu.pojo.User" p:name="张三" p:age="28" scope="prototype"/>
+```
+
+
+
+测试：
+
+```java
+@Test
+    public void test2(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("userbean.xml");
+        User user = context.getBean("user",User.class);
+        User use2 = context.getBean("user",User.class);
+
+        System.out.println(user==use2);
+    }
+//结果是false
+```
+
+***原型模式：每次从容器中get的时候，都会产生新的对象***
+
+
+
+### 其余的：
+
+其余的request、session、application只能在web开发中使用。
+
+request：请求响应一次之后，request就销毁
+
+session：
+
+application：

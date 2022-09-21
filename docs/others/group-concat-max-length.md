@@ -22,7 +22,7 @@ GROUP BY r.role_id;
 
 查询出的`menuIds`字符长度超出了GROUP_CONCAT函数默认的长度限制（默认值：1024），导致查询内容被截取，丢失了一部分数据：
 
-![image-20201214095540410](https://images.shiguangping.com//imgs/20201214095547.png)
+![image-20201214095540410](https://upyun1.surcode.cn/imgs/20201214095547.png)
 
 ### 
 

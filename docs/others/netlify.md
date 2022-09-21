@@ -13,55 +13,55 @@ Github Pages已经凉凉了😓
 
 [https://app.netlify.com/](https://app.netlify.com/)
 
-![image-20201007165401301](https://images.shiguangping.com/imgs/20201007165401.png)
+![image-20201007165401301](https://upyun1.surcode.cn/imgs/20201007165401.png)
 
 选择使用GitHub账号登录，点击`New site from Git`：
 
-![image-20201007165823158](https://images.shiguangping.com/imgs/20201007165823.png)
+![image-20201007165823158](https://upyun1.surcode.cn/imgs/20201007165823.png)
 
 根据自己的托管平台，选择代码GitHub、GitLab或者BitBucket（这里以GitHub为例）：
 
-![image-20201007165948780](https://images.shiguangping.com/imgs/20201007165948.png)
+![image-20201007165948780](https://upyun1.surcode.cn/imgs/20201007165948.png)
 
 点击GitHub之后会弹出一个让你授权的窗口，给 Netlify 授权后，就会自动读取你 GitHub 的仓库：
 
-![image-20201007170042761](https://images.shiguangping.com/imgs/20201007170042.png)
+![image-20201007170042761](https://upyun1.surcode.cn/imgs/20201007170042.png)
 
 选择仓库后，Netlify 会自动识别到 Hexo，并填入相关信息，这时候只要无脑点击 `Deploy site`就可以：
 
-![image-20201007170528878](https://images.shiguangping.com/imgs/20201007170528.png)
+![image-20201007170528878](https://upyun1.surcode.cn/imgs/20201007170528.png)
 
 构建成功后设置自定义域名：
 
-![image-20201007171404020](https://images.shiguangping.com/imgs/20201007171404.png)
+![image-20201007171404020](https://upyun1.surcode.cn/imgs/20201007171404.png)
 
 填写域名：
 
-![image-20201007171434450](https://images.shiguangping.com/imgs/20201007171434.png)
+![image-20201007171434450](https://upyun1.surcode.cn/imgs/20201007171434.png)
 
 点击核实后添加域名：
 
-![image-20201008092109409](https://images.shiguangping.com/imgs/20201008092109.png)
+![image-20201008092109409](https://upyun1.surcode.cn/imgs/20201008092109.png)
 
 设置站点名称：
 
-![image-20201008092206210](https://images.shiguangping.com/imgs/20201008092206.png)
+![image-20201008092206210](https://upyun1.surcode.cn/imgs/20201008092206.png)
 
 自己的域名CNAME解析到这个site name。
 
-![image-20201008092729100](https://images.shiguangping.com/imgs/20201008092729.png)
+![image-20201008092729100](https://upyun1.surcode.cn/imgs/20201008092729.png)
 
 添加SSL证书，做HTTPS：
 
-![image-20201008092926932](https://images.shiguangping.com/imgs/20201008092926.png)
+![image-20201008092926932](https://upyun1.surcode.cn/imgs/20201008092926.png)
 
 开启强制HTTPS：
 
-![image-20201008093007836](https://images.shiguangping.com/imgs/20201008093007.png)
+![image-20201008093007836](https://upyun1.surcode.cn/imgs/20201008093007.png)
 
 ---
 
-![image-20201007171806439](https://images.shiguangping.com/imgs/20201007171806.png)
+![image-20201007171806439](https://upyun1.surcode.cn/imgs/20201007171806.png)
 
 Netlify提供了自动化构建的功能，站点部署完成之后，每次push代码都会帮我们自动构建。在上面的页面可以查看到每次构建的信息。
 

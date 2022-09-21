@@ -1,0 +1,114 @@
+---
+id: 配置之属性优化
+title: 5. Mybatis配置之属性优化
+---
+
+官方文档：https://mybatis.org/mybatis-3/zh/configuration.html
+
+```
+MyBatis 的配置文件包含了会深深影响 MyBatis 行为的设置和属性信息。 配置文档的顶层结构如下：
+	configuration（配置）
+	properties（属性）
+	settings（设置）
+	typeAliases（类型别名）
+	typeHandlers（类型处理器）
+	objectFactory（对象工厂）
+	plugins（插件）
+	environments（环境配置）
+	environment（环境变量）
+	transactionManager（事务管理器）
+	dataSource（数据源）
+	databaseIdProvider（数据库厂商标识）
+	mappers（映射器）
+```
+
+
+
+### environments（环境配置）
+
+MyBatis 可以配置成适应多种环境，这种机制有助于将 SQL 映射应用于多种数据库之中。
+
+**不过要记住：尽管可以配置多个环境，但每个 SqlSessionFactory 实例只能选择一种环境。**
+
+环境配置：
+
+```xml
+<!--通过default选择使用哪套环境，如果设置了多套环境的情况下-->
+<environments default="development">
+```
+
+
+
+环境id：
+
+```xml
+<!--为每套环境设置一个唯一的id属性-->
+<environment id="development">
+```
+
+
+
+事务管理器配置：在 MyBatis 中有两种类型的事务管理器，常用是JDBC
+
+```xml
+<!--type="[JDBC|MANAGED]"-->
+<transactionManager type="JDBC"/>
+```
+
+- JDBC – 这个配置直接使用了 JDBC 的提交和回滚设施，它依赖从数据源获得的连接来管理事务作用域。
+
+- MANAGED – 这个配置几乎没做什么。它从不提交或回滚一个连接，而是让容器来管理事务的整个生命周期（比如 JEE 应用服务器的上下文）。 默认情况下它会关闭连接。然而一些容器并不希望连接被关闭，因此需要将 closeConnection 属性设置为 false 来阻止默认的关闭行为。例如:
+
+  ```xml
+  <transactionManager type="MANAGED">
+    <property name="closeConnection" value="false"/>
+  </transactionManager>
+  ```
+
+
+
+数据源：
+
+```xml
+<!--type="[UNPOOLED|POOLED|JNDI]"-->
+<dataSource type="POOLED">
+```
+
+- **UNPOOLED**：不使用连接池
+- **POOLED**：使用连接池
+- **JNDI**：这个数据源实现是为了能在如 EJB 或应用服务器这类容器中使用 
+
+
+
+### 属性（properties）
+
+可以把数据源的一些属性定义在Properties文件中，再通过mybatis-config.xml核心配置文件引入这个外部文件：
+
+创建一个db.properties：
+
+```properties
+driver=com.mysql.cj.jdbc.Driver
+url=jdbc:mysql://localhost:3306/mybatistest
+username=root
+password=123456
+```
+
+引入外部文件时要注意标签的书写顺序：
+
+![image-20200609234015604](https://upyun1.surcode.cn/imgs/20200609234015.png)
+
+动态获取属性值：
+
+![image-20200609234320134](https://upyun1.surcode.cn/imgs/20200609234320.png)
+
+或者：
+
+![image-20200609234459675](https://upyun1.surcode.cn/imgs/20200609234459.png)
+
+官方文档说：如果一个属性在不只一个地方进行了配置，那么，MyBatis 将按照下面的顺序来加载：
+
+- 首先读取在 properties 元素体内指定的属性。
+- 然后根据 properties 元素中的 resource 属性读取类路径下属性文件，或根据 url 属性指定的路径读取属性文件，并覆盖之前读取过的同名属性。
+- 最后读取作为方法参数传递的属性，并覆盖之前读取过的同名属性。
+
+因此，通过方法参数传递的属性具有最高优先级，resource/url 属性中指定的配置文件次之，最低优先级的则是 properties 元素中指定的属性。

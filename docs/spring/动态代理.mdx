@@ -1,0 +1,78 @@
+---
+id: 动态代理
+title: 13. 动态代理
+---
+
+- 动态代理和静态代理角色一样
+
+- 动态代理的代理类是动态生成的，不是我们直接写好的
+
+- 动态代理，基于接口的动态代理和基于类的动态代理
+  - 基于接口：JDK动态代理
+  - 基于类：cglib
+  - Java字节码实现：javasist
+- 需要知道两个类：
+  - Proxy：代理
+  - InvocationHandler：调用处理程序
+
+
+
+#### InvocationHandler
+
+它是一个接口，在java.lang.reflect包下
+
+方法：`Objext invoke(Object proxy,method方法,Object[] args) throws Throwable`
+
+
+
+#### Proxy
+
+它是一个类，在java.lang.reflect包下
+
+
+
+```java
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+/**
+ * 代理调用处理程序
+ * 用来生成代理类
+ */
+public class ProxyInvocationHandler implements InvocationHandler {
+
+    //被代理的接口或类
+    private Object target;
+
+    public void setTarget(Object target) {
+        this.target = target;
+    }
+
+    /**
+     * 生成代理类
+     * @return
+     */
+    public Object getProxy(){
+        return Proxy.newProxyInstance(this.getClass().getClassLoader(),target.getClass().getInterfaces(),
+                this);
+    }
+
+    /**
+     * 处理代理实例，并返回结果（执行真实角色的方法）
+     * @param proxy
+     * @param method
+     * @param args
+     * @return
+     * @throws Throwable
+     */
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        Object result = method.invoke(target, args);
+        return result;
+    }
+}
+```
+
+
+

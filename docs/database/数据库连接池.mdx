@@ -1,0 +1,154 @@
+---
+id: 数据库连接池
+title: 数据库连接池
+---
+## 什么是数据库连接池
+
+- 概念：其实就是一个容器(集合)，存放数据库连接的容器
+
+  *当系统初始化好后，容器被创建，容器中会申请一些连接对象，当用户来访问数据库时，从容器中获取连接对象，用户访问完之后，会将连接对象归还给容器。*
+
+- 好处：
+
+  1. 节约资源
+  2. 访问效率高
+
+- 实现：
+
+  1. 接口：DataSource javax.sql包
+     1. 获取连接：getConnection()；
+     2. 归还连接：close()如果连接对象Connection是从连接池中获取的，那么调用Connection.close()方法，则不会再关闭连接，而是归还连接。
+  2. 由数据库厂商实现该接口
+     1. c3p0：数据库连接池实现技术
+     2. druid：数据库连接池实现技术，由alibaba提供
+
+
+## 常用的连接池
+
+### c3p0 连接池技术
+
+1. 导入jar包
+
+2. 定义配置文件(自动加载)
+
+   - 名称：c3p0.properties/c3p0-config.xml
+   - 路径：放到src路径下即可
+
+3. 创建核心对象：数据库连接池对象 ComboPooledDataSource
+
+   ```java
+   DataSource ds = new ComboPooledDataSource();
+   ```
+
+4. 获取连接：getConnection()
+
+   ```java
+   Connection conn = ds.getConnection();
+   ```
+
+示例：
+
+```java
+public class C3P0Demo {
+    public static void main(String[] args) {
+        try {
+            //1.创建数据库连接池对象
+            DataSource dataSource = new ComboPooledDataSource();
+            //2.获取连接对象
+            Connection conn = dataSource.getConnection();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+}
+```
+
+配置文件：c3p0-config.xml：
+
+```xml
+<c3p0-config>
+    <!--使用默认的配置读取连接池对象-->
+    <default-config>
+        <!--连接参数-->
+        <property name="driverClass">com.mysql.cj.jdbc.Driver</property>
+        <property name="jdbcUrl">jdbc:mysql://localhost:3306/itcast</property>
+        <property name="user">root</property>
+        <property name="password">123456</property>
+        <!--连接池参数-->
+        <property name="initialPoolSize">5</property>
+        <property nama="maxPoolSize">10</property>
+        <property name="checkoutTimeout">3000</property>
+    </default-config>
+    <named-config name="otherc3p0">
+        <!--连接参数-->
+        <property name="driverClass">com.mysql.cj.jdbc.Driver</property>
+        <property name="jdbcUrl">jdbc:mysql://localhost:3306/itcast</property>
+        <property name="user">root</property>
+        <property name="password">123456</property>
+        <!--连接池参数-->
+        <property name="initialPoolSize">5</property>
+        <property nama="maxPoolSize">8</property>
+        <property name="checkoutTimeout">1000</property>
+    </named-config>
+</c3p0-config>
+```
+
+
+
+### Druid 连接池技术
+
+1. 导入jar包
+
+2. 定义配置文件(手动加载)
+
+3. 获取数据库连接池对象：通过工厂来获取：DruidDataSourceFactory
+
+   *createDataSource(Properties properties);传入的参数是properties*
+
+   ```java
+   DataSource dataSource = DruidDataSourceFactory.createDataSource(properties);
+   ```
+
+4. 获取连接：getConnection()
+
+   ```java
+   Connection conn = dataSource.getConnection();
+   ```
+
+示例：
+
+```java
+public class DruidDemo {
+    public static void main(String[] args) {
+        //创建Properties对象
+        Properties properties = new Properties();
+        //通过类加载器获取配置文件流
+        InputStream is = DruidDemo.class.getClassLoader().getResourceAsStream("druid.properties");
+        try {
+            //把文件流导入到properties
+            properties.load(is);
+            //createDataSource(Properties properties);传入的参数是properties
+            DataSource dataSource = DruidDataSourceFactory.createDataSource(properties);
+            //获取Connection对象
+            Connection conn = dataSource.getConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+配置文件druid.properties:
+
+```properties
+driverClassName=com.mysql.cj.jdbc.Driver
+url=jdbc:mysql://localhost:3306/itcast
+username=root
+password=123456
+initialSize=5 #初始化大小
+maxActive=10 #最大激活数
+maxWait=3000 #最大等待时间(ms)
+```
+

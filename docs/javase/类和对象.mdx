@@ -1,0 +1,45 @@
+---
+id: 类和对象
+title: 13.2 类和对象
+---
+import ImgBox from "../../src/components/ImgBox";
+import MarkPen from "../../src/components/MarkPen";
+
+:::tip
+类是对象的抽象，对象是类的具体实例。
+:::
+
+Java是一门面向对象的编程语言，面向对象是对现实事物的抽象，例如电商系统中的商品信息，包括 *商品名称、商品分类、商品图片、商品描述、商品价格* 等等。
+
+在Java中，除了之前学过的8种基本数据类型之外，其余的都是**引用数据类型**，例如：`String`，String类是Java提供的类，表示字符串。而我们自己定义的**类**可以理解为是我们自定义的数据类型。
+
+在Java中，使用`class` 关键字来声明类， <MarkPen color="#FF0">注意大小写</MarkPen>。每一个`.java`文件就表示一个类，在`.java`文件中只能有一个`public`类，并且类名必须与文件名相同，否则在编译时编译器会报错。
+
+一个类通常是由**成员属性**、**构造方法**、**成员方法**组成。属性是描述这个类的状态，也就是这个类可以存储哪些（什么类型）数据；构造方法是用来构造该类的对象实例；成员方法提供该类的行为，如果操作属性。
+
+```java
+public class Cat {
+
+    // 昵称
+    String nickname;
+    // 年龄
+    int age;
+    // 性别
+    String sex;
+
+    // 无参构造方法
+    public Cat() {}
+
+    // 有参构造方法
+    public Cat(String nickname, int age, String sex) {
+        this.nickname = nickname;
+        this.age = age;
+        this.sex = sex;
+    }
+
+    // 方法：吃东西
+    public void eat() {
+        System.out.println(nickname + "在吃东西。");
+    }
+}
+```

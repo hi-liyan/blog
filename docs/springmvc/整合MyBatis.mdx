@@ -1,0 +1,283 @@
+---
+id: 整合MyBatis
+title: 8. 整合MyBatis
+---
+
+从头开始搭建：小Demo，对图书进行增删改查
+
+准备工作：在MySQL中创建一张数据表：
+
+```sql
+CREATE table books(
+	bookid int primary key auto_increment comment '书id',
+	bookname varchar(100) not null comment '书名',
+	bookcounts int not null comment '数量',
+	detail varchar(200) not null comment '描述'
+);
+```
+
+
+
+### step1. 创建一个普通的Maven项目
+
+导入相关依赖：
+
+```xml
+<!--依赖导入：junit、数据库驱动、连接池、Servlet、jsp、mybatis、mybatis-spring、spring-->
+<dependencies>
+  <!--junit单元测试-->
+  <dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.11</version>
+    <scope>test</scope>
+  </dependency>
+
+  <!--jdbc驱动-->
+  <dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.20</version>
+  </dependency>
+
+  <!--druid连接池-->
+  <dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.1.22</version>
+  </dependency>
+
+  <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+  <dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>4.0.1</version>
+    <scope>provided</scope>
+  </dependency>
+
+  <!-- https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api -->
+  <dependency>
+    <groupId>javax.servlet.jsp</groupId>
+    <artifactId>javax.servlet.jsp-api</artifactId>
+    <version>2.3.3</version>
+    <scope>provided</scope>
+  </dependency>
+
+  <!--jstl标签库-->
+  <dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>jstl</artifactId>
+    <version>1.2</version>
+  </dependency>
+
+  <!--mybatis-->
+  <dependency>
+    <groupId>org.mybatis</groupId>
+    <artifactId>mybatis</artifactId>
+    <version>3.5.5</version>
+  </dependency>
+
+  <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis-spring -->
+  <dependency>
+    <groupId>org.mybatis</groupId>
+    <artifactId>mybatis-spring</artifactId>
+    <version>2.0.5</version>
+  </dependency>
+
+  <!--spring-webmvc-->
+  <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc</artifactId>
+    <version>5.2.6.RELEASE</version>
+  </dependency>
+
+  <!--SpringJdbc-->
+  <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>5.2.6.RELEASE</version>
+  </dependency>
+
+</dependencies>
+
+<!--静态资源导出问题-->
+<build>
+  <resources>
+    <resource>
+      <directory>src/main/resources</directory>
+      <includes>
+        <include>**/*.properties</include>
+        <include>**/*.xml</include>
+      </includes>
+      <filtering>true</filtering>
+    </resource>
+    <resource>
+      <directory>src/main/java</directory>
+      <includes>
+        <include>**/*.properties</include>
+        <include>**/*.xml</include>
+      </includes>
+      <filtering>true</filtering>
+    </resource>
+  </resources>
+</build>
+```
+
+
+
+### step2. 在resources下创建database.properties、mybatis-config.xml
+
+```properties
+jdbc.driver=com.mysql.cj.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/javaweb
+jdbc.username=root
+jdbc.password=123456
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--配置数据源，交给Spring去做-->
+    
+    <!--实体类设置别名-->
+    <typeAliases>
+        <package name="com.neu.pojo"/>
+    </typeAliases>
+		
+  	<!--注册Mapper-->
+    <mappers>
+        <mapper class="com.neu.dao.BookMapper"/>
+    </mappers>
+</configuration>
+```
+
+
+
+### step3. 写实体类Books
+
+```java
+package com.neu.pojo;
+
+public class Books {
+
+    private int bookId;
+    private String bookName;
+    private int bookCounts;
+    private String detail;
+ 	
+  //...
+}
+```
+
+
+
+### step4. 写接口BookMapper
+
+```java
+public interface BookMapper {
+
+    /**
+     * 增加一本书
+     */
+    int addBook(Books books);
+
+    /**
+     * 删除一本书
+     */
+    int deleteBookById(@Param("bookId") int id);
+
+    /**
+     * 更新一本书
+     */
+    int updateBook(Books books);
+
+    /**
+     * 查询一本书
+     */
+    Books queryBookById(@Param("bookId") int id);
+
+    /**
+     * 查询全部书
+     */
+    List<Books> queryAllBooks();
+}
+```
+
+
+
+### step5. 写映射文件BookMapper.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.BookMapper">
+
+    <insert id="addBook" parameterType="books">
+        insert into books(bookname,bookcounts,detail) value (#{bookName},#{bookCounts},#{detail})
+    </insert>
+
+    <delete id="deleteBookById" parameterType="int">
+        delete from books where bookid = #{bookId}
+    </delete>
+
+    <update id="updateBook" parameterType="books">
+        update books set bookname = #{bookName}, bookcounts = #{bookCounts},detail = #{detail} where bookid = #{bookId}
+    </update>
+
+    <select id="queryBookById" resultType="books">
+        select * from books where bookid = #{bookId}
+    </select>
+
+    <select id="queryAllBooks" resultType="books">
+        select * from books
+    </select>
+</mapper>
+```
+
+
+
+### step6. 写service层接口和实现类
+
+服务层的接口和Dao层接口是一样的，代码就不粘贴了，下面是实现类：
+
+```java
+public class BookServiceImpl implements BookService {
+    private BookMapper bookMapper;
+
+    public void setBookMapper(BookMapper bookMapper) {
+        this.bookMapper = bookMapper;
+    }
+
+    public int addBook(Books books) {
+        return bookMapper.addBook(books);
+    }
+
+    public int deleteBookById(int id) {
+        return bookMapper.deleteBookById(id);
+    }
+
+    public int updateBook(Books books) {
+        return bookMapper.updateBook(books);
+    }
+
+    public Books queryBookById(int id) {
+        return bookMapper.queryBookById(id);
+    }
+
+    public List<Books> queryAllBooks() {
+        return bookMapper.queryAllBooks();
+    }
+}
+```
+
+
+
+**到这里为止，MyBatis部分就写完了**
+
+接下来开始整合Spring

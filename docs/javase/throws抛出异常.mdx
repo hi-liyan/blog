@@ -1,0 +1,101 @@
+---
+id: throws抛出异常
+title: 14.2 throws声明方法要抛出的异常
+---
+import ImgBox from "../../src/components/ImgBox";
+
+- 可以通过throws声明将要抛出何种类型的异常，通过throw将产生的异常抛出。
+
+- 如果一个方法可能会出现异常，但没有能力处理这种异常，可以在方法声明处用throws子句来声明抛出异常。
+
+- throws语句用在方法定义时声明该方法要抛出的异常类型。
+
+  ```java
+  public void method() throws Exception1,Exception2,...Exception n{
+    //可能产生异常的代码
+  }
+  ```
+
+- 当方法抛出异常列表中的异常时，方法将不会对这些类型及其子类类型的异常作处理，而是抛向调用该方法的方法，由他去处理。
+
+### 示例：
+
+```java
+package com.imooc.test;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class TryDemo3 {
+	public static void main(String[] args) {
+
+		// 当通过throws抛出异常时，针对可能出现的多种异常情况，解决方案：
+		// 方案一：由方法调用者捕获test()方法可能抛出的异常，使用try-catch捕获可能出现的异常
+		try {
+			int result = test1();
+			System.out.println("结果为：" + result);
+		} catch (ArithmeticException e) {
+			System.out.println("除数不能为0");
+		} catch (InputMismatchException e) {
+			System.out.println("输入格式不正确");
+		} catch (Exception e) {// 可以在最后加上捕获Exception类的异常，捕获漏网之鱼；如果调用的方法直接throws
+								// Exception类异常，则必须有捕获Exception类异常的catch
+			System.out.println("程序运行时遇到错误");
+		}
+	}
+
+	// 方法：计算输入的两个数的商，抛出可能出现的异常（算术异常、输入格式异常）
+	public static int test() throws ArithmeticException, InputMismatchException {
+		System.out.println(">>>运算开始");
+		System.out.print("请输入第一个整数：");
+		int a = new Scanner(System.in).nextInt();
+		System.out.print("请输入第二个整数");
+		int b = new Scanner(System.in).nextInt();
+		return a / b;
+	}
+
+	// 如果不确定可能会遇到什么异常，可以直接抛出父类Exception类的异常
+	// 如果方法直接抛出Exception类异常，则调用该方法时必须有捕获Exception类异常的catch
+	public static int test1() throws Exception {
+		System.out.println(">>>运算开始");
+		System.out.print("请输入第一个整数：");
+		int a = new Scanner(System.in).nextInt();
+		System.out.print("请输入第二个整数");
+		int b = new Scanner(System.in).nextInt();
+		return a / b;
+	}
+}
+```
+
+在可能抛出异常的方法使用`throws`关键字抛出可能出现的异常，或者直接抛出父类Exception类异常：
+
+```java
+public static int test() throws ArithmeticException, InputMismatchException {
+  //可能抛出异常的代码
+}
+```
+
+```java
+public static int test1() throws Exception {
+  //可能抛出异常的代码
+}
+```
+
+在调用该方法时再去捕获处理这些异常。
+
+当我们直接调用test()方法时，编译器不会提示我们去try-catch该方法可能抛出异常；但当我们调用test1()时，编译器会编译报错，提醒我们去try-catch该方法可能抛出的异常，这是为什么呢？
+
+![](https://upyun1.surcode.cn/imgs/20200501153840.png)
+
+![](https://upyun1.surcode.cn/imgs/20200501152945.png)
+
+*原因是：test()中抛出的ArithmeticException, InputMismatchException属于UncheckedException异常，编译器不会要求我们必须处理这种异常；而test1()直接抛出Exception，Exception类属于父类，包含CheckedException，编译器会要求我们必须处理这些异常。*
+
+我们可以通过给方法添加文档注释的方法，提醒调用者，该方法可能会抛出异常：
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/20200501154240.png" width="450px" />
+
+当调用该方法时，会弹出提示框：
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/20200501154337.png" width="450px" />
+

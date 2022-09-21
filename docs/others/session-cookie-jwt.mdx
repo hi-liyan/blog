@@ -14,7 +14,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 我是一个web服务器，我的工作是给人类提供上网服务，我每天要为数以万计的人提供网页浏览服务。
 
-![img](https://images.shiguangping.com/imgs/20200926114956.image)
+![img](https://upyun1.surcode.cn/imgs/20200926114956.image)
 
  
 
@@ -26,7 +26,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 “老二，老三，咱们是一个集群，你们说的问题我不是不知道，我昨天听程序员们在讨论说要给我们接入一个叫**Redis**的家伙，相信这一问题很快就能得到解决啦，大家再忍忍。”
 
-![img](https://images.shiguangping.com/imgs/20200926115009.image)
+![img](https://upyun1.surcode.cn/imgs/20200926115009.image)
 
  
 
@@ -40,7 +40,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 那时候，这俩兄弟还没来，就我一个web服务器，每天处理的不过是一些静态资源文件，像HTML、CSS、JS、图片等等，日子过的清闲自在。
 
-![img](https://images.shiguangping.com/imgs/20200926115025.image)
+![img](https://upyun1.surcode.cn/imgs/20200926115025.image)
 
  
 
@@ -54,7 +54,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 浏览器登陆以后，我就分配一个session id，表示一个会话，然后返回给浏览器，让它保存着。后续再来请求的时候，就把它给带上，我就能知道是谁啦！
 
-![img](https://images.shiguangping.com/imgs/20200926115033.image)
+![img](https://upyun1.surcode.cn/imgs/20200926115033.image)
 
  
 
@@ -66,7 +66,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 终于前不久，公司对web服务器进行了扩展，给我找来了两个小弟，还专门添置了一个nginx来进行负载均衡，这一下我们变成了3台web服务器组成的小集群了。
 
-![img](https://images.shiguangping.com/imgs/20200926115041.image)
+![img](https://upyun1.surcode.cn/imgs/20200926115041.image)
 
  
 
@@ -82,7 +82,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 我们几个逼急了，商量了一下，干脆大家伙来同步session id的信息好了，有新增、失效的情况都给其他几个兄弟招呼一下，大家都管理一份，这样就不会出现不一致的问题了。
 
-![img](https://images.shiguangping.com/imgs/20200926115049.image)
+![img](https://upyun1.surcode.cn/imgs/20200926115049.image)
 
  
 
@@ -102,7 +102,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 “行不行，试试不就知道了吗？”
 
-![img](https://images.shiguangping.com/imgs/20200926115055.image)
+![img](https://upyun1.surcode.cn/imgs/20200926115055.image)
 
  
 
@@ -122,7 +122,7 @@ import Link from "@docusaurus/core/lib/client/exports/Link";
 
 我也赶紧催促，“你俩就别卖关子了，听到了什么，快说说”
 
-![img](https://images.shiguangping.com/imgs/20200926115102.image)
+![img](https://upyun1.surcode.cn/imgs/20200926115102.image)
 
  
 
@@ -142,7 +142,7 @@ Redis一听更着急上火了，“我工作这么久以来，从没有撂过挑
 
 老三摇了摇头：“不是的，这可不只是改了个名字那么简单！这个token是由三部分构成，就像这样：”
 
-![img](https://images.shiguangping.com/imgs/20200926115110.image)
+![img](https://upyun1.surcode.cn/imgs/20200926115110.image)
 
  
 
@@ -150,7 +150,7 @@ Redis一听更着急上火了，“我工作这么久以来，从没有撂过挑
 
 还没等老三说完，老二点出了其中的关键：“我知道了，后面咱们再收到这个token的时候，就可以通过同样的算法验证前面两部分的结果和第三部分是不是相同，就知道这个token是不是伪造的啦！因为密钥只有我们知道，别人没办法伪造出一个token的！最后确认有效之后，再取第二部分的用户身份信息，就知道这是谁了！”
 
-![img](https://images.shiguangping.com/imgs/20200926115118.image)
+![img](https://upyun1.surcode.cn/imgs/20200926115118.image)
 
  
 

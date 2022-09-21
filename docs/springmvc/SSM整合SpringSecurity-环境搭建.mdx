@@ -1,0 +1,190 @@
+---
+id: 扩展：SSM整合SpringSecurity-环境搭建
+title: 14. 扩展：SSM整合SpringSecurity-环境搭建
+---
+import ImgBox from "../../src/components/ImgBox";
+
+新建Maven Web项目，添加所需依赖，前端页面使用的依然是狂神教程页面，源码已上传至码云：https://gitee.com/ENNRIAAA/spring-security-material
+
+在之前SSM项目中一直使用的是jsp写前端页面，这里使用thymeleaf：
+
+#### 1. 导入依赖：
+
+thymeleaf 依赖：
+
+```xml
+<!-- thymeleaf -->
+<dependency>
+  <groupId>org.thymeleaf</groupId>
+  <artifactId>thymeleaf-spring5</artifactId>
+  <version>3.0.11.RELEASE</version>
+</dependency>
+```
+
+SpringSecurity 依赖：
+
+```xml
+<!-- spring-security -->
+<dependency>
+  <groupId>org.springframework.security</groupId>
+  <artifactId>spring-security-core</artifactId>
+  <version>5.3.3.RELEASE</version>
+</dependency>
+<dependency>
+  <groupId>org.springframework.security</groupId>
+  <artifactId>spring-security-web</artifactId>
+  <version>5.3.3.RELEASE</version>
+</dependency>
+<dependency>
+  <groupId>org.springframework.security</groupId>
+  <artifactId>spring-security-config</artifactId>
+  <version>5.3.3.RELEASE</version>
+</dependency>
+```
+
+thymeleaf整合SpringSecurity 依赖：
+
+*thymeleaf页面中使用SpringSecurity的一些属性需要用到的依赖*
+
+```xml
+<!-- thymeleaf-extras-springsecurity5 -->
+<dependency>
+  <groupId>org.thymeleaf.extras</groupId>
+  <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+  <version>3.0.4.RELEASE</version>
+</dependency>
+```
+
+
+
+
+
+#### 2. 将页面源码复制到项目中：
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/20200727111731.png" />
+
+
+
+#### 3. 配置web.xml
+
+```xml
+<web-app>
+    <display-name>Archetype Created Web Application</display-name>
+    <!-- spring mvc -->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:ApplicationContext.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+</web-app>
+```
+
+`springSecurityFilterChain`过滤器是用来配置SpringSecurity的，过滤器的名字是固定的，否则会报错。
+
+
+
+#### 4. 配置ApplicationContext.xml
+
+```xml
+<mvc:annotation-driven/>
+<context:component-scan base-package="com.example"/>
+
+<!-- Thymeleaf 视图解析器，优先级最高 -->
+<!-- 1.TemplateResolver：加载 Thymeleaf 模板 -->
+<bean id="templateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
+  <property name="prefix" value="/"/>
+  <property name="suffix" value=".html"/>
+  <property name="templateMode" value="LEGACYHTML5"/>
+  <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
+</bean>
+
+<!-- 2.SpringTemplateEngine：处理模板并渲染结果 -->
+<bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+  <property name="templateResolver" ref="templateResolver"/>
+</bean>
+
+<!-- 3.ThymeleafViewResolver：将逻辑视图名称解析为 Thymeleaf 模板视图 -->
+<bean id="thymeleafViewResolver" class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+  <property name="templateEngine" ref="templateEngine"/>
+  <!-- 解决页面中文乱码问题 -->
+  <property name="characterEncoding" value="UTF-8"/>
+</bean>
+
+
+<!-- 配置默认视图解析器，这里只能解析jsp后缀的页面，不能解析html后缀的页面，优先级最低 -->
+<bean id="viewResolver"
+      class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+  <property name="prefix" value="/WEB-INF/views/"/>
+  <property name="suffix" value=".jsp"/>
+  <property name="order" value="#{T(org.springframework.core.Ordered).LOWEST_PRECEDENCE}"/>
+</bean>
+```
+
+
+
+#### 5. 定义Controller，完成页面路由：
+
+```java
+@Controller
+public class RouterController {
+    /**
+     * 首页
+     * @return
+     */
+    @RequestMapping({"/", "/index"})
+    public String index() {
+        return "index";
+    }
+
+    /**
+     * 登录页
+     * @return
+     */
+    @RequestMapping("/toLogin")
+    public String toLogin() {
+        return "views/login";
+    }
+
+    /**
+     * level1下的页面
+     * @param id
+     * @return
+     */
+    @RequestMapping("/level1/{id}")
+    public String level1(@PathVariable("id") String id) {
+        return "views/level1/" + id;
+    }
+
+    /**
+     * level2下的页面
+     * @param id
+     * @return
+     */
+    @RequestMapping("/level2/{id}")
+    public String level2(@PathVariable("id") String id) {
+        return "views/level2/" + id;
+    }
+
+    /**
+     * level3下的页面
+     * @param id
+     * @return
+     */
+    @RequestMapping("/level3/{id}")
+    public String level3(@PathVariable("id") String id) {
+        return "views/level3/" + id;
+    }
+}
+```
+
+
+
+***运行项目，测试页面和页面连接是否正常***

@@ -1,0 +1,54 @@
+---
+id: 扩展：JavaConfig配置Bean
+title: 17. 扩展：JavaConfig配置Bean
+---
+
+自定义一个`Realm`类并继承`AuthorizingRealm`，重写两个方法：
+
+- `AuthorizationInfo`：授权
+- `AuthenticationInfo`：认证
+
+```java
+public class UserRealm extends AuthorizingRealm {}
+```
+
+
+
+#### 配置Bean：
+
+```java
+@Configuration
+public class ShiroConfig {
+
+		// ShiroFilterFactoryBean
+    @Bean
+    public ShiroFilterFactoryBean shiroFilter(@Autowired DefaultWebSecurityManager securityManager) {
+        // 设置安全管理器
+        ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
+        bean.setSecurityManager(securityManager);
+        // 设置Shiro过滤器策略
+        Map<String,String> filterMap = new LinkedHashMap<>();
+        filterMap.put("/menus/**","authc");
+        bean.setFilterChainDefinitionMap(filterMap);
+        bean.setLoginUrl("/login");
+        return bean;
+    }
+
+		// DefaultWebSecurityManager
+    @Bean
+    public DefaultWebSecurityManager securityManager(@Autowired UserRealm userRealm) {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        // 关联UserRealm
+        securityManager.setRealm(userRealm);
+        return securityManager;
+    }
+
+		
+    // UserRealm 自定义的Realm类
+    @Bean
+    public UserRealm userRealm() {
+        return new UserRealm();
+    }
+}
+```
+

@@ -1,0 +1,68 @@
+---
+id: 重定向和转发
+title: 6. 重定向和转发
+---
+
+### 通过视图解析器跳转资源
+
+设置ModelAndView对象，根据ViewName，和视图解析器跳转到指定的页面资源
+
+页面：[视图解析器前缀] + ViewName + [视图解析器后缀]
+
+
+
+### 通过HttpServlet跳转资源
+
+除了使用视图解析器跳转资源外，还可以通过原生的Servlet API实现资源的跳转
+
+- 通过HttpServletResponse进行输出
+- 通过HttpServletResponse重定向
+- 通过HTTPServletRequest转发
+
+例如：
+
+```java
+@GetMapping("/t1")
+public void test(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  response.setContentType("text/html;charset=utf-8");
+  response.getWriter().write("test方法");
+}
+```
+
+
+
+### 通过SpringMVC跳转资源
+
+通过SpringMVC来实现转发和重定向，无需视图解析器
+
+```java
+@Controller
+public class ModelTest1 {
+
+  //转发
+  @GetMapping("/t1")
+  public String test(Model model) {
+    model.addAttribute("msg","转发");
+    return "/WEB-INF/jsp/hello.jsp";
+  }
+
+  //显式地声明：转发
+  @GetMapping("/t2")
+  public String test2(Model model) {
+    model.addAttribute("msg","转发");
+    return "forward:/WEB-INF/jsp/hello.jsp";
+  }
+
+  //显式地声明：
+  @GetMapping("/t3")
+  public String test3(Model model) {
+    model.addAttribute("msg","重定向");
+    return "redirect:/hello.jsp";
+  }
+}
+```
+
+
+
+**注意：使用重定向时，本质是重新请求到一个新的资源路径，不需要视图解析器，但是要注意重定向路径的问题**
+

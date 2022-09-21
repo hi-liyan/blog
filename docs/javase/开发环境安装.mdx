@@ -1,0 +1,53 @@
+---
+id: 开发环境安装
+title: 开发环境安装
+keywords: ['Jdk安装', 'Jdk配置环境变量']
+---
+import ImgBox from "../../src/components/ImgBox";
+
+
+
+## 1. 安装 JDK
+
+进入到Oracle官方[下载地址](https://www.oracle.com/java/technologies/downloads/)，根据电脑的操作系统下载对应的安装包。
+
+下载好之后，双击 .exe 安装包进行安装。
+
+参考：
+- [Zulu OpenJDK下载地址](https://www.azul.com/downloads/?version=java-8-lts&os=windows&architecture=x86-64-bit&package=jdk)
+
+## 2. 配置环境变量
+
+JDK安装完成后，还需要配置一步环境变量，让操作系统能认识 JDK。
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/image-20210719190038914.png" />
+
+JDK默认安装路径在 `C:\Program Files\Java\jdk1.8.0_291\bin`，复制该路径到系统变量的path中。
+
+Win10 系统配置环境变量的位置在：右键此电脑 -> 属性 -> 高级系统设置 -> 环境变量。
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/image-20210719190432145.png" />
+
+环境变量配置好后，可以在 cmd 或者 powershell 通过命令验证是否配置成功。
+
+打开（重新打开） cmd 或者 powershell，使用 `java -version` 命令，显示 Java 版本号说明环境变量配置成功。（如下图）
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/image-20210719191205664.png" />
+
+
+
+## 3. 安装IDE
+
+IDE（也叫"集成开发环境"），IDE是编写代码的重要工具，一般里面包含了各种开发常用的工具、插件，可以大大提高开发效率。
+
+目前常用的IDE软件有：Jetbrains IDEA，Eclipse等。
+
+我们这里安装 IDEA，它更加现代化、更加智能，[下载地址](https://www.jetbrains.com/idea/)。
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/image-20210719192807004.png" />
+
+IDEA包含两个版本，终极版和社区版本，终极版需要付费，初学时安装使用社区版本。
+
+**以上都准备好之后，就可以开始接下来的学习了。**
+
+###

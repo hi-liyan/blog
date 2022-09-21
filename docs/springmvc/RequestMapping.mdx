@@ -1,0 +1,61 @@
+---
+id: RequestMapping
+title: 4. RequestMapping
+---
+
+@RequestMapping注解
+
+- 该注解用于映射url到控制器类或控制器类中的特定方法，所以该注解既可以作用在类上，也可以作用在方法上。
+- 用于类上，表示类中的所有的响应请求的方法都是以该地址作为父路径
+
+
+
+代码示例：
+
+注解只作用在方法上：
+
+```java
+package com.neu.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class ControllerDemo3 {
+    @RequestMapping("t1")
+    public String test1(Model model){
+            model.addAttribute("msg","ControllerDemo3中的test1");
+            return "test1";
+    }
+}
+```
+
+访问`test1`方法，访问的路径应该是`http://localhost:8080/springmvc_04_controller/t1`
+
+
+
+注解同时作用在类和方法上：
+
+```java
+package com.neu.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/c3")
+public class ControllerDemo3 {
+    @RequestMapping("t1")
+    public String test1(Model model){
+            model.addAttribute("msg","ControllerDemo3中的test1");
+            return "test1";
+    }
+}
+```
+
+访问`test1`方法，访问的路径应该是`http://localhost:8080/springmvc_04_controller/c3/t1`
+
+如果这个控制器中包含多个方法，那么访问任何一个方法都要经过`/c3`
+

@@ -1,0 +1,36 @@
+---
+id: 生命周期和作用域
+title: 7. 生命周期和作用域（Scope）
+---
+
+不同**作用域**和**生命周期**类别是至关重要的，因为错误的使用会导致非常严重的并发问题。
+
+
+
+![image-20200614090722653](https://upyun1.surcode.cn/imgs/20200614090722.png)
+
+#### SqlSessionFactoryBuilder
+
+这个类可以被实例化、使用和丢弃，**一旦创建了 SqlSessionFactory**，就不再需要它了。 
+
+因此 SqlSessionFactoryBuilder 实例的最佳作用域是方法作用域（局部变量）。
+
+
+
+#### SqlSessionFactory
+
+SqlSessionFactory 一旦被创建就应该在应用的运行期间一直存在，没有任何理由丢弃它或重新创建另一个实例。 使用 SqlSessionFactory 的最佳实践是在应用运行期间**不要重复创建多次**，多次重建 SqlSessionFactory 被视为一种代码“坏习惯”。
+
+因此 SqlSessionFactory 的最佳作用域是应用作用域（全局变量）。 
+
+说白了，可以把SqlSessionFactory看作是一个“数据库连接池”
+
+
+
+#### SqlSession
+
+每个线程都应该有它自己的 SqlSession 实例。
+
+SqlSession 的实例不是线程安全的，因此是不能被共享的，所以它的最佳的作用域是请求或方法作用域。 
+
+- 用完之后要关闭(sqlSession对象.close())，否则资源会一直被占用。（这个SqlSession就好比是从DataSource中获取的Connection对象，如果用完不关闭，Connection对象会一直被占用）

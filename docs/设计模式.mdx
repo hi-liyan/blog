@@ -1,0 +1,563 @@
+---
+id: 设计模式
+title: 设计模式
+---
+import TipBox from "../src/components/TipBox";
+import MarkPen from "../src/components/MarkPen";
+import ShadowBox from "../src/components/ShadowBox";
+
+<TipBox>
+  本文根据读 刘韬 的《秒懂设计模式》 编写。 <br/>
+  找了好几本关于设计模式的书，唯独这本书内容很生动，示例和图片都很有意思。
+</TipBox>
+
+## 1. 创建型
+### 1.1 单例模式
+
+单例模式是比较常见的设计模式之一，单例即单一的实例。确切地讲在某个系统中只存在一个实例，同时提供集中、统一的访问接口，以使系统行为保持一致。singleton一词在逻辑学中指“有且仅有一个元素的集合”，这非常恰当地概括了单例的概念，也就是“一个类仅有一个实例”。
+
+应用场景：
+ - 一般用在系统中的唯一资源管理上，使用单例模式，例如数据库连接对象，全局维护一个连接对象即可。
+
+缺点：
+  - 不适于扩展，扩展只能修改代码；
+  - 类的职责过重，一定程度上违背了“单一职责原则”。
+
+
+单例模式有“饿汉式”和“懒汉式”两种，饿汉式指在类加载时实例化单例对象，懒汉式指在第一次获取实例对象时实例化。
+
+下面通过代码认识“饿汉式”和“懒汉式”这两种单例模式的实现方式。
+
+#### 1.1.1 饿汉式单例模式
+
+饿汉式指在类加载时实例化对象。
+
+```java
+/**
+ * <p>单例模式：饿汉式（类加载时实例化类实例）</p>
+ * <p>在类加载时实例化，不存在并发问题。</p>
+ * @author liyan
+ * @since 2021-10-18 15:56
+ */
+public class Sun {
+    /**
+     * <p>私有的：不允许外部直接访问</p>
+     * <p>static：类加载时实例化，永驻内存</p>
+     * <p>final：不可变，实例唯一</p>
+     */
+    private static final Sun sun = new Sun();
+
+    /**
+     * 私有化构造函数，不允许外部直接实例化
+     */
+    private Sun() {}
+
+    /**
+     * 提供公共静态方法，获取唯一实例
+     * @return Sun
+     */
+    public static Sun getInstance() {
+        return sun;
+    }
+}
+```
+
+#### 1.1.2 懒汉式
+
+懒汉式是在第一次获取实例对象时实例化的。它和饿汉式的不同在于，它是在用到的时候才实例化，避免资源占用，也正因如此，第一次获取实例对象时有个实例化个过程，相对耗时，但这种耗时是可以忽略不计的。
+
+由于懒汉式的实例化过程放在获取实例的方法中，通过判断实例对象是否为null来决定是否需要实例化，这在多线程并发访问时存在缺陷。
+
+```java
+/**
+ * <p>单例模式：懒汉式（在第一次调用get方法时实例化）</p>
+ * <p>因为是在第一次调用get方法时实例化，在多线程环境下存在并发问题，在get方法内加锁。</p>
+ *
+ * @author liyan
+ * @since 2021-10-18 15:56
+ */
+public class Sun {
+    /**
+     * <p>private：不允许外部直接访问</p>
+     * <p>static：类成员变量</p>
+     * <p>volatile：修饰静态变量，保证变量值在各线程访问时的同步性、唯一性</p>
+     */
+    private static volatile Sun sun = null;
+
+    /**
+     * 私有化构造函数，不允许外部直接实例化
+     */
+    private Sun() {
+    }
+
+    /**
+     * 提供公共静态方法，获取唯一实例
+     *
+     * @return Sun
+     */
+    public static Sun getInstance() {
+        if (sun == null) {
+            synchronized (Sun.class) {
+                if (sun == null) {
+                    sun = new Sun();
+                }
+            }
+        }
+        return sun;
+    }
+}
+```
+
+#### 1.1.3 大道至简
+相对于“懒汉式”，多数时候使用的是“饿汉式”，原因在于一般使用单例模式的对象都会被用到，迟早会被加载进内存，延迟懒加载的意义并不大。懒汉模式中的加锁反而是一种资源浪费，同步更是会降低CPU的利用率，使用不当的话反而会带来不必要的风险。<MarkPen noMark underline>越简单的包容性越强，而越复杂的反而越容易出错</MarkPen>。
+
+#### 1.1.4 总结
+
+- 单例模式，单例的类只能创建一个实例对象；
+- 一般使用饿汉式，在类被加载时就实例化；
+- 懒汉式要注意并发问题。
+
+<br/>
+
+### 1.2 原型模式
+
+#### 1.2.1 原型模式
+
+原型模式是根据原型实例创建实例对象，而不是通过new创建实例的过程。
+
+原型模式的目的是从原型实例克隆出新的实例，<MarkPen noMark underline>对于那些有非常复杂的初始化过程的对象或者是需要耗费大量资源的情况</MarkPen>，原型模式是更好的选择。
+
+`Object` 类提供了一个 `clone()` 方法，可以实现对象的克隆。
+
+```java
+/**
+ * 敌机类
+ * @author liyan
+ * @since 2021-10-19 09:09
+ */
+public class EnemyPlane implements Cloneable {
+
+    // 敌机的横纵坐标
+    private int x;
+    private int y;
+
+    public EnemyPlane(int x) {
+        this.x = x;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void fly() {
+        this.y++;
+    }
+
+    /**
+     * 重写clone方法
+     * @return
+     * @throws CloneNotSupportedException
+     */
+    @Override
+    protected EnemyPlane clone() throws CloneNotSupportedException {
+        return (EnemyPlane) super.clone();
+    }
+}
+```
+
+定义 `EnemyPlane` 工厂类用来克隆对象实例。
+
+```java
+/**
+ * EnemyPlane工厂类（用于克隆EnemyPlane实例）
+ */
+public class EnemyPlaneFactory {
+    private static final EnemyPlane instance = new EnemyPlane(0);
+
+    public static EnemyPlane getEnemyPlane(int x) {
+        EnemyPlane clone = null;
+        try {
+            clone = instance.clone();
+            clone.setX(x);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return clone;
+    }
+}
+```
+
+测试 `new` 实例和 `clone`的耗时。
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        long t1 = System.currentTimeMillis();
+
+        for (int i = 0; i < 1000000000; i++) {
+            EnemyPlane enemyPlan = new EnemyPlane(1);
+        }
+
+        long t2 = System.currentTimeMillis();
+
+        for (int i = 0; i < 1000000000; i++) {
+            EnemyPlane clone = EnemyPlaneFactory.getEnemyPlane(1);
+        }
+
+        long t3 = System.currentTimeMillis();
+
+        System.out.printf("new 十亿次耗时： %d\n", t2-t1);
+        System.out.printf("clone 十亿次耗时： %d\n", t3-t2);
+    }
+}
+```
+
+测试结果：
+<TipBox>
+  new 十亿次耗时： 4 <br/>
+  clone 十亿次耗时： 4835
+</TipBox>
+
+根据测试结果，克隆十亿次的耗时要远大于new十亿次。但如果我们在构造函数中加入以下复杂的操作的话，情况就会不同，具体测试就不做了。
+
+结论是，<MarkPen color='null' underline>对于那些有非常复杂的初始化过程的对象或者是需要耗费大量资源的情况，原型模式是更好的选择</MarkPen>。
+
+#### 1.2.2 深拷贝和浅拷贝
+
+`clone()`方法是浅拷贝，只会拷贝类中的基本数据类型值，对于引用数据类型，只会拷贝对象引用，而不会重新实例化。所以，克隆的实例对象中的引用类型对象都是同一个。
+
+```java
+public class User implements Cloneable {
+
+    public String name = "张三";
+    public int age = 18;
+    public Hobby hobby = new Hobby();
+
+    @Override
+    protected User clone() throws CloneNotSupportedException {
+        return (User) super.clone();
+    }
+}
+
+class Hobby {
+    public long id;
+    public String hobby;
+}
+
+class Test1 {
+    public static void main(String[] args) throws CloneNotSupportedException {
+        User user = new User();
+        User user1 = user.clone();
+
+        // 克隆的实例与原实例中的引用类型Hobby是同一个对象
+        System.out.println(user.hobby == user1.hobby); // true
+    }
+}
+```
+
+重写 `clone()` 方法，对引用数据类型进行拷贝，实现深拷贝操作。要深拷贝的类要实现 `Cloneable` 接口。
+
+```java
+public class User implements Cloneable {
+
+    public String name = "张三";
+    public int age = 18;
+    public Hobby hobby = new Hobby();
+
+    @Override
+    protected User clone() throws CloneNotSupportedException {
+        User clone = (User) super.clone();
+        // 对Hobby进行克隆
+        clone.hobby = this.hobby.clone();
+        return clone;
+    }
+}
+
+/**
+ * 实现克隆接口
+ */
+class Hobby implements Cloneable{
+    public long id;
+    public String hobby;
+
+    @Override
+    protected Hobby clone() throws CloneNotSupportedException {
+        return (Hobby)super.clone();
+    }
+}
+
+class Test1 {
+    public static void main(String[] args) throws CloneNotSupportedException {
+        User user = new User();
+        User user1 = user.clone();
+
+        // 克隆的实例与原实例中的引用类型Hobby不是同一个对象
+        System.out.println(user.hobby == user1.hobby); // false
+    }
+}
+```
+
+#### 1.2.3 总结
+
+- 原型模式是通过克隆在内存中创建一个新的对象，类要实现 `Cloneable` 接口；
+- 克隆要注意深拷贝和浅拷贝问题。
+
+<br/>
+
+### 1.3 工厂方法
+
+程序设计中的工厂类往往是对对象构造、实例化、初始化过程的封装，而工厂方法（FactoryMethod）则可以升华为一种设计模式，它对工厂制造方法进行接口规范化，以允许子类工厂决定具体制造哪类产品的实例，最终降低系统耦合，使系统的可维护性、可扩展性等得到提升。
+
+#### 1.3.1 简单工厂
+
+简单工厂是对对象创建过程的封装。
+
+先定义一个抽象类 `Enemy`。
+
+```java
+/**
+ * 敌人抽象类
+ * @author liyan
+ * @since 2021-10-19 13:42
+ */
+public abstract class Enemy {
+
+    // 敌人在屏幕上的坐标
+    protected int x;
+    protected int y;
+
+    // 初始化坐标
+    public Enemy(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    // 抽象方法，在地图绘制敌人
+    public abstract void show();
+}
+```
+
+定义一个飞机类 `Airplane`。
+
+```java
+/**
+ * 飞机类
+ * @author liyan
+ * @since 2021-10-19 13:45
+ */
+public class Airplane extends Enemy{
+
+    public Airplane(int x, int y) {
+        // 调用父类构造器，初始化坐标
+        super(x, y);
+    }
+
+    @Override
+    public void show() {
+        System.out.printf("绘制飞机于图层上层，x坐标：%d，y坐标：%d\n", x, y);
+        System.out.println("飞机向玩家发起攻击...");
+    }
+}
+```
+
+定义坦克类 `Tank`。
+
+```java
+/**
+ * 坦克类
+ * @author liyan
+ * @since 2021-10-19 13:48
+ */
+public class Tank extends Enemy{
+    public Tank(int x, int y) {
+        super(x, y);
+    }
+
+    @Override
+    public void show() {
+        System.out.printf("绘制坦克于图层下层，x坐标：%d，y坐标：%d\n", x, y);
+        System.out.println("坦克向玩家发起攻击...");
+    }
+}
+```
+
+定义简单工厂类 `SimpleFactory`。
+
+```java
+/**
+ * 简单工厂类
+ *
+ * @author liyan
+ * @since 2021-10-19 13:57
+ */
+public class SimpleFactory {
+
+    // 屏幕宽度
+    private int screenWidth;
+    // 随机数对象
+    private Random random;
+
+    /**
+     * 构造器
+     * @param screenWidth 屏幕宽度
+     */
+    public SimpleFactory(int screenWidth) {
+        this.screenWidth = screenWidth;
+        this.random = new Random();
+    }
+
+    public Enemy create(String type) {
+        type = type.toLowerCase(Locale.ROOT);
+        int x = random.nextInt(screenWidth); // x坐标
+        Enemy enemy = null;
+
+        switch (type) {
+            case "airplane":
+                enemy = new Airplane(x, 0);
+            case "tank":
+                enemy = new Tank(x, 0);
+        }
+        return enemy;
+    }
+}
+```
+
+客户端类作为测试类 `Client`。
+
+```java
+/**
+ * @author liyan
+ * @since 2021-10-19 13:49
+ */
+public class Client {
+    public static void main(String[] args) {
+        int screenWidth = 100;
+        SimpleFactory simpleFactory = new SimpleFactory(screenWidth);
+        System.out.println("游戏开始");
+        Enemy airplane = simpleFactory.create("airplane");
+        airplane.show();
+
+        Enemy tank = simpleFactory.create("tank");
+        tank.show();
+    }
+}
+```
+
+根据上面的示例代码可以发现，简单工厂类 `SimpleFactory` 是将 `Airplane` 和 `Tank` 的对象的生产过程封装起来，实现了对象创建与客户端类 `Client` 的解耦合。如果不使用简单工厂，对象的创建逻辑都要写到客户端类中，假设要创建很多对象，会造成代码非常复杂，对象间的耦合度高，不容易维护。
+
+简单工厂中并没有引入任何设计模式，在客户端类中 `Client` 中调用简单工厂仍需告知其要创建对象的类型，这在某种意义上也属于一种耦合。并且简单工厂的扩展性差，假设要扩展更多的敌人类型，如 Boss 类，我们要不断地修改简单工厂类。所以，<MarkPen underline>简单工厂一定要保持简单，否则就不要用简单工厂</MarkPen>。
+
+#### 1.3.2 工厂方法模式
+
+工厂方法模式更易扩展，解决了简单工厂类的一些弊端。根据上面的代码示例，如果要添加一个敌人类 `Boss` 类时，更容易添加到系统当中。
+
+工厂方法模式，需要定义一个工厂接口，提供一个创建子类工厂实例的方法，子类工厂中实现该方法创建各自实例。
+
+工厂接口 `Factory`。
+
+```java
+/**
+ * 工厂接口（工厂方法模式的核心）
+ * @author liyan
+ * @since 2021-10-19 15:03
+ */
+public interface Factory {
+    Enemy create(int screenWidth);
+}
+```
+
+创建 `Airplane` 和 `Tank` 各自的工厂类。
+
+```java
+/**
+ * 飞机工厂
+ * @author liyan
+ * @since 2021-10-19 15:06
+ */
+public class AirplaneFactory implements Factory{
+    @Override
+    public Enemy create(int screenWidth) {
+        Random random = new Random();
+        int x = random.nextInt(screenWidth);
+        return new Airplane(x, 0);
+    }
+}
+```
+
+添加新的敌人类 `Boss`。
+
+```java
+/**
+ * Boss类
+ * @author liyan
+ * @since 2021-10-19 15:11
+ */
+public class Boss extends Enemy{
+    public Boss(int x, int y) {
+        super(x, y);
+    }
+
+    @Override
+    public void show() {
+        System.out.printf("绘制Boss，x坐标：%d，y坐标：%d\n", x, y);
+        System.out.println("Boss向玩家发起攻击...");
+    }
+}
+```
+
+创建 `Boss` 类的工厂类。
+
+```java
+
+/**
+ * @author liyan
+ * @since 2021-10-19 15:12
+ */
+public class BossFactory implements Factory{
+    @Override
+    public Enemy create(int screenWidth) {
+        Random random = new Random();
+        int x = screenWidth/2;
+        return new Boss(x, 0);
+    }
+}
+```
+
+在客户端类中创建敌人对象。
+
+```java
+public class Client {
+    public static void main(String[] args) {
+        int screenWidth = 100;
+        System.out.println("游戏开始");
+
+        for (int i = 0; i < 3; i++) {
+            Factory airplaneFactory = new AirplaneFactory();
+            airplaneFactory.create(screenWidth).show();
+
+            Factory tankFactory = new TankFactory();
+            tankFactory.create(screenWidth).show();
+        }
+        Factory bossFactory = new BossFactory();
+        bossFactory.create(screenWidth).show();
+    }
+}
+```
+
+工厂方法模式相比简单工厂类，在扩展上不需要返回修改原有代码，只需要在当前系统上扩展即可，更容易维护。
+
+#### 1.3.3 总结
+
+- 简单工厂是创建一个简单工厂类，内部提供一个工厂方法，通过传入的类型判断要创建的子类实例，但如果之后要新增产品的类型，则要频繁修改这个简单工厂类；
+- 工厂方法模式是创建一个工厂接口（内部提供一个工厂方法），并且为每个产品类分别创建一个工厂类并实现这个工厂接口，重写工厂接口中的工厂方法封装创建产品实例的逻辑，每次要创建产品实例时只需通过调用对应产品工厂类的工厂方法即可。弊端是工厂的产品类型比较多时，则要频繁创建对应的工厂，造成工厂泛滥。
+
+### 1.4 抽象工厂
+

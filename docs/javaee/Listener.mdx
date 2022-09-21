@@ -1,0 +1,103 @@
+---
+id: Listener
+title: Listener
+---
+
+实现监听器接口，有N多种监听器
+
+Javaweb中主要监听对象：ServletContext、Session、request、response
+
+Javaweb中的监听器主要有8个：
+
+- ServletContext、Session、request、response的创建和销毁
+- 监听域对象存放值、修改值、删除值(setAttribute/getAttribute/removeAttribute)
+- 监听session中Javabean的操作、session本身的钝化和活化
+
+
+
+### 创建类实现HttpSessionListener接口：
+
+该接口有两个抽象方法：
+
+- sessionCreated(HttpSessionEvent se)： session被创建时调用
+- sessionDestroyed(HttpSessionEvent se)：session被销毁时调用
+
+
+
+### 配置监听器：
+
+- 通过web.xml
+
+  ```xml
+  <listener>
+    	<!--监听器的全限定名-->
+      <listener-class>com.neu.listener.OnlineCountListener</listener-class>
+  </listener>
+  ```
+
+  
+
+- 使用@WebListener注解
+
+
+
+### 小案例：统计在线人数
+
+```java
+package com.neu.listener;
+
+import javax.servlet.annotation.WebListener;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
+/**
+ * 统计在线人数：统计session
+ */
+@WebListener
+public class OnlineCountListener implements HttpSessionListener {
+    private static int onlineCount;
+
+
+    //创建Session监听：一旦Session创建就会触发这个方法
+    public void sessionCreated(HttpSessionEvent se) {
+        HttpSession session = se.getSession();
+        session.setMaxInactiveInterval(60);
+        if (session == null) {
+            onlineCount = 1;
+        } else {
+            onlineCount++;
+            System.out.println(session.getId());
+        }
+        se.getSession().getServletContext().setAttribute("onlineCount", onlineCount);
+    }
+
+    //销毁Session监听：一旦Session销毁就会触发这个方法
+    public void sessionDestroyed(HttpSessionEvent se) {
+        onlineCount--;
+        se.getSession().getServletContext().setAttribute("onlineCount", onlineCount);
+    }
+}
+```
+
+演示：
+
+![image-20200607224516309](https://upyun1.surcode.cn/imgs/20200607224516.png)
+
+*使用不同浏览器访问时，会看到在线人数增加，当浏览器关闭之后，通过设置session销毁时间，当session销毁时，人数减少。*
+
+
+
+Session销毁的两种情况：
+
+- 手动销毁：通过invalidate()方法销毁session
+
+- 自动销毁：通过web.xml配置session销毁时间(minute)
+
+  ```xml
+  <session-config>
+      <session-timeout>1</session-timeout>
+  </session-config>
+  ```
+
+  - 或者通过setMaxInactiveInterval(int second);设置session的最大不活跃时间。

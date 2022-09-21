@@ -1,0 +1,18 @@
+.btnDiv {
+  border-radius: 5px;
+  //width: 200px;
+  //height: 100px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  color: #ffffff;
+  background-color: #4042E2;
+  box-shadow: #8c8ded 0 0 8px;
+
+  &:hover {
+    box-shadow: #8889f1 0 0 12px;
+  }
+
+  &:active {
+    box-shadow: none;
+  }
+}

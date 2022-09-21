@@ -1,0 +1,83 @@
+---
+id: AOP实现方式二
+title: 15. AOP实现方式二
+---
+
+**使用自定义类（自定义切面）**
+
+
+
+自定义通知类：
+
+```java
+@Component
+public class UserAdvice{
+    //最终通知
+    public void after(){
+        System.out.println("最终通知");
+    }
+
+    //前置通知
+    public void before(){
+        System.out.println("前置通知");
+    }
+
+    //后置通知
+    public void afterReturn(){
+        System.out.println("后置通知");
+    }
+
+    //环绕通知
+    public void around(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("环绕通知，被拦截之前执行");
+        joinPoint.proceed();
+        System.out.println("环绕通知，被拦截之后执行");
+    }
+}
+```
+
+Xml：
+
+```xml
+<aop:config>
+  <!--自定义切面-->
+  <aop:aspect ref="userAdvice">
+    <!--设置切入点：在哪里切入-->
+    <aop:pointcut id="pointcut" expression="execution(* com.neu.dao.UserDaoImpl.*())"/>
+
+    <!--通知：通知什么时候执行-->
+    <aop:before method="before" pointcut-ref="pointcut"/>
+    <aop:after method="after" pointcut-ref="pointcut"/>
+    <aop:after-returning method="afterReturn" pointcut-ref="pointcut"/>
+    <aop:around method="around" pointcut-ref="pointcut"/>
+  </aop:aspect>
+</aop:config>
+```
+
+
+
+测试：
+
+```java
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(locations = {"classpath:ApplicationContext.xml"})
+public class TestUserDao {
+
+    @Autowired
+    UserDao userDao;
+
+    @Test
+    public void test(){
+        userDao.queryUser();
+    }
+}
+```
+
+结果：
+
+>前置通知
+>环绕通知，被拦截之前执行
+>查询User
+>环绕通知，被拦截之后执行
+>后置通知
+>最终通知

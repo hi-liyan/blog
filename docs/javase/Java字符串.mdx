@@ -1,0 +1,212 @@
+---
+id: Java字符串
+title: 16.1 Java字符串
+---
+import ImgBox from "../../src/components/ImgBox";
+
+String是一个类，是引用数据类型，它在Java.lang包下。
+
+## 如何创建String对象
+
+```java
+String str1 = "imooc";
+String str2 = new String();//不传参，则创建空null的字符串对象
+String str3 = new String("imooc")//创建对象str3，值是"imooc"
+```
+
+
+
+## String对象常用方法：
+
+### length()
+
+```java
+// 定义字符串"JAVA 编程 基础"
+String str = "JAVA 编程 基础";
+// 打印字符串长度 对象名.length()
+System.out.println("字符串长度：" + str.length());
+```
+
+运行结果：
+
+```
+字符串长度：10
+```
+
+
+
+### int indexOf(int ch)
+
+查找ch字符在该字符串中第一次出现的位置，返回值是int类型
+
+```java
+// 定义字符串 "JAVA编程基础，我喜欢Java编程"
+String str = new String("JAVA编程基础，我喜欢Java编程");
+// 查找字符'A'在字符串中第一次出现的位置
+System.out.println("字符'A'在字符串中第一次出现的位置：" + str.indexOf('A'));
+```
+
+运行结果：
+
+```
+字符'A'在字符串中第一次出现的位置：1
+```
+
+
+
+### int indexOf(String str)
+
+```java
+// 定义字符串 "JAVA编程基础，我喜欢Java编程"
+String str = new String("JAVA编程基础，我喜欢Java编程");
+// 查找子串"编程"在字符串中第一次出现的位置
+System.out.println("子串\"编程\"在字符串中第一次出现的位置：" + str.indexOf("编程"));
+```
+
+运行结果：
+
+```java
+子串"编程"在字符串中第一次出现的位置：4
+```
+
+
+
+### char charAt(int index)
+
+```java
+// 定义字符串"JAVA 编程 基础"
+String str = "JAVA 编程 基础";
+// charAt() 传入字符串的位置索引，返回字符
+System.out.println(str.charAt(6));
+```
+
+运行结果：
+
+```
+程
+```
+
+
+
+### String subString(int beginIndex)
+
+返回一个字符串，从beginIndex下标开始到字符串结束的子串
+
+```java
+// 定义字符串"JAVA 编程 基础"
+String str = "JAVA 编程 基础";
+// 求子串的方法，取出"编程 基础"
+System.out.println(str.substring(5));
+```
+
+运行结果：
+
+```
+编程 基础
+```
+
+### String subString(int beginIndex,int endIndex)
+
+```java
+// 定义字符串"JAVA 编程 基础"
+String str = "JAVA 编程 基础";
+// 求子串的方法，取出"编程"
+System.out.println(str.substring(5, 7));
+```
+
+运行结果：
+
+```
+编程
+```
+
+
+
+### byte[] getByte(String charsetName)
+
+把字符串转换为byte[]
+
+```java
+public class StringDemo3 {
+	public static void main(String[] args) {
+		// 字符串和byte数组相互转换
+		String str = new String("JAVA 编程 基础");
+		byte[] arrs = str.getBytes();
+		for (byte b : arrs) {
+			System.out.print(b + " ");
+		}
+		System.out.println();
+
+		// 将byte数组转换成字符串
+		String str1 = new String(arrs);
+		System.out.println(str1);
+	}
+}
+```
+
+运行结果：
+
+```
+74 65 86 65 32 -25 -68 -106 -25 -88 -117 32 -27 -97 -70 -25 -95 -128 
+JAVA 编程 基础
+```
+
+***注意：***
+
+这里要注意编码集的问题，如果采用utf8编码，那在使用getByte()时，得到的byte[]也是转换成utf8编码的数据，就像上面的示例，`74 65 86 65`，这里74->'J' ,65->'A'，`-25 -68 -106`代表'编'字，这是采用utf8编码。
+
+那么再将该byte[]转换成字符串时也要使用utf8编码，不能String转byte[]时使用GBK，再转回来的时候使用utf8，这样是没法转换的。
+
+
+
+## ==和equals的区别
+
+```java
+public class StringDemo5 {
+	public static void main(String[] args) {
+		String str1 = "imooc";
+		String str2 = "imooc";
+		String str3 = new String("imooc");
+
+		System.out.println("str1和str2的内容相同吗？" + str1.equals(str2));
+		System.out.println("str1和str3的内容相同吗？" + str1.equals(str3));
+
+		System.out.println("str1和str2的地址相同吗？" + (str1 == str2));
+		System.out.println("str1和str3的地址相同吗？" + (str1 == str3));
+	}
+}
+```
+
+运行结果：
+
+```
+str1和str2的内容相同吗？true
+str1和str3的内容相同吗？true
+str1和str2的地址相同吗？true
+str1和str3的地址相同吗？false
+```
+
+
+
+内存空间示例：
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/20200501102225.jpeg" />
+
+总结：equals()和==的区别
+
+- equals()
+  1. Object类中的equals()，是比较两个对象内存地址是否相同
+  2. String类中equals()，重写了父类方法，是比较两个对象字符序列是否相同
+
+- ==
+  1. 基本数据类型：比较两个数据或者变量的值是否相同
+  2. 引用数据类型：比较两个对象的内存地址是否相同
+
+
+
+## String 的不可变性
+
+String具有不可变性，这个概念有点儿抽象。
+
+具体的意义可以Google一下。
+

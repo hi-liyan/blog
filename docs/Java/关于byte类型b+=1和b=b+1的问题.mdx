@@ -1,0 +1,71 @@
+---
+id: 关于byte b+=1和b=b+1的问题
+title: 🍬byte b += 1 和 b = b + 1
+---
+import ImgBox from "../../src/components/ImgBox";
+
+先来看下问题，如下图。声明了一个变量 `byte b = 100;`，第5行代码编译正常，第6行代码编译器报错。
+
+<ImgBox src="https://upyun1.surcode.cn/imgs/20220512234622.png" />
+
+原因是，Java编译器在处理 `+=` 时，会自动进行强转（窄化处理），这属于一个Java的语法糖。
+
+下面是反编译的字节码指令：
+
+```
+$ javap -v -l Hello
+Classfile /Users/liyan/Documents/java-class/learning-java/src/Hello.class
+  Last modified 2022-5-12; size 271 bytes
+  MD5 checksum d656ead69e7ab2b5502aa1530196ce9f
+  Compiled from "Hello.java"
+public class Hello
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#12         // java/lang/Object."<init>":()V
+   #2 = Class              #13            // Hello
+   #3 = Class              #14            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               main
+   #9 = Utf8               ([Ljava/lang/String;)V
+  #10 = Utf8               SourceFile
+  #11 = Utf8               Hello.java
+  #12 = NameAndType        #4:#5          // "<init>":()V
+  #13 = Utf8               Hello
+  #14 = Utf8               java/lang/Object
+{
+  public Hello();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 1: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=2, args_size=1
+         0: bipush        100
+         2: istore_1
+         3: iload_1
+         4: iconst_1
+         5: iadd
+         6: i2b
+         7: istore_1
+         8: return
+      LineNumberTable:
+        line 4: 0
+        line 5: 3
+        line 6: 8
+}
+SourceFile: "Hello.java"
+```
