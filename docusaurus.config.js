@@ -45,13 +45,12 @@ const config = {
           sidebarCollapsible: true, //默认折叠
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://git.surcode.cn/liyan/shiguangping-blog/src/branch/release',
+          editUrl: 'https://github.com/hi-liyan/blog/tree/release',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl:
-            'https://git.surcode.cn/liyan/shiguangping-blog/src/branch/release',
+          editUrl: 'https://github.com/hi-liyan/blog/tree/release',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

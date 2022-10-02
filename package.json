@@ -1,5 +1,6 @@
 {
-  "name": "shiguangping-blog",
+  "name": "blog",
+  "author": "liyan",
   "version": "1.0.0-RELEASE",
   "private": true,
   "scripts": {
