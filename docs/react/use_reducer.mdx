@@ -1,0 +1,78 @@
+---
+id: use_reducer
+title: 💪🏻useReducer
+---
+
+**useReducer** 是 **useState** 的替代方案，它接收一个形如 `(state, action) => newState` 的 reducer，并返回当前的 **state** 以及与其配套的 **dispatch** 方法。
+
+```typescript
+const [state, dispatch] = useReducer(reducer, initState);
+```
+
+**useReducer** 使用示例，拿计数器举例：
+
+<iframe src="https://codesandbox.io/embed/react-counter-ts-st4nby?fontsize=14&hidenavigation=1&theme=dark"
+     style={{width: '100%', height: '500px', border: '0', borderRadius: '4px', overflow: 'hidden'}}
+     title="React-Counter-Ts"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
+
+Counter/index.tsx
+```typescript
+import { useReducer } from "../../hooks/use_reducer";
+import './index.css';
+
+interface State {
+    count: number
+}
+
+interface CountAction {
+    type: string
+}
+
+const initState: State = {count: 0}
+
+const reducer = (state: State , action: CountAction) => {
+    switch (action.type) {
+        case "increment":
+            return {count: ++state.count}
+        case "decrement":
+            return {count: --state.count}
+            case "reset": 
+                return {count: 0}
+        default:
+            throw new Error("action type invalid.")
+    }
+}
+
+export default function Counter() {
+    const [state, dispatch] = useReducer(reducer, initState);
+
+    return (<div className="container">
+        <div className="title">自定义hook useReducer</div>
+        Count: <span className="count">{state.count}</span>
+        <div className="button">
+            <button onClick={() => dispatch({type: "increment"})}>increment</button>
+            <button onClick={() => dispatch({type: "decrement"})}>decrement</button>
+            <button onClick={() => dispatch({type: "reset"})}>reset</button>
+        </div>
+    </div>);
+}
+```
+
+hooks/use_reducer.ts
+```typescript
+import { useState } from "react";
+
+const useReducer = <S, A>(reducer: (state: S, action: A) => S, initState: S): [S, (action: A) => void] => {
+  const [state, setState] = useState<S>(initState);
+
+  const dispatch = (action: A) => {
+    setState(reducer(state, action));
+  };
+  return [state, dispatch];
+};
+
+export { useReducer };
+```

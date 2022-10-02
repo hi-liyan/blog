@@ -267,15 +267,6 @@ module.exports = {
                 "database/mybatis-plus-multi-tenant"
             ]
         },
-        "设计模式",
-        "Golang",
-        "Rust",
-        {
-            CSS: [
-                "css/CSS",
-                "css/Flex",
-            ]
-        },
         {
             JavaScript: [
                 "javascript/JS数组遍历",
@@ -285,6 +276,16 @@ module.exports = {
         {
             React: [
                 "react/React",
+                "react/use_reducer"
+            ]
+        },
+        "设计模式",
+        "Golang",
+        "Rust",
+        {
+            CSS: [
+                "css/CSS",
+                "css/Flex",
             ]
         },
         {
