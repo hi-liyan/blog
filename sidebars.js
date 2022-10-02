@@ -274,10 +274,11 @@ module.exports = {
             ]
         },
         {
-            React: [
-                "react/React",
+            "🎊React": [
+                "react/react-hooks",
                 "react/use_reducer",
-                "react/react-redux"
+                "react/react-redux",
+                "react/context"
             ]
         },
         "设计模式",

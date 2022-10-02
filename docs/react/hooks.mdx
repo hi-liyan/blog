@@ -1,0 +1,96 @@
+---
+id: react-hooks
+title: 🪝hooks
+---
+import ArticleCreation from "../../src/components/ArticleCreation";
+import ImgBox from "../../src/components/ImgBox";
+
+## useState
+
+```javascript
+const [count, setCount] = useState(0);
+```
+
+使用 **useState** 需要传入一个初始值或者一个带有返回值的初始化函数。它返回一个数组，数组第一个元素是 **state**，第二个元素是更新 **state** 的函数。
+
+更新状态的函数 setCount 允许直接传入一个值来更新状态。
+
+```typescript
+<button onClick={() => setCount(1)}>increment</button>
+```
+
+也可以传入一个回调函数来更新状态。
+
+```typescript
+<button onClick={() => setCount(prevState => prevState += 1)}>increment</button>
+```
+
+**惰性初始化**
+
+**useState** 的初始化参数只会在组件初始渲染中起作用，后续渲染时会被忽略。如果初始 state 需要通过复杂计算获得，则可以传入一个初始化函数，在函数中计算并返回初始的 state，此函数只在初始渲染时被调用。
+
+```typescript
+export default function Counter() {
+  const initState = () => {
+    console.log("执行了初始化函数");
+    return 0;
+  };
+  // 在每一次更新 state 重新渲染组件时都会执行初始化函数
+  // const [count, setCount] = useState(initState());
+  // 只有初始渲染时才调用初始化函数
+  const [count, setCount] = useState(initState);
+
+  return (
+    <div className="container">
+      <button onClick={() => setCount((prevState) => (prevState += 1))}>
+        Count: {count}
+      </button>
+    </div>
+  );
+}
+```
+
+## useEffect
+
+**useEffect** 可以监听 state 的变化，有时也可以充当生命周期函数使用。可以把产生副作用的操作放在 useEffect 中执行。
+
+useEffect 接收两个参数，第一个参数接收一个回调函数，在每一次触发了 useEffect 时调用该回调；第二个参数是一个数组，
+数组中是要监听的状态，当状态发生变化，会触发执行回调。如果传入空数组，则只会在初始渲染完成后执行一次回调。
+
+```typescript
+export default function Counter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => console.log('初始渲染后执行'), []);
+
+  useEffect(() => console.log('Count发生改成时执行'), [count]);
+  
+  return (
+    <div className="container">
+      <button onClick={() => setCount((prevState) => (prevState += 1))}>
+        Count: {count}
+      </button>
+    </div>
+  );
+}
+```
+
+如果想在组件卸载前执行一些操作，可以在回调函数中 return 一个函数，该函数会在组件卸载之前执行。
+
+```typescript
+useEffect(() => {
+    return () => console.log('组件卸载前执行');
+}, [])
+```
+
+## useLayoutEffect
+
+## useReducer
+
+## useCallback
+
+## useMemo
+
+## useRef
+
+## useContext
