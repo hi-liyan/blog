@@ -45,12 +45,12 @@ const config = {
           sidebarCollapsible: true, //默认折叠
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/hi-liyan/blog/tree/release',
+          editUrl: 'https://github.com/hi-liyan/blog/blob/main',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: 'https://github.com/hi-liyan/blog/tree/release',
+          editUrl: 'https://github.com/hi-liyan/blog/blob/main',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
