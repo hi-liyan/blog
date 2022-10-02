@@ -1,0 +1,128 @@
+---
+id: react-redux
+title: ⭐️react-redux 快速开始
+---
+
+## 安装
+
+1. 安装 `react-redux`。
+```bash
+# 使用 npm 安装
+npm install react-redux
+# 或者使用 yarn 安装
+yarn add react-redux
+```
+
+2. 安装 `@reduxjs/toolkit`
+```bash
+# 使用 npm 安装
+npm install @reduxjs/toolkit
+# 或者使用 yarn 安装
+yarn add @reduxjs/toolkit
+```
+
+## 定义 Root State
+
+```typescript
+import { configureStore } from '@reduxjs/toolkit';
+import { counterSlice } from './counterSlice';
+
+// root state
+export const store = configureStore({
+    reducer: {
+        counter: counterSlice.reducer
+    }
+});
+
+// root state 类型
+export type RootState = ReturnType<typeof store.getState>
+// AppDispatch 类型
+export type AppDispatch = typeof store.dispatch
+```
+
+## Provider
+
+使用 **Redux** 提供的 **Provider** 组件包裹 React 根节点。
+
+```typescript
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { Provider } from 'react-redux'
+import {store} from './redux/store'
+import App from './App'
+import './index.css'
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    // 包裹根节点，指定 Root State
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>
+)
+```
+
+## 定义 Slice State
+
+不同类型的 State 拆分成一个个 State 切片。
+
+```typescript
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { RootState } from "./store";
+
+interface CounterState {
+    value: number
+}
+
+const initialState: CounterState = {
+    value: 0
+}
+
+export const counterSlice = createSlice({
+    name: "counter",
+    initialState,
+    reducers: {
+        increment: (state) => {
+            state.value += 1
+        },
+        decrement: (state) => {
+            state.value -= 1
+        },
+        incrementByAmount: (state, action: PayloadAction<number>) => {
+            state.value += action.payload
+        },
+        reset: (state) => {
+            state.value = 0
+        }
+    }
+});
+
+export const {increment, decrement, incrementByAmount, reset} = counterSlice.actions;
+export const selectCount = (state: RootState) => state.counter.value;
+```
+
+##  useSelector 和 useDispatch
+
+计数器。
+
+```typescript
+import { useDispatch, useSelector } from "react-redux"
+import { decrement, incrementByAmount, reset, selectCount } from "../../redux/counterSlice"
+import "./index.css"
+
+ const ReduxCounter = () => {
+    const count = useSelector(selectCount);
+    const dispatch = useDispatch<any>();
+
+    return (<>
+        Count: {count}
+        <div className="button">
+            <button onClick={() => dispatch(incrementByAmount(10))}>increment</button>
+            <button onClick={() => dispatch(decrement())}>decrement</button>
+            <button onClick={() => dispatch(reset())}>reset</button>
+        </div>
+    </>)
+}
+
+export default ReduxCounter
+```

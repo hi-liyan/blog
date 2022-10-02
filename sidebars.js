@@ -276,7 +276,8 @@ module.exports = {
         {
             React: [
                 "react/React",
-                "react/use_reducer"
+                "react/use_reducer",
+                "react/react-redux"
             ]
         },
         "设计模式",
