@@ -268,7 +268,8 @@ module.exports = {
             ]
         },
         {
-            JavaScript: [
+            "😃JavaScript": [
+                "javascript/prototype",
                 "javascript/JS数组遍历",
                 "javascript/Promise"
             ]
