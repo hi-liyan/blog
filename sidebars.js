@@ -24,6 +24,7 @@ module.exports = {
         "Java/javase",
         "Java/修改final常量的值",
         "Java/关于byte b+=1和b=b+1的问题",
+        "kotlin/浅学 Kotlin",
         {
             JavaSE: [
                 {

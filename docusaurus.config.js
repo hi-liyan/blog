@@ -99,7 +99,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['dart', 'java', 'groovy', 'rust'],
+        additionalLanguages: ['dart', 'java', 'groovy', 'rust', 'kotlin'],
       },
       colorMode: {
         respectPrefersColorScheme: true
