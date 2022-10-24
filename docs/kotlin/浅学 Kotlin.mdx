@@ -5,6 +5,7 @@ keywords:
 - kotlin
 - kotlin 编程语言
 ---
+import MarkPen from "../../src/components/MarkPen";
 
 现在在做的一个 Web 项目后端使用的 Kotlin 语言，它和 Java 一样都是编译成 JVM 字节码运行在 JVM 上。它虽然和 Java 有很多相似的地方，但在语言层面上增加了很多特性，特别是对函数式(Functional)编程范式的支持。
 
@@ -322,4 +323,87 @@ fun main() {
 }
 ```
 
+### 跳转与标签
 
+在 Kotlin 的流程控制结构中，也有 **break** **continue** **return** 关键字，除了有和 Java 相同的用法外，还增加跳转或返回到指定标签的操作。
+
+Kotlin 中的表达式前可以**打标签**，标签的写法是<MarkPen>标识符后面跟着@</MarkPen>，例如：loop@，abc@ 这样。当在循环表达式前打标签，在循环中就可以使用标签来限定 **break** **continue** **return** 的作用位置或者说作用范围。
+
+例如使用标签限定 **break**， 在 break 后跟着标签的反写。当执行 break 时，break 语义会作用整个打标签的循环表达式。
+
+```kotlin
+fun main() {
+    foo()
+}
+
+fun foo() {
+    // for 循环表达式前打了一个标签 loop@
+    loop@ for (i in 1..10) {
+        println("i = $i")
+        for (j in 1..10) {
+            // 当 j == 3 时，会中止整个打标签的循环
+            if (j == 3) break@loop
+            println("j = $j")
+        }
+    }
+}
+```
+
+<br/>
+
+如果 **continue** 后面跟着标签的反写，当执行到 continue 时，continue 语义会作用打标签的循环，继续下一次迭代。
+
+```kotlin
+fun main() {
+    foo()
+}
+
+fun foo() {
+    // for 循环表达式前打了一个标签 loop@
+    loop@ for (i in 1..10) {
+        println("i = $i")
+        for (j in 1..10) {
+            // 打标签的循环继续下一次迭代
+            if (j == 3) continue@loop
+            println("j = $j")
+        }
+    }
+}
+```
+
+<br/>
+
+看一下下面这段代码，这段代码的执行结果如果按照 Java 的 `forEach()` 逻辑，结果应该打印除了 3 以外的 1 到 10 的数字，但实际只打印了 1 和 2。
+
+```kotlin
+fun main() {
+    foo()
+}
+
+fun foo() {
+    arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).forEach {
+        if (it == 3) return
+        println(it)
+    }
+}
+```
+
+在 Kotlin 中，只能对具名或匿名函数使用正常的、非限定的 return 来退出。 要退出一个 lambda 表达式，需要使用一个标签限定。
+
+```kotlin
+fun main() {
+    foo()
+}
+
+fun foo() {
+    arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        // 给 lambda 表达式打标签
+        .forEach aaa@{
+            // 标签限定return，只 return 打标签的lambda
+            if (it == 3) return@aaa
+            println(it)
+        }
+}
+```
+
+如果 return 有返回值的话，返回值写在标签限定 return 后面。
