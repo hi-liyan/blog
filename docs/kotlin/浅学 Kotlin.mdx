@@ -454,17 +454,181 @@ fun foo(): Nothing {
 
 ## 类和对象
 
+### 构造函数
 
+Kotlin 中的构造函数和 Java 中的构造函数定义方式上有很大不同。Kotlin 中构造函数有两种，<MarkPen>主构造函数和次构造函数</MarkPen>。
 
+主构造函数定义在类声明位置，跟在类名后面，使用 **constructor** 关键字后面跟着小括号，小括号是主构造函数的参数列表。如果主构造函数没有访问修饰符，也没有使用注解的情况下，constructor 关键字可以省略不写。
 
+```kotlin
+class User constructor(
+    id: Long,
+    name: String,
+    age: Int
+) {
+    // ...
+}
+```
 
+主构造函数没有方法体，需要初始化的逻辑可以放到初始化块中。初始化块使用 **init** 关键字，后面跟着花括号。初始化块中的代码会在实例化对象时执行。通过反编译 Kotlin 的字节码看，<MarkPen>init 块中的代码其实是放到了每个构造函数中的开始位置</MarkPen>。
+
+在类中可以定义多个 init 块，这些初始化块编译后都会放到构造函数中执行，执行的顺序按 init 块声明的顺序从上往下执行。
+
+```kotlin
+class User constructor(
+    id: Long,
+    name: String,
+    age: Int
+) {
+    // 初始化块
+    init {
+        // ...
+    }
+}
+```
+
+在 Kotlin 类中还可以使用 **constructor** 关键字定义多个次构造函数。
+
+```kotlin
+class Animal {
+
+    lateinit var name: String
+
+    constructor(name: String) {
+        println("name: $name")
+    }
+
+    constructor() {
+        println("no parameters")
+    }
+
+    constructor(age: Int) {
+        println("age: $age")
+    }
+
+    init {
+        println("Animal init block.")
+        this.name = "花花"
+    }
+}
+```
+
+需要注意的是，<MarkPen>主构造函数和次构造函数都是可选的，如果类中存在主构造函数，那么次构造函数必须要直接或者间接委托主构造函数。</MarkPen>
+
+```kotlin
+// 类声明中可以包含主构造函数
+class User constructor(
+    id: Long,
+    name: String,
+    age: Int
+) {
+
+    private var id: Long = id
+    private var name: String = name
+    private var age: Int = age
+    private lateinit var gender: String
+
+    // 次构造函数需要委托主构造函数
+    constructor(id: Long, name: String, age: Int, gender: String) : this(id, name, age) {
+        this.gender = gender
+    }
+
+    override fun toString(): String {
+        return "User[name: $name, age: $age]"
+    }
+
+    fun foo(v: Int = 10) {
+        println(gender)
+    }
+}
+```
+
+### 实例化对象
+
+在 Kotlin 中，实例化对象不需要使用 new 关键字。
+
+```kotlin
+fun main() {
+    // 实例化对象时，不需要 new 关键字
+    val user = User(1L, "花花", 3, "男")
+    println(user)
+    user.foo()
+}
+```
+
+### 继承
 
 ## 整理 Kotlin 中独有的关键字
 
-Kotlin 中有很多关键字是 Java 中没有或者没有被使用的，见了之后真是让人一头雾水。所以这里把我遇到的这些关键字以及用法单独整理出来。
+:::tip
+Kotlin 中有很多关键字是 Java 中没有或者没有被使用的，这里是把这些关键字以及用法单独列出来。
+:::
 
 ### constructor
 
-<MarkPen>constructor</MarkPen> 关键字用于在类头部分定义构造函数，通常情况下可以省略。
+constructor 关键字用来定义构造函数。如果是定义主构造函数，并且主构造函数没有访问修饰符和注解的情况下，主构造函数的 constructor 关键字可以省略。
 
 ### init
+
+init 关键字用于在类内定义初始化代码块，初始化代码块中的代码在<MarkPen>对象实例化</MarkPen>时执行。
+
+使用 IDEA 中的反编译工具反编译 Kotlin 字节码，可以发现 init 代码块中的代码会被编译器放到构造函数中的开始位置。所以，初始化块中的代码会优于构造函数中的代码先执行，如果类中有多个 init 代码块，会按代码块顺序依次执行 init 代码块中的代码，然后再执行构造函数中的代码。
+
+### lateinit
+
+lateinit 关键字顾名思义，稍后初始化的意思，用在成员变量前面，告诉编译器这个成员变量会稍后初始化。
+
+在 Kotlin 中，成员位置定义的变量也需要初始化，否则编译器会报错。不是像 Java 那样有默认值，这么做应该是为了保证 Kotlin 的空安全机制。但即使变量声明时使用了 lateinit 关键字，也不是说这个变量不需要初始化，如果访问了没有初始化的变量，运行时会报错。
+
+使用反编译工具发现，在访问变量时，会判断这个变量是否为 null，如果为 null 会抛异常。
+
+源代码：
+
+```kotlin
+class Animal {
+
+    lateinit var name: String
+
+    fun foo() {
+        println(name)
+    }
+
+}
+```
+
+反编译后的代码：
+
+```java
+public final class Animal {
+   public String name;
+
+   @NotNull
+   public final String getName() {
+      String var10000 = this.name;
+      if (var10000 == null) {
+         Intrinsics.throwUninitializedPropertyAccessException("name");
+      }
+
+      return var10000;
+   }
+
+   public final void setName(@NotNull String var1) {
+      Intrinsics.checkNotNullParameter(var1, "<set-?>");
+      this.name = var1;
+   }
+
+   public final void foo() {
+      String var10000 = this.name;
+      // 判断变量是否为 null
+      if (var10000 == null) {
+         Intrinsics.throwUninitializedPropertyAccessException("name");
+      }
+
+      String var1 = var10000;
+      boolean var2 = false;
+      System.out.println(var1);
+   }
+}
+```
+
+
