@@ -1,4 +1,4 @@
-import React from "react";
+import React, {PropsWithChildren} from "react";
 
 interface MarkPenProps {
   noMark?: boolean,
@@ -25,7 +25,7 @@ interface MarkPenProps {
 const MarkPen = ({noMark, color, children, underline, fontWeight}: MarkPenProps) => {
   return (
     <span style={{
-      display: 'inline-block',
+      // display: 'inline-block',
       borderRadius: '5px',
       padding: '0 3px',
       backgroundColor: noMark ? 'null' : (color ? color : '#ffedc9'),

@@ -7,7 +7,7 @@ keywords:
 ---
 import MarkPen from "../../src/components/MarkPen";
 
-现在在做的一个 Web 项目后端使用的 Kotlin 语言，它和 Java 一样都是编译成 JVM 字节码运行在 JVM 上。它虽然和 Java 有很多相似的地方，但在语言层面上增加了很多特性，特别是对函数式(Functional)编程范式的支持。<MarkPen>在 Kotlin 中函数是一等公民，并且一切皆是表达式，</MarkPen>因此也取消了代码中的分号。
+现在在做的一个 Web 项目后端使用的 Kotlin 语言，它和 Java 一样都是编译成 JVM 字节码运行在 JVM 上。虽然它和 Java 有很多相似的地方，但在语言层面上增加了很多特性，特别是对函数式 (Functional) 编程范式的支持。<MarkPen>在 Kotlin 中函数是一等公民，并且一切皆是表达式，</MarkPen>因此也取消了代码中的分号。
 
 本文是跟着 [《Kotlin 官方文档 中文版》](https://book.kotlincn.net/) 学习，整理出和 Java 语法语义上不同的地方。
 
@@ -407,3 +407,64 @@ fun foo() {
 ```
 
 如果 return 有返回值的话，返回值写在标签限定 return 后面。
+
+### 异常处理
+
+在 Kotlin 中， <MarkPen>try...catch 也是表达式</MarkPen>，catch 中可以返回值。
+
+```kotlin
+fun main() {
+    val result = try {
+        foo()
+    } catch (e: Exception) {
+        println("error msg: ${e.message}")
+        -1
+    }
+
+    println(result) // -1
+}
+
+fun foo(): Int {
+    return 1/0
+}
+```
+
+在 Kotlin 中，所有的异常都是 **Throwable** 类的子类，并且没有 Java 中检查异常非检查异常之说。Java 中所有 RuntimeException 类及子类异常都是非检查异常，其余的都是检查异常。
+
+<br/>
+
+Kotlin 中 throw 也是表达式，它返回 **Nothing** 类型。`Nothing` 类型没有值，它是用来标记永远不可能到达的位置。它还有一个可空变体，`Nothing?`。
+
+```kotlin
+fun main() {
+    val result = try {
+        foo()
+    } catch (e: Exception) {
+        println("error msg: ${e.message}")
+        -1
+    }
+
+    println(result)
+}
+
+fun foo(): Nothing {
+    throw Exception()
+}
+```
+
+## 类和对象
+
+
+
+
+
+
+## 整理 Kotlin 中独有的关键字
+
+Kotlin 中有很多关键字是 Java 中没有或者没有被使用的，见了之后真是让人一头雾水。所以这里把我遇到的这些关键字以及用法单独整理出来。
+
+### constructor
+
+<MarkPen>constructor</MarkPen> 关键字用于在类头部分定义构造函数，通常情况下可以省略。
+
+### init
