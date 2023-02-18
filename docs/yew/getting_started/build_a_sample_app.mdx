@@ -1,0 +1,134 @@
+---
+id: build_a_sample_app
+title: 构建一个简单的应用
+---
+
+一旦您准备好环境，您可以选择使用包含基本 Yew 应用程序的样板模板，或手动设置一个小型项目。
+
+## 使用样板模板
+
+按照其安装说明安装 [`cargo-generate`](https://github.com/cargo-generate/cargo-generate)，然后运行以下命令：
+
+```shell
+cargo generate --git https://github.com/yewstack/yew-trunk-minimal-template
+```
+
+## 手动设置应用程序
+
+### 创建项目
+
+要开始，请创建一个新的 Cargo 项目。
+
+```bash
+cargo new yew-app
+```
+
+打开新创建的目录。
+
+```bash
+cd yew-app
+```
+
+### 运行 Hello World 示例
+
+为了验证 Rust 环境是否设置好，使用 `cargo run` 运行初始项目。您应该会看到 "Hello World!" 消息。
+
+```bash
+cargo run
+# output: Hello World!
+```
+
+### 将项目设置为 Yew web 应用程序
+
+要将此简单的命令行应用程序转换为基本的 Yew web 应用程序，需要进行一些更改。
+
+#### 更新 Cargo.toml
+
+将 `yew` 添加到依赖项列表中。
+
+```toml title=Cargo.toml
+[package]
+name = "yew-app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# this is the development version of Yew
+yew = { git = "https://github.com/yewstack/yew/", features = ["csr"] }
+```
+
+:::info
+
+如果您正在构建应用程序，只需要 feature `csr`。它将启用 `Renderer` 和所有与客户端渲染相关的代码。
+
+如果您正在制作库，请勿启用此功能，因为它会将客户端渲染逻辑拉入服务器端渲染束缚。
+
+如果您需要 Renderer 用于测试或示例，则应在 `dev-dependencies` 中启用它。
+
+:::
+
+#### 更新 main.rs
+
+我们需要生成一个模板，设置一个名为 `App` 的根组件，该组件在单击按钮时会更新其值。用以下代码替换 `src/main.rs` 的内容。
+
+:::note
+`main` 函数内的 `yew::Renderer::<App>::new().render()` 调用启动您的应用程序并将其挂载到页面的 `<body>` 标记上。
+如果您想以任何动态属性启动应用程序，您可以改为使用 `yew::Renderer::<App>::with_props(..).render()`。
+:::
+
+```rust ,no_run, title=main.rs
+use yew::prelude::*;
+
+#[function_component]
+fn App() -> Html {
+    let counter = use_state(|| 0);
+    let onclick = {
+        let counter = counter.clone();
+        move |_| {
+            let value = *counter + 1;
+            counter.set(value);
+        }
+    };
+
+    html! {
+        <div>
+            <button {onclick}>{ "+1" }</button>
+            <p>{ *counter }</p>
+        </div>
+    }
+}
+
+fn main() {
+    yew::Renderer::<App>::new().render();
+}
+```
+
+#### 创建 index.html
+
+最后，在应用程序的根目录中添加一个 `index.html` 文件
+
+```html , title=index.html
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Yew App</title>
+    </head>
+</html>
+```
+
+## 查看您的 Web 应用程序
+
+运行以下命令在本地构建并启动应用程序：
+
+```bash
+trunk serve
+```
+
+如果您修改了任何源代码文件，Trunk 将会重新构建您的应用程序。
+
+## 恭喜
+
+您现在已经成功设置了 Yew 的开发环境，并构建了您的第一个 Web 应用程序。
+
+尝试使用这个应用程序，并查看 [examples](./examples.mdx) 进一步学习。
