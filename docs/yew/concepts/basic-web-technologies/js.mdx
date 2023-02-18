@@ -7,24 +7,21 @@ comment: 'Keep this file as short and simple as possible. Its purpose is to ease
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
 
-> Yew centrally operates on the idea of keeping everything that a reusable piece of
-> UI may need in one place - rust files, while also keeping the underlying technology
-> accessible where necessary.
+> Yew 的中心思想是将可重用的 UI 所需的所有内容放在一个地方 - Rust 文件中，同时在必要时保持底层技术的可访问性。
 
-As of today, WebAssembly is not feature-complete for DOM interactions. This means even in Yew we
-sometimes rely on calling JavaScript. What follows is an overview of the involved libraries.
+截至今天，WebAssembly 对于 DOM 交互还不完整。这意味着即使在 Yew 中，有时我们也依赖于调用 JavaScript。以下是涉及的库的概述。
 
 ## wasm-bindgen
 
-[`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) is a library and tool that bridges calls between JavaScript and Rust functions.
+[`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) 是一种在 JavaScript 和 Rust 函数之间建立调用桥梁的库和工具。
 
-We highly recommend you take a look at their [documentation](https://rustwasm.github.io/docs/wasm-bindgen/) and our [quick guide](./wasm-bindgen.mdx).
+我们强烈建议您查看他们的 [文档](https://rustwasm.github.io/docs/wasm-bindgen/) 和我们的 [快速指南](./wasm-bindgen.mdx)。
 
 ## web-sys
 
-The [`web-sys` crate](https://crates.io/crates/web-sys) provides bindings for Web APIs and allows us to write JavaScript code in a rustyfied and safe way.
+[`web-sys` crate](https://crates.io/crates/web-sys) 提供 Web API 的绑定，允许我们以 Rust 的方式编写安全的 JavaScript 代码。
 
-Example:
+示例:
 
 <Tabs>
 <TabItem value="JS" label="JS">
@@ -50,4 +47,4 @@ let document = window()
 </TabItem>
 </Tabs>
 
-Once again we highly recommend you take a look at their [documentation](https://rustwasm.github.io/docs/wasm-bindgen/) and our [quick guide](./web-sys.mdx).
+再次强烈建议您查看他们的 [文档](https://rustwasm.github.io/docs/wasm-bindgen/) 和我们的 [快速指南](./web-sys.mdx)。

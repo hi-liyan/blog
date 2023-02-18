@@ -1,18 +1,17 @@
 ---
 title: 'CSS with classes!'
-description: 'A handy macro to handle classes'
-comment: 'Keep this file as short and simple as possible. Its purpose is to ease the reader into components in Yew instead of providing proper API docs'
+description: '这是一个用于处理类的便捷宏：'
+comment: '尽可能使此文件简短简单。它的目的是让读者更容易了解 Yew 中的组件，而不是提供适当的 API 文档。'
 ---
 
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
 
-Yew does not natively provide a CSS-in-Rust solution but helps with styling by providing
-programmatic ways to interact with the HTML `class` attribute.
+Yew 并没有本地提供 Rust 中的 CSS 解决方案，但是它通过提供编程式的方式与 HTML `class` 属性进行交互来帮助样式设计。
 
 ## Classes
 
-The `classes!` macro and associated `Classes` struct simplify the use of HTML classes:
+`classes!` 宏及相关的 `Classes` 结构简化了 HTML 类的使用：
 
 <Tabs>
   <TabItem value="Literal" label="Literal">
@@ -83,12 +82,11 @@ html! {
   </TabItem>
 </Tabs>
 
-We will expand upon this concept in [more CSS](../../more/css).
+我们将在 [more HTML](../../more/css) 中扩展这个概念。
 
 ## Inline Styles
 
-Currently Yew does not provide any special help with inline styles specified via the `styles` attribute,
-but you can use it like any other HTML attribute:
+目前，Yew没有为通过 `styles` 属性指定的内联样式提供任何特殊帮助，但是您可以像使用其他HTML属性一样使用它：
 
 ```rust
 use yew::{classes, html};
@@ -98,4 +96,4 @@ html! {
 };
 ```
 
-We will expand upon this concept in [more CSS](../../more/css).
+我们将在 [more CSS](../../more/css) 章节中对这个概念进行更深入的讲解。

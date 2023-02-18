@@ -21,21 +21,20 @@ module.exports = {
             id: 'hello',
             label: '你好'
         },
-        // Yew 框架
         {
             type: 'category',
             label: 'yew 框架',
-            link: { type: 'doc', id: 'yew/yew' },
+            link: { type: 'doc', id: 'yew/index' },
             items: [
                 {
                     type: 'category',
                     label: '快速开始',
                     collapsed: false,
-                    link: { type: 'doc', id: 'getting_started/introduction' },
+                    link: { type: 'doc', id: 'yew/getting-started/introduction' },
                     items: [
-                        'yew/getting_started/build_a_sample_app',
-                        'yew/getting_started/examples',
-                        'yew/getting_started/editor_setup'
+                        'yew/getting-started/build-a-sample-app',
+                        'yew/getting-started/examples',
+                        'yew/getting-started/editor-setup'
                     ]
                 },
                 {
@@ -114,7 +113,80 @@ module.exports = {
                         'yew/concepts/router',
                         'yew/concepts/suspense',
                     ],
-                }
+                },
+                {
+                    type: 'category',
+                    label: 'Advanced topics',
+                    link: {
+                        type: 'generated-index',
+                        title: 'Advanced topics',
+                        description:
+                            'Learn about the advanced topics and inner workings of Yew!',
+                    },
+                    items: [
+                        'yew/advanced-topics/how-it-works',
+                        {
+                            type: 'category',
+                            label: 'Struct Components',
+                            link: {
+                                type: 'doc',
+                                id: 'yew/advanced-topics/struct-components/introduction',
+                            },
+                            items: [
+                                'yew/advanced-topics/struct-components/hoc',
+                                'yew/advanced-topics/struct-components/lifecycle',
+                                'yew/advanced-topics/struct-components/scope',
+                                'yew/advanced-topics/struct-components/callbacks',
+                                'yew/advanced-topics/struct-components/properties',
+                                'yew/advanced-topics/struct-components/refs',
+                            ],
+                        },
+                        'yew/advanced-topics/children',
+                        'yew/advanced-topics/optimizations',
+                        'yew/advanced-topics/portals',
+                        'yew/advanced-topics/server-side-rendering',
+                        'yew/advanced-topics/immutable',
+                    ],
+                },
+                {
+                    type: 'category',
+                    label: '更多',
+                    link: {
+                        type: 'generated-index',
+                        title: 'Miscellaneous',
+                    },
+                    items: [
+                        'yew/more/debugging',
+                        'yew/more/deployment',
+                        'yew/more/css',
+                        'yew/more/testing',
+                        'yew/more/roadmap',
+                    ],
+                },
+                {
+                    type: 'category',
+                    label: 'Migration guides',
+                    items: [
+                        {
+                            type: 'category',
+                            label: 'yew',
+                            items: ['yew/migration-guides/yew/from-0_18_0-to-0_19_0'],
+                        },
+                        {
+                            type: 'category',
+                            label: 'yew-agent',
+                            items: ['yew/migration-guides/yew-agent/from-0_0_0-to-0_1_0'],
+                        },
+                        {
+                            type: 'category',
+                            label: 'yew-router',
+                            items: [
+                                'yew/migration-guides/yew-router/from-0_15_0-to-0_16_0',
+                            ],
+                        },
+                    ],
+                },
+                "yew/tutorial/index"
             ]
         },
         'Java/javase',
