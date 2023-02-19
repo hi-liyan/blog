@@ -17,7 +17,7 @@ let my_header: Html = html! {
 };
 ```
 
-与格式表达式类似，有一种简单的方法可以通过使用花括号将上下文中的值嵌入到HTML中：
+与 format expressions 类似，有一种简单的方法可以通过使用花括号将上下文中的值嵌入到HTML中：
 
 ```rust
 use yew::prelude::*;
@@ -37,8 +37,10 @@ let combined_html: Html = html! {
 };
 ```
 
-`html!` 使用有一个重要的规则 - 只能返回1个包装节点。
+`html!` 宏使用有一个重要的规则 - 只能返回1个包装节点。
 为了渲染多个元素的列表，html!提供了fragments的功能。Fragments是没有名称的标签，它们本身不产生HTML元素。
+
+_和 React 使用非常相似。_
 
 <Tabs>
 <TabItem value="Invalid" label="Invalid">

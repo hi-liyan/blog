@@ -1,30 +1,27 @@
 ---
 title: 'web-sys'
-description: 'The web-sys crate provides bindings for Web APIs.'
+description: 'web-sys crate 提供了Web API的绑定。'
 ---
 
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
 
-The [`web-sys` crate](https://crates.io/crates/web-sys) provides bindings for Web APIs. This is
-procedurally generated from browser WebIDL which is why some names are so long and why some types are vague.
+[`web-sys` crate](https://crates.io/crates/web-sys) 提供了 Web API 的绑定。
+这些绑定是从浏览器 WebIDL 自动生成的，因此某些名称非常长，某些类型也很模糊。
 
 ## Features in `web-sys`
 
-The `web-sys` crate with all of its features enabled can add lots of bloat to a Wasm application.
-To get around this issue most types are feature gated so that you only include the types
-you require for your application. Yew enables several features from `web-sys` and
-exposes some types in its public API. You will often need to add `web-sys` as a dependency yourself.
+`web-sys` crate 的所有功能都启用会让 Wasm 应用程序变得臃肿。为了解决这个问题，大多数类型都被 feature gate，
+这样你只需要包含你的应用程序需要的类型。Yew 从 `web-sys` 启用了几个功能，并在其公共 API 中公开了一些类型。
+你通常需要自己添加 `web-sys` 作为依赖项。
 
 ## Inheritance in `web-sys`
 
-In the [Simulating inheritance section](./wasm-bindgen.mdx#simulating-inheritance) you can read how in
-general Rust provides an approach to simulate inheritance in JavaScript. This is very important in
-`web-sys` as understanding what methods are available on a type means understanding its inheritance.
+在 [Simulating inheritance 章节](./wasm-bindgen.mdx#simulating-inheritance)，
+您可以了解 Rust 一般提供了一种在 JavaScript 中模拟继承的方法。在 `web-sys` 中这一点非常重要，
+因为了解一个类型上有哪些方法意味着了解它的继承关系。
 
-This section is going to look at a specific element and list out its inheritance using Rust by
-calling [`Deref::deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html#tymethod.deref) until
-the value is [`JsValue`](./wasm-bindgen.mdx#jsvalue):
+本节将针对特定元素，使用 Rust 的方式列出其继承关系，方法是通过连续调用 [`Deref::deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html#tymethod.deref) 直到得到 [`JsValue`](./wasm-bindgen.mdx#jsvalue) 的值：
 
 ```rust
 use std::ops::Deref;
@@ -79,18 +76,13 @@ _[Inheritance in `web-sys` in The `wasm-bindgen` Guide](https://rustwasm.github.
 
 ## The `Node` in `NodeRef`
 
-Yew uses a [`NodeRef`](concepts/function-components/node-refs.mdx) to provide a way for keeping a reference to
-a `Node` made by the [`html!`](concepts/html/introduction.mdx) macro. The `Node` part of `NodeRef` is referring to
-[`web_sys::Node`](https://rustwasm.github.io/wasm-bindgen/api/web_sys/struct.Node.html). The
-`NodeRef::get` method will return a `Option<Node>` value, however, most of the time in Yew you want
-to cast this value to a specific element so you can use its specific methods. This casting
-can be done using [`JsCast`](./wasm-bindgen.mdx#JsCast) on the `Node` value, if present, but Yew
-provides the `NodeRef::cast` method to perform this casting for convenience and so that you do not
-necessarily have to include the `wasm-bindgen` dependency for the `JsCast` trait.
+Yew使用 [`NodeRef`](concepts/function-components/node-refs.mdx) 为 [`html!`](concepts/html/introduction.mdx) 宏创建的 `Node` 提供引用的方法。
+这里的 `Node` 是指 [`web_sys::Node`](https://rustwasm.github.io/wasm-bindgen/api/web_sys/struct.Node.html)。
+`NodeRef::get` 方法将返回 `Option<Node>` 值，然而，在Yew中，大多数情况下您都希望将此值转换为特定的元素，以便使用其特定方法。如果有的话，
+可以使用 [`JsCast`](./wasm-bindgen.mdx#JsCast) 对 `Node` 值进行类型转换，但是Yew提供了 `NodeRef::cast` 方法来方便地执行此类型转换，
+因此您不一定需要为 `JsCast` trait 包含 `wasm-bindgen` 依赖。
 
-The two code blocks below do essentially the same thing, the first is using `NodeRef::cast` and
-the second is using [`JsCast::dyn_into`](https://rustwasm.github.io/wasm-bindgen/api/wasm_bindgen/trait.JsCast.html#method.dyn_into)
-on the `web_sys::Node` returned from `NodeRef::get`.
+下面的两个代码块实际上做的事情是相同的，第一个使用了 `NodeRef::cast`，第二个使用了 `NodeRef::get` 返回的 `web_sys::Node` 上的 [`JsCast::dyn_into`](https://rustwasm.github.io/wasm-bindgen/api/wasm_bindgen/trait.JsCast.html#method.dyn_into) 方法。
 
 <Tabs>
   <TabItem value="Using NodeRef::cast" label="Using NodeRef::cast">
@@ -128,8 +120,7 @@ fn with_jscast(node_ref: NodeRef) {
 
 ## JavaScript example to Rust
 
-This section demonstrates examples of how JavaScript code which interact with the
-Web APIs can be rewritten with `web-sys` in Rust.
+本节演示了如何使用 `web-sys` 重写与 Web API 交互的 JavaScript 代码的示例。
 
 ### JavaScript example
 
@@ -145,7 +136,7 @@ document.getElementById('mousemoveme').onmousemove = (e) => {
 
 ### `web-sys` example
 
-Using `web-sys` alone the above JavaSciprt example could be implemented like this:
+只使用 `web-sys`，可以这样实现上面的 JavaScript 示例：
 
 ```toml title=Cargo.toml
 [dependencies]
@@ -190,16 +181,13 @@ Document::new()
 // this event fires the closure is still in memory.
 ```
 
-This version is much more verbose, but you will probably notice part of that is because of failure
-types reminding us that some of these function calls have invariants that must be held, or otherwise will
-cause a panic in Rust. Another part of the verbosity is the calls to `JsCast` to cast into
-different types so that you can call its specific methods.
+这个版本的代码要冗长得多，但你可能会注意到其中的一部分是由于失败类型，提醒我们一些函数调用必须遵守不变量，否则会在Rust中引发错误。
+另一部分繁琐的代码是调用 `JsCast` 以将变量强制转换为特定类型，以便可以调用其特定方法。
 
 ### Yew example
 
-In Yew you will mostly be creating [`Callback`](concepts/function-components/callbacks.mdx)s to use in the
-[`html!`](concepts/html/introduction.mdx) macro so the example is going to use this approach instead of completely copying
-the approach above:
+在 Yew 中，多数情况下你将使用 [`Callback`](../../concepts/function-components/callbacks.mdx) 在 [`html!`](concepts/html/introduction.mdx) 宏中，
+因此下面的示例将使用该方法而不是完全复制上面的方法：
 
 ```toml title=Cargo.toml
 [dependencies.web-sys]
@@ -238,8 +226,7 @@ html! {
 
 ## External libraries
 
-`web-sys` is a raw binding to the Web API so it comes with some pain in Rust because it was not
-designed with Rust or even a strong type system in mind, this is where community crates
-provide abstractions over `web-sys` to provide more idiomatic Rust APIs.
+`web-sys` 是与Web API进行交互的原始绑定，因此在Rust中使用时会有一些痛点，因为它并不是专门为Rust或强类型系统设计的，
+这就是社区 create 发挥作用的地方，提供对 `web-sys` 的抽象，以提供更符合Rust语言习惯的API。
 
-_[External libraries page](/community/external-libs)_
+_[External libraries page](https://yew.rs/community/external-libs)_
